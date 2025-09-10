@@ -1,43 +1,54 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { Platform } from 'react-native';
-
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
+import { View } from 'react-native';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import GridIcon from '../../assets/images/grid.svg';
+import OrderIcon from '../../assets/images/order.svg';
+import ForkIcon from '../../assets/images/fork.svg';
+import ProfileIcon from '../../assets/images/profile.svg';
 
-export default function TabLayout() {
+
+export default function TabLayout(): React.JSX.Element {
   const colorScheme = useColorScheme();
 
   return (
     <Tabs
+      backBehavior="history"
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
+        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarInactiveTintColor: Colors[colorScheme ?? 'light'].icon,
+        tabBarBackground: () => (
+          <View style={{ flex: 1, backgroundColor: Colors[colorScheme ?? "light"].bgPrimary }} />
+        ),
       }}>
       <Tabs.Screen
-        name="index"
+        name="dashboard"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: 'Dashboard',
+          tabBarIcon: ({ color }) => <GridIcon width={20} height={20} color={color} />,
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="order"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Orders',
+          tabBarIcon: ({ color }) => <OrderIcon width={20} height={20} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="menu"
+        options={{
+          title: 'Menu',
+          tabBarIcon: ({ color }) => <ForkIcon width={20} height={20} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({ color }) => <ProfileIcon width={20} height={20} color={color} />,
         }}
       />
     </Tabs>

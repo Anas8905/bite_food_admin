@@ -3,27 +3,26 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
-
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { screens } from '@/constants/Screens';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-export default function RootLayout() {
+export default function RootLayout(): React.JSX.Element | null {
   const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
+  const [loaded] = useFonts({ SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf') });
 
-  if (!loaded) {
-    // Async font loading only occurs in development.
-    return null;
-  }
+  if (!loaded) return null;
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
+      <SafeAreaProvider>
+        <Stack screenOptions={{ headerShown: false }}>
+            {screens.map((name) => (
+              <Stack.Screen key={name} name={name} />
+            ))}
+        </Stack>
+        <StatusBar style="auto" />
+      </SafeAreaProvider>
     </ThemeProvider>
   );
 }
