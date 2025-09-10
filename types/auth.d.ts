@@ -1,6 +1,10 @@
+type User = {
+    email: string;
+    password: string;
+};
+
 type AuthState = {
   user: User | null;
-  tempUser: User | null;
   loading: boolean;
   hydrated: boolean;
 
@@ -8,16 +12,9 @@ type AuthState = {
   setLoading: (v: boolean) => void;
 
   login: (user: User) => Promise<AuthResponse>;
-  verifyOTP: (otp: string) => Promise<AuthResponse>;
   updateProfile: (userData: User) => Promise<AuthResponse>;
   clearLocalAuthData: () => Promise<void>;
   logout: () => Promise<void>;
-};
-
-type User = {
-    fullName: string;
-    email: string;
-    phoneNumber: string;
 };
 
 type AuthResponse = {

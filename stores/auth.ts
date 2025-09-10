@@ -7,24 +7,16 @@ export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
       user: null,
-      tempUser: null,
       loading: false,
       hydrated: false,
 
-      setUser: (u) => set({ user: u, tempUser: null }),
+      setUser: (u) => set({ user: u }),
       setLoading: (v) => set({ loading: v }),
 
       login: async (user) => {
-        const res = await mockAuthAPI.sendOTP(user);
-        if (res.success) set({ tempUser: user });
+        const res = await mockAuthAPI.validateUser(user);
+        if (res.success) set({ user });
         return res;
-      },
-
-      verifyOTP: async (otp) => {
-        const { tempUser } = get();
-        if (!tempUser) return { success: false, message: 'No user found for OTP verification.' };
-
-        return await mockAuthAPI.verifyOTP(tempUser.phoneNumber, otp);
       },
 
       updateProfile: async (userData) => {
@@ -34,7 +26,7 @@ export const useAuthStore = create<AuthState>()(
       },
 
       clearLocalAuthData: async () => {
-        set({ user: null, tempUser: null });
+        set({ user: null });
         await Promise.all([]);
       },
 
@@ -45,7 +37,7 @@ export const useAuthStore = create<AuthState>()(
     {
       name: 'admin-auth-store',
       storage: createJSONStorage(() => asyncStorage),
-      partialize: (s) => ({ user: s.user, tempUser: s.tempUser }),
+      partialize: (s) => ({ user: s.user }),
       version: 1,
       onRehydrateStorage: () => {
         return (_state, error) => {

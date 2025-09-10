@@ -1,15 +1,18 @@
+import { useAuth } from '@/hooks/useAuth';
 import { usePathname, useRouter } from 'expo-router';
 import { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 export default function Index(): React.JSX.Element {
-  const isAuth = true;
+  const { user, hydrated } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
+    if (!hydrated) return;
+
     const timer = setTimeout(() => {
-      if (isAuth) {
+      if (user) {
         if (pathname !== "/dashboard") router.replace("/dashboard");
       } else {
         if (pathname !== "/login") router.replace("/login");
@@ -17,7 +20,7 @@ export default function Index(): React.JSX.Element {
     }, 2000); // 2s splash delay
 
     return () => clearTimeout(timer);
-  }, [isAuth, pathname, router]);
+  }, [user, hydrated, pathname, router]);
 
   return (
     <View style={styles.container}>

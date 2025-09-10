@@ -193,28 +193,13 @@ export const orders = [
 // Mock API functions
 export const mockAuthAPI = {
 
-  sendOTP: async (user) => {
+  validateUser: async (user) => {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000));
     return {
       success: true,
-      message: 'OTP sent successfully',
+      message: 'User has valid login credentials.',
     };
-  },
-
-  verifyOTP: async (phoneNumber, otp) => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    // For demo purposes, any 4-digit OTP is valid
-    if (otp.length === 4) {
-      return {
-        success: true,
-        message: 'OTP verified successfully',
-      };
-    } else {
-      throw new Error('Invalid OTP');
-    }
   },
 
   updateProfile: async (toUpdate) => {

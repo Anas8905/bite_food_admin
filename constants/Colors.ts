@@ -35,7 +35,7 @@ export const Colors = {
     tabIconSelected: tintColorDark,
 
     textPrimary: '#E5FFFFFF',   // 90%
-    textSecondary: '#ABFFFFFF', // 67%
+    textSecondary: '#F1F1F1',
     textTertiary: '#888',
     bgPrimary: '#121212',
     bgSecondary: '#1A1A1A',    // default bg od screens
