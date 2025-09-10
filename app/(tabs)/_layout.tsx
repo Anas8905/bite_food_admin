@@ -1,54 +1,68 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { View } from 'react-native';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import GridIcon from '../../assets/images/grid.svg';
 import OrderIcon from '../../assets/images/order.svg';
 import ForkIcon from '../../assets/images/fork.svg';
 import ProfileIcon from '../../assets/images/profile.svg';
-
+import { TabBarIcon } from '@/components/ui/TabBarIcon';
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function TabLayout(): React.JSX.Element {
   const colorScheme = useColorScheme();
+  const insets = useSafeAreaInsets();
 
   return (
     <Tabs
       backBehavior="history"
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarShowLabel: false,
         tabBarInactiveTintColor: Colors[colorScheme ?? 'light'].icon,
-        tabBarBackground: () => (
-          <View style={{ flex: 1, backgroundColor: Colors[colorScheme ?? "light"].bgPrimary }} />
-        ),
+        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].iconActive,
+        // tabBarBackground: () => (
+        //   <View style={{ flex: 1, backgroundColor: Colors[colorScheme ?? "light"].bgPrimary }} />
+        // ),
+        tabBarStyle: {
+          paddingTop: 10,
+          height: 46 + insets.bottom,
+        },
       }}>
       <Tabs.Screen
         name="dashboard"
         options={{
-          title: 'Dashboard',
-          tabBarIcon: ({ color }) => <GridIcon width={20} height={20} color={color} />,
+          title: "Dashboard",
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon Icon={GridIcon} color={color} focused={focused} colorScheme={colorScheme ?? "light"} />
+          ),
         }}
       />
       <Tabs.Screen
         name="order"
         options={{
           title: 'Orders',
-          tabBarIcon: ({ color }) => <OrderIcon width={20} height={20} color={color} />,
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon Icon={OrderIcon} color={color} focused={focused} colorScheme={colorScheme ?? "light"} />
+          ),
         }}
       />
       <Tabs.Screen
         name="menu"
         options={{
           title: 'Menu',
-          tabBarIcon: ({ color }) => <ForkIcon width={20} height={20} color={color} />,
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon Icon={ForkIcon} color={color} focused={focused} colorScheme={colorScheme ?? "light"} />
+          ),
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: 'Profile',
-          tabBarIcon: ({ color }) => <ProfileIcon width={20} height={20} color={color} />,
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon Icon={ProfileIcon} color={color} focused={focused} colorScheme={colorScheme ?? "light"} />
+          ),
         }}
       />
     </Tabs>

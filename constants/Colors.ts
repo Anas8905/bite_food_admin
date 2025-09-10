@@ -7,6 +7,7 @@ export const Colors = {
     background: '#FFFFFF',      // bgPrimary
     tint: tintColorLight,       // used for links/primary actions
     icon: '#646982',            // textSecondary as default icon
+    iconActive: '#FFFFFF',
     tabIconDefault: '#646982',
     tabIconSelected: tintColorLight,
 
@@ -27,6 +28,7 @@ export const Colors = {
     background: '#121212',
     tint: tintColorDark,
     icon: '#FFFFFF',
+    iconActive: '#FFFFFF',
     tabIconDefault: '#ABFFFFFF',
     tabIconSelected: tintColorDark,
 
