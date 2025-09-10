@@ -1,6 +1,8 @@
 const tintColorLight = '#FA4F0C'; // accentPrimary (light)
 const tintColorDark = '#FF6028';  // accentPrimary (dark)
 
+export type Theme = keyof typeof Colors;
+
 export const Colors = {
   light: {
     text: '#121212',            // textPrimary
@@ -13,9 +15,9 @@ export const Colors = {
 
     textPrimary: '#121212',
     textSecondary: '#646982',
-    textTertiary: '#A0A5BA',
+    textTertiary: '#888',
     bgPrimary: '#FFFFFF',
-    bgSecondary: '#F7F8F9',
+    bgSecondary: '#F7F8F9',      // default bg od screens
     inputBackground: '#F0F5FA',
     greyIconBg: '#ECF0F4',
     borderLight: '#EDEDED',
@@ -34,15 +36,14 @@ export const Colors = {
 
     textPrimary: '#E5FFFFFF',   // 90%
     textSecondary: '#ABFFFFFF', // 67%
-    textTertiary: '#80FFFFFF',  // 50%
+    textTertiary: '#888',
     bgPrimary: '#121212',
-    bgSecondary: '#1A1A1A',
+    bgSecondary: '#1A1A1A',    // default bg od screens
     inputBackground: '#2C2C2C',
     greyIconBg: '#2C2C2C',
     borderLight: '#EDEDED',
-    borderDark: '#D9D9D9',
+    borderDark: '#666',
     accentPrimary: '#FF6028',
   },
 } as const;
 
-export type Theme = keyof typeof Colors;

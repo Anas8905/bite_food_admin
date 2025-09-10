@@ -8,9 +8,11 @@ import ForkIcon from '../../assets/images/fork.svg';
 import ProfileIcon from '../../assets/images/profile.svg';
 import { TabBarIcon } from '@/components/ui/TabBarIcon';
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useThemeColors } from '@/hooks/useThemeColors';
 
 export default function TabLayout(): React.JSX.Element {
   const colorScheme = useColorScheme();
+  const colors = useThemeColors();
   const insets = useSafeAreaInsets();
 
   return (
@@ -27,6 +29,7 @@ export default function TabLayout(): React.JSX.Element {
         tabBarStyle: {
           paddingTop: 10,
           height: 46 + insets.bottom,
+          backgroundColor: colors.bgSecondary,
         },
       }}>
       <Tabs.Screen

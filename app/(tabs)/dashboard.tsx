@@ -5,7 +5,7 @@ import { SafeAreaView, StyleSheet } from 'react-native';
 export default function DashboardScreen(): React.JSX.Element {
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ThemedView style={styles.container} colorName="bgSecondary">
+      <ThemedView style={styles.container} colorName="bgPrimary">
         <ThemedText type="title" colorName="accentPrimary">
           Dashboard
         </ThemedText>
