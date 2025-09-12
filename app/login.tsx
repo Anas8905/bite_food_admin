@@ -50,9 +50,9 @@ export default function LoginScreen(): React.JSX.Element {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.bgPrimary }]}>
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <BackButton onPress={() => router.back()} />
-      </View>
+      </View> */}
 
       <View style={styles.content}>
         <ThemedText style={styles.title}>Hi, there..</ThemedText>

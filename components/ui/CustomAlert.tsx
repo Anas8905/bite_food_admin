@@ -8,6 +8,9 @@ import {
   View,
 } from 'react-native';
 import Modal from 'react-native-modal';
+import { ThemedView } from '../ThemedView';
+import { ThemedText } from '../ThemedText';
+import { useThemeColors } from '@/hooks/useThemeColors';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -19,6 +22,7 @@ const CustomAlert: React.FC<CustomAlertProps> = ({
   onDismiss,
   type = 'default'
 }) => {
+  const colors = useThemeColors();
   const [useHorizontalLayout, setUseHorizontalLayout] = useState(true);
 
   useEffect(() => {
@@ -71,39 +75,40 @@ const CustomAlert: React.FC<CustomAlertProps> = ({
       backdropOpacity={0.6}
       animationIn="fadeIn"
       animationOut="fadeOut"
-      backdropTransitionInTiming={200}
-      backdropTransitionOutTiming={200}
-      animationInTiming={200}
-      animationOutTiming={200}
+      backdropTransitionInTiming={300}
+      backdropTransitionOutTiming={300}
+      animationInTiming={300}
+      animationOutTiming={300}
       // onBackdropPress={onDismiss}
       onBackButtonPress={onDismiss}
       useNativeDriverForBackdrop
       hideModalContentWhileAnimating
     >
       <View style={styles.overlay}>
-        <View style={styles.alertContainer}>
+        <ThemedView style={[styles.alertContainer, { borderColor: colors.borderLight }]}>
           {/* Title */}
           {title && (
-            <Text style={styles.title} numberOfLines={2}>
+            <ThemedText style={styles.title} numberOfLines={2}>
               {title}
-            </Text>
+            </ThemedText>
           )}
 
           {/* Message */}
           {message && (
-            <Text style={styles.message} numberOfLines={4}>
+            <ThemedText colorName='textTertiary' style={styles.message} numberOfLines={4}>
               {message}
-            </Text>
+            </ThemedText>
           )}
 
           {/* Buttons */}
-          <View style={[
+          <ThemedView style={[
             styles.buttonContainer,
+            { borderTopColor: colors.borderLight },
             buttons.length === 2 && useHorizontalLayout && styles.horizontalButtonContainer
           ]}>
             {buttons.map(renderButton)}
-          </View>
-        </View>
+          </ThemedView>
+        </ThemedView>
       </View>
     </Modal>
   );
@@ -159,14 +164,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   alertContainer: {
-    backgroundColor: 'rgba(255, 255, 255, 1)',
     borderRadius: 16,
     minWidth: Math.min(270, screenWidth - 140),
     maxWidth: screenWidth - 140,
     overflow: 'hidden',
     backdropFilter: 'blur(20px)',
     borderWidth: 0.5,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
     ...Platform.select({
       ios: {
         shadowColor: 'rgba(0, 0, 0, 0.3)',
@@ -186,7 +189,6 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: '600',
     textAlign: 'center',
-    color: 'rgba(0, 0, 0, 0.9)',
     paddingTop: 20,
     paddingHorizontal: 20,
     paddingBottom: 8,
@@ -195,15 +197,12 @@ const styles = StyleSheet.create({
   message: {
     fontSize: 13,
     textAlign: 'center',
-    color: '#111',
     paddingHorizontal: 20,
     paddingBottom: 20,
     lineHeight: 18,
   },
   buttonContainer: {
     borderTopWidth: 0.5,
-    borderTopColor: 'rgba(0, 0, 0, 0.15)',
-    backgroundColor: 'transparent',
   },
   horizontalButtonContainer: {
     flexDirection: 'row',
@@ -214,7 +213,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: 44,
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
   },
   singleButton: {},
   leftButton: {

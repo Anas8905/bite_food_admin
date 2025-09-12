@@ -1,9 +1,13 @@
+import { ThemedView } from '@/components/ThemedView';
 import { useAuth } from '@/hooks/useAuth';
 import { usePathname, useRouter } from 'expo-router';
 import { useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
+import LogoIcon from '@/assets/images/Ratatouille.svg';
+import { useThemeColors } from '@/hooks/useThemeColors';
 
 export default function Index(): React.JSX.Element {
+  const colors = useThemeColors();
   const { user, hydrated } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -23,9 +27,9 @@ export default function Index(): React.JSX.Element {
   }, [user, hydrated, pathname, router]);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.logo}>Ratatouille</Text>
-    </View>
+    <ThemedView colorName='splashBg' style={styles.container}>
+      <LogoIcon width={230} height={230} color={colors.splashIcon} />
+    </ThemedView>
   );
 };
 
@@ -34,13 +38,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FA4A0C',
   },
   logo: {
     fontFamily: 'serif',
     fontSize: 42,
     fontWeight: 'bold',
-    color: 'white',
     fontStyle: 'italic',
   },
 });

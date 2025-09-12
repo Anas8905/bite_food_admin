@@ -164,7 +164,7 @@ export default function CustomDrawer({
             width: drawerWidth,
             [side]: 0,
             transform: [{ translateX }],
-            backgroundColor: colors.bgSecondary,
+            backgroundColor: colors.bgPrimary,
           },
           stylesOverride.drawer,
         ]}
@@ -181,7 +181,7 @@ export default function CustomDrawer({
         </View>
 
         {renderFooter ? (
-          <View style={[styles.footer, stylesOverride.footer, { borderTopColor: colors.borderDark }]}>
+          <View style={[styles.footer, stylesOverride.footer, { borderTopColor: colors.borderLight }]}>
             {renderFooter(ctx)}
           </View>
         ) : null}

@@ -190,6 +190,56 @@ export const orders = [
   },
 ];
 
+export const weeklyOrders = [
+  { value: 12, label: 'MON' },
+  { value: 22, label: 'TUE' },
+  { value: 15, label: 'WED' },
+  { value: 25, label: 'THU' },
+  { value: 18, label: 'FRI' },
+  { value: 28, label: 'SAT' },
+  { value: 20, label: 'SUN' },
+
+  { value: 14, label: 'MON' },
+  { value: 24, label: 'TUE' },
+  { value: 16, label: 'WED' },
+  { value: 26, label: 'THU' },
+  { value: 19, label: 'FRI' },
+  { value: 29, label: 'SAT' },
+  { value: 21, label: 'SUN' },
+];
+
+export const monthlyOrders = [
+  { value: 450, label: 'JAN' },
+  { value: 600, label: 'FEB' },
+  { value: 420, label: 'MAR' },
+  { value: 650, label: 'APR' },
+  { value: 500, label: 'MAY' },
+  { value: 700, label: 'JUN' },
+  { value: 480, label: 'JUL' },
+  { value: 720, label: 'AUG' },
+  { value: 510, label: 'SEP' },
+  { value: 750, label: 'OCT' },
+  { value: 530, label: 'NOV' },
+  { value: 770, label: 'DEC' },
+];
+
+
+export const yearlyOrders = [
+  { value: 1200, label: '2015' },
+  { value: 2400, label: '2016' },
+  { value: 1800, label: '2017' },
+  { value: 3200, label: '2018' },
+  { value: 2600, label: '2019' },
+  { value: 4000, label: '2020' },
+  { value: 3000, label: '2021' },
+  { value: 4600, label: '2022' },
+  { value: 3500, label: '2023' },
+  { value: 5000, label: '2024' },
+  { value: 3800, label: '2025' },
+];
+
+
+
 // Mock API functions
 export const mockAuthAPI = {
 
@@ -212,3 +262,10 @@ export const mockAuthAPI = {
   },
 };
 
+export const mockPizzaAPI = {
+  popularPizzas: async () => {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    return pizzas.filter((pizza) => pizza.category === 'Popular');
+  }
+}

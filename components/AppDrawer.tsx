@@ -34,8 +34,8 @@ export default function AppDrawer(): React.JSX.Element {
           </TouchableOpacity>
 
           <View style={{ marginTop: 16, gap: 3 }}>
-            <ThemedText type='subtitle' colorName='accentPrimary'>Taimoor Khan</ThemedText>
-            <ThemedText style={[styles.phone, { color: colors.textTertiary}]}>+9230024620401</ThemedText>
+            <ThemedText type='subtitle' colorName='accentPrimary'>{user?.email}</ThemedText>
+            {/* <ThemedText style={[styles.phone, { color: colors.textTertiary}]}>+9230024620401</ThemedText> */}
           </View>
         </View>
       )}
