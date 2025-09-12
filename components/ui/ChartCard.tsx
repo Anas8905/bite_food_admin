@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useThemeColors } from "@/hooks/useThemeColors";
 import { AntDesign } from "@expo/vector-icons";
 import Chart from "./Chart";
+import { useRouter } from "expo-router";
 
 const data = [
   { label: 'Weekly', value: 'weekly' },
@@ -15,6 +16,7 @@ const data = [
 
 export default function ChartCard(): React.JSX.Element {
   const colors = useThemeColors();
+  const router = useRouter();
   const [period, setPeriod] = useState('weekly');
 
   return (
@@ -46,7 +48,7 @@ export default function ChartCard(): React.JSX.Element {
             style={[styles.input, { borderColor: colors.borderLight }]}
           />
 
-          <Pressable>
+          <Pressable onPress={() => router.navigate('/order')}>
               <ThemedText colorName='accentPrimary' style={styles.actionBtn}>See Details</ThemedText>
           </Pressable>
         </View>

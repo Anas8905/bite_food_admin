@@ -18,6 +18,7 @@ export const Colors = {
     textPrimary: '#121212',
     textSecondary: '#646982',
     textTertiary: '#333333',
+    textMuted: '#777777',
     bgPrimary: '#F7F8F9',
     bgSecondary: '#FFFFFF',
     inputBackground: '#F0F5FA',
@@ -39,8 +40,9 @@ export const Colors = {
     splashIcon: tintColorDark,
 
     textPrimary: '#FFFFFF',
-    textSecondary: '#F1F1F1',
+    textSecondary: '#BBBBBB',
     textTertiary: '#B3B3B3',
+    textMuted: '#777777',
     bgPrimary: '#121212',
     bgSecondary: '#1A1A1A',
     inputBackground: '#2C2C2C',
