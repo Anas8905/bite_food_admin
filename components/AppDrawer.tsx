@@ -29,13 +29,13 @@ export default function AppDrawer(): React.JSX.Element {
       duration={300}
       renderHeader={() => (
         <View style={{ marginTop: 10, marginBottom: 10 }}>
-          <TouchableOpacity onPress={closeDrawer} style={[styles.closeBtn, { backgroundColor: colors.greyIconBg }]}>
+          <TouchableOpacity onPress={closeDrawer} style={[styles.closeBtn, { backgroundColor: colors.greyBg }]}>
             <ThemedText>✕</ThemedText>
           </TouchableOpacity>
 
-          <View style={{ marginTop: 16, gap: 3 }}>
-            <ThemedText type='subtitle' colorName='accentPrimary'>{user?.email}</ThemedText>
-            {/* <ThemedText style={[styles.phone, { color: colors.textTertiary}]}>+9230024620401</ThemedText> */}
+          <View style={{ marginTop: 16, gap: 2 }}>
+            <ThemedText type='subtitle' colorName='accentPrimary'>{user?.fullName}</ThemedText>
+            <ThemedText style={[styles.phone, { color: colors.textTertiary}]}>{user?.email}</ThemedText>
           </View>
         </View>
       )}

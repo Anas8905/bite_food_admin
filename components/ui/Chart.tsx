@@ -54,10 +54,19 @@ export default function Chart({ period }: { period: string }): React.JSX.Element
                 const firstItem = data[0];
                 return (
                     <View style={[styles.pointerLabel, { backgroundColor: colors.textPrimary }]}>
-                        <Text style={{ color: colors.bgPrimary, fontWeight: 600, }}>
+                        <Text
+                            style={{
+                            color: colors.bgPrimary,
+                            fontWeight: '600',
+                            textAlign: 'center',
+                            }}
+                            numberOfLines={1}
+                            ellipsizeMode='clip'
+                        >
                             {firstItem?.value}
                         </Text>
                     </View>
+
                 );
                 },
             }}
@@ -72,8 +81,6 @@ const styles = StyleSheet.create({
         left: -10,
         padding: 4,
         borderRadius: 4,
-        minWidth: 40,
-        alignItems: 'center',
+        minWidth: 44,
     },
-    labelText: {},
 })

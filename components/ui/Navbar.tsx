@@ -24,7 +24,7 @@ export default function Navbar(): React.JSX.Element{
           onPress={openDrawer}
           style={[
             styles.circleButton,
-            { backgroundColor: colors.greyIconBg }
+            { backgroundColor: colors.greyBg }
           ]}
         >
           <MenuIcon width={46} height={46} color={colors.textPrimary} />

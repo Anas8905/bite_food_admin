@@ -21,6 +21,7 @@ export default function LoginScreen(): React.JSX.Element {
   const colors = useThemeColors();
   const { login } = useAuth();
   const { showAlert } = useAlert();
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -36,7 +37,7 @@ export default function LoginScreen(): React.JSX.Element {
 
     try {
       setLoading(true);
-      await login({ email, password });
+      await login({ fullName, email, password });
 
       setEmail('');
       setPassword('');
@@ -56,6 +57,24 @@ export default function LoginScreen(): React.JSX.Element {
 
       <View style={styles.content}>
         <ThemedText style={styles.title}>Hi, there..</ThemedText>
+
+        <View style={styles.inputGroup}>
+          <ThemedText type='defaultSemiBold' style={styles.label}>What&apos;s your Full Name?</ThemedText>
+          <TextInput
+            style={[
+              styles.input,
+              {
+                backgroundColor: colors.inputBackground,
+                color: colors.textPrimary,
+              }
+            ]}
+            placeholder="Type here"
+            value={fullName}
+            onChangeText={setFullName}
+            autoCapitalize="words"
+            autoCorrect={false}
+          />
+        </View>
 
         <View style={styles.inputGroup}>
           <ThemedText type='defaultSemiBold' style={styles.label}>What&apos;s your Email?</ThemedText>

@@ -6,7 +6,7 @@ const BackButton = ({ onPress }: { onPress: () => void }): React.JSX.Element => 
     const colors = useThemeColors();
 
   return (
-    <TouchableOpacity style={[styles.button, { backgroundColor: colors.greyIconBg }]} onPress={onPress}>
+    <TouchableOpacity style={[styles.button, { backgroundColor: colors.greyBg }]} onPress={onPress}>
       <Ionicons name="chevron-back" size={24} color={colors.textSecondary} />
     </TouchableOpacity>
   );
