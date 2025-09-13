@@ -3,7 +3,6 @@ import { useFonts } from 'expo-font';
 import { Stack, usePathname } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
-import { useColorScheme } from '@/hooks/useColorScheme';
 import { noNavScreens, screens } from '@/constants/Screens';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AppDrawer from '@/components/AppDrawer';
@@ -14,9 +13,10 @@ import { isAndroid } from '@/utils/common.utils';
 import { ThemedView } from '@/components/ThemedView';
 import Navbar from '@/components/ui/Navbar';
 import { useThemeColors } from '@/hooks/useThemeColors';
+import { useResolvedTheme } from '@/stores/theme';
 
 export default function RootLayout(): React.JSX.Element | null {
-  const colorScheme = useColorScheme();
+  const theme = useResolvedTheme();
   const colors = useThemeColors();
   const [loaded] = useFonts({ SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf') });
   const pathname = usePathname();
@@ -25,7 +25,7 @@ export default function RootLayout(): React.JSX.Element | null {
   if (!loaded) return null;
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={theme === 'dark' ? DarkTheme : DefaultTheme}>
       <SafeAreaProvider>
         <NetworkListener />
         {showNavbar && (
@@ -43,6 +43,7 @@ export default function RootLayout(): React.JSX.Element | null {
         <AppDrawer />
         <AlertHost />
         <StatusBar style="auto" />
+        {/* <StatusBar style={theme === 'dark' ? 'light' : 'dark'} /> */}
       </SafeAreaProvider>
     </ThemeProvider>
   );

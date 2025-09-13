@@ -1,16 +1,18 @@
-import React from 'react';
 import { router } from 'expo-router';
 import { Feather, Ionicons } from '@expo/vector-icons';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useDrawer } from '../hooks/useDrawer';
 import CustomDrawer from './ui/CustomDrawer';
 import { useAuth } from '@/hooks/useAuth';
 import { ThemedText } from './ThemedText';
 import ProfileIcon from '@/assets/images/profile.svg';
 import { useThemeColors } from '@/hooks/useThemeColors';
+import { capitalize } from '@/utils/common.utils';
+import { useThemePreference } from '@/hooks/useThemePreference';
 
 export default function AppDrawer(): React.JSX.Element {
   const { isOpen, closeDrawer } = useDrawer();
+  const { preference, cyclePreference } = useThemePreference();
   const { user, logout } = useAuth();
   const colors = useThemeColors();
 
@@ -29,11 +31,19 @@ export default function AppDrawer(): React.JSX.Element {
       duration={300}
       renderHeader={() => (
         <View style={{ marginTop: 10, marginBottom: 10 }}>
-          <TouchableOpacity onPress={closeDrawer} style={[styles.closeBtn, { backgroundColor: colors.greyBg }]}>
-            <ThemedText>✕</ThemedText>
-          </TouchableOpacity>
+          <View style={styles.header}>
+            <TouchableOpacity onPress={closeDrawer} style={[styles.closeBtn, { backgroundColor: colors.greyBg }]}>
+              <Ionicons name="close" size={18} color={colors.textPrimary} />
+            </TouchableOpacity>
 
-          <View style={{ marginTop: 16, gap: 2 }}>
+            {user?.avatar && (
+              <View style={styles.avatarCircle}>
+                    <Image source={{ uri: user?.avatar }} style={styles.avatarImage} />
+              </View>
+            )}
+          </View>
+
+          <View style={{ marginTop: 30, gap: 2 }}>
             <ThemedText type='subtitle' colorName='accentPrimary'>{user?.fullName}</ThemedText>
             <ThemedText style={[styles.phone, { color: colors.textTertiary}]}>{user?.email}</ThemedText>
           </View>
@@ -49,7 +59,25 @@ export default function AppDrawer(): React.JSX.Element {
               close();
             }}
           />
-          <DrawerItem label="Dark Mode" icon={<Feather name="moon" size={20} color={colors.text} />} />
+
+          <DrawerItem
+            label={capitalize(preference)}
+            icon={
+              <Feather
+                name={
+                  preference === 'system'
+                    ? 'smartphone'
+                    : preference === 'light'
+                    ? 'sun'
+                    : 'moon'
+                }
+                size={20}
+                color={colors.text}
+              />
+            }
+            onPress={cyclePreference}
+          />
+
           <DrawerItem label="Settings" icon={<Ionicons name="settings-outline" size={20} color={colors.text} />} />
         </View>
       )}
@@ -83,12 +111,29 @@ const DrawerItem = ({
 }
 
 const styles = StyleSheet.create({
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   closeBtn: {
-    width: 44,
-    height: 44,
+    width: 36,
+    height: 36,
     borderRadius: 24,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  avatarCircle: {
+    width: 54,
+    height: 54,
+    overflow: 'hidden',
+    borderRadius: 62,
+    position: 'relative',
+  },
+  avatarImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
   },
   userName: {
     fontSize: 18,
@@ -104,6 +149,11 @@ const styles = StyleSheet.create({
   },
   drawerItemText: {
     fontWeight: '500',
+  },
+  switchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   logoutBtn: {
     flexDirection: 'row',

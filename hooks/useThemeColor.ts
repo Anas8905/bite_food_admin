@@ -1,17 +1,12 @@
-// hooks/useThemeColor.ts
 import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { useResolvedTheme } from '@/stores/theme';
 
 export function useThemeColor(
   props: { light?: string; dark?: string },
   colorName: keyof typeof Colors.light & keyof typeof Colors.dark
 ): string {
-  const theme = useColorScheme() ?? 'light';
+  const theme = useResolvedTheme();
   const colorFromProps = props[theme];
 
-  if (colorFromProps) {
-    return colorFromProps;
-  } else {
-    return Colors[theme][colorName];
-  }
+  return colorFromProps ?? Colors[theme][colorName];
 }
