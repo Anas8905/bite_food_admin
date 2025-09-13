@@ -1,24 +1,22 @@
+import { ThemedText } from '@/components/ThemedText';
+import { useAlert } from '@/hooks/useAlert';
+import { useAuth } from '@/hooks/useAuth';
+import { createThemedStyles } from '@/utils/styles';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
   ActivityIndicator,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAuth } from '@/hooks/useAuth';
-import { useAlert } from '@/hooks/useAlert';
-import BackButton from '@/components/ui/BackButton';
-import { useThemeColors } from '@/hooks/useThemeColors';
-import { ThemedText } from '@/components/ThemedText';
 
 
 export default function LoginScreen(): React.JSX.Element {
+  const styles = useThemedStyles();
   const router = useRouter()
-  const colors = useThemeColors();
   const { login } = useAuth();
   const { showAlert } = useAlert();
   const [fullName, setFullName] = useState('');
@@ -50,7 +48,7 @@ export default function LoginScreen(): React.JSX.Element {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.bgPrimary }]}>
+    <SafeAreaView style={styles.container}>
       {/* <View style={styles.header}>
         <BackButton onPress={() => router.back()} />
       </View> */}
@@ -61,13 +59,7 @@ export default function LoginScreen(): React.JSX.Element {
         <View style={styles.inputGroup}>
           <ThemedText type='defaultSemiBold' style={styles.label}>What&apos;s your Full Name?</ThemedText>
           <TextInput
-            style={[
-              styles.input,
-              {
-                backgroundColor: colors.inputBackground,
-                color: colors.textPrimary,
-              }
-            ]}
+            style={styles.input}
             placeholder="Type here"
             value={fullName}
             onChangeText={setFullName}
@@ -79,13 +71,7 @@ export default function LoginScreen(): React.JSX.Element {
         <View style={styles.inputGroup}>
           <ThemedText type='defaultSemiBold' style={styles.label}>What&apos;s your Email?</ThemedText>
           <TextInput
-            style={[
-              styles.input,
-              {
-                backgroundColor: colors.inputBackground,
-                color: colors.textPrimary,
-              }
-            ]}
+            style={styles.input}
             placeholder="Type here"
             value={email}
             onChangeText={setEmail}
@@ -98,13 +84,7 @@ export default function LoginScreen(): React.JSX.Element {
         <View style={styles.inputGroup}>
           <ThemedText type='defaultSemiBold' style={styles.label}>What&apos;s your password?</ThemedText>
           <TextInput
-            style={[
-              styles.input,
-              {
-                backgroundColor: colors.inputBackground,
-                color: colors.textPrimary,
-              }
-            ]}
+            style={styles.input}
             placeholder="Type here"
             value={password}
             onChangeText={setPassword}
@@ -116,7 +96,7 @@ export default function LoginScreen(): React.JSX.Element {
         </View>
 
         <TouchableOpacity
-          style={[styles.button, { backgroundColor: colors.accentPrimary }]}
+          style={styles.button}
           onPress={handleLogin}
           disabled={loading}
         >
@@ -131,9 +111,15 @@ export default function LoginScreen(): React.JSX.Element {
   );
 };
 
-const styles = StyleSheet.create({
+const useThemedStyles = createThemedStyles(({
+  bgPrimary,
+  textPrimary,
+  accentPrimary,
+  inputBackground,
+}) => ({
   container: {
     flex: 1,
+    backgroundColor: bgPrimary,
   },
   header: {
     paddingHorizontal: 20,
@@ -157,11 +143,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   input: {
+    backgroundColor: inputBackground,
+    color: textPrimary,
     borderRadius: 8,
     padding: 15,
     fontSize: 16,
   },
   button: {
+    backgroundColor: accentPrimary,
     paddingVertical: 15,
     borderRadius: 8,
     alignItems: 'center',
@@ -172,4 +161,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-});
+}));

@@ -1,7 +1,4 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
 import GridIcon from '@/assets/images/grid.svg';
 import OrderIcon from '@/assets/images/order.svg';
 import ForkIcon from '@/assets/images/fork.svg';
@@ -11,8 +8,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useThemeColors } from '@/hooks/useThemeColors';
 
 export default function TabLayout(): React.JSX.Element {
-  const colorScheme = useColorScheme();
-  const colors = useThemeColors();
+  const { icon, iconActive, bgSecondary } = useThemeColors();
   const insets = useSafeAreaInsets();
 
   return (
@@ -21,15 +17,15 @@ export default function TabLayout(): React.JSX.Element {
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
-        tabBarInactiveTintColor: Colors[colorScheme ?? 'light'].icon,
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].iconActive,
+        tabBarInactiveTintColor: icon,
+        tabBarActiveTintColor: iconActive,
         // tabBarBackground: () => (
-        //   <View style={{ flex: 1, backgroundColor: Colors[colorScheme ?? "light"].bgPrimary }} />
+        //   <View style={{ flex: 1, backgroundColor: bgPrimary }} />
         // ),
         tabBarStyle: {
           paddingTop: 10,
           height: 46 + insets.bottom,
-          backgroundColor: colors.bgSecondary,
+          backgroundColor: bgSecondary,
         },
       }}>
       <Tabs.Screen
@@ -37,7 +33,7 @@ export default function TabLayout(): React.JSX.Element {
         options={{
           title: "Dashboard",
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon Icon={GridIcon} color={color} focused={focused} colorScheme={colorScheme ?? "light"} />
+            <TabBarIcon Icon={GridIcon} color={color} focused={focused} />
           ),
         }}
       />
@@ -46,7 +42,7 @@ export default function TabLayout(): React.JSX.Element {
         options={{
           title: 'Orders',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon Icon={OrderIcon} color={color} focused={focused} colorScheme={colorScheme ?? "light"} />
+            <TabBarIcon Icon={OrderIcon} color={color} focused={focused} />
           ),
         }}
       />
@@ -55,7 +51,7 @@ export default function TabLayout(): React.JSX.Element {
         options={{
           title: 'Menu',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon Icon={ForkIcon} color={color} focused={focused} colorScheme={colorScheme ?? "light"} />
+            <TabBarIcon Icon={ForkIcon} color={color} focused={focused} />
           ),
         }}
       />
@@ -64,7 +60,7 @@ export default function TabLayout(): React.JSX.Element {
         options={{
           title: 'Profile',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon Icon={ProfileIcon} color={color} focused={focused} colorScheme={colorScheme ?? "light"} />
+            <TabBarIcon Icon={ProfileIcon} color={color} focused={focused} />
           ),
         }}
       />

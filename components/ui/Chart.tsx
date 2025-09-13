@@ -1,10 +1,12 @@
 import { monthlyOrders, weeklyOrders, yearlyOrders } from '@/api/mockApi';
 import { useThemeColors } from '@/hooks/useThemeColors';
-import { StyleSheet, Text, View } from 'react-native';
+import { createThemedStyles } from '@/utils/styles';
+import { Text, View } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
 
 export default function Chart({ period }: { period: string }): React.JSX.Element {
-    const colors = useThemeColors();
+    const styles = useThemedStyles();
+    const { accentPrimary } = useThemeColors();
 
     const getData = () => {
         switch (period) {
@@ -19,6 +21,29 @@ export default function Chart({ period }: { period: string }): React.JSX.Element
         }
     };
 
+    const customPointerConfig = {
+        activatePointersOnLongPress: true,
+        pointerStripColor: accentPrimary,
+        pointerStripWidth: 2,
+        pointerStripUptoDataPoint: true,
+        pointerColor: accentPrimary,
+        radius: 8,
+        pointerLabelComponent: (data: { label: string; value: string; }) => {
+            const firstItem = data[0];
+            return (
+                <View style={styles.pointerLabel}>
+                    <Text
+                        style={styles.pointerLabelText}
+                        numberOfLines={1}
+                        ellipsizeMode='clip'
+                    >
+                        {firstItem?.value}
+                    </Text>
+                </View>
+            );
+        },
+    }
+
     return (
         <LineChart
             data={getData()}
@@ -27,54 +52,32 @@ export default function Chart({ period }: { period: string }): React.JSX.Element
             xAxisThickness={0}
             yAxisThickness={0}
             thickness={3}
-            color={colors.accentPrimary}
+            color={accentPrimary}
             hideDataPoints
             hideAxesAndRules
             hideYAxisText={true}
             hideRules={true}
-            xAxisLabelTextStyle={{ color: colors.textSecondary, fontSize: 9 }}
+            xAxisLabelTextStyle={styles.xAxisLabelText}
             scrollAnimation
             isAnimated
             animateOnDataChange
             areaChart
             curved={true}
             showStripOnFocus
-            startFillColor={colors.accentPrimary}
-            endFillColor={colors.accentPrimary}
+            startFillColor={accentPrimary}
+            endFillColor={accentPrimary}
             startOpacity={0.1}
             endOpacity={0.05}
-            pointerConfig={{
-                activatePointersOnLongPress: true,
-                pointerStripColor: '#FA4A0C',
-                pointerStripWidth: 2,
-                pointerStripUptoDataPoint: true,
-                pointerColor: colors.accentPrimary,
-                radius: 8,
-                pointerLabelComponent: (data: { label: string; value: string; }) => {
-                const firstItem = data[0];
-                return (
-                    <View style={[styles.pointerLabel, { backgroundColor: colors.textPrimary }]}>
-                        <Text
-                            style={{
-                            color: colors.bgPrimary,
-                            fontWeight: '600',
-                            textAlign: 'center',
-                            }}
-                            numberOfLines={1}
-                            ellipsizeMode='clip'
-                        >
-                            {firstItem?.value}
-                        </Text>
-                    </View>
-
-                );
-                },
-            }}
+            pointerConfig={customPointerConfig}
         />
     );
 }
 
-const styles = StyleSheet.create({
+const useThemedStyles = createThemedStyles(({ bgPrimary, textPrimary, textSecondary }) => ({
+    xAxisLabelText: {
+        color: textSecondary,
+        fontSize: 9
+    },
     pointerLabel: {
         position: 'absolute',
         bottom: 8,
@@ -82,5 +85,11 @@ const styles = StyleSheet.create({
         padding: 4,
         borderRadius: 4,
         minWidth: 44,
+        backgroundColor: textPrimary,
     },
-})
+    pointerLabelText: {
+        color: bgPrimary,
+        fontWeight: '600',
+        textAlign: 'center',
+    },
+}));

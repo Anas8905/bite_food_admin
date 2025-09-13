@@ -7,7 +7,7 @@ import LogoIcon from '@/assets/images/Ratatouille.svg';
 import { useThemeColors } from '@/hooks/useThemeColors';
 
 export default function Index(): React.JSX.Element {
-  const colors = useThemeColors();
+  const { splashIcon } = useThemeColors();
   const { user, hydrated } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -28,7 +28,7 @@ export default function Index(): React.JSX.Element {
 
   return (
     <ThemedView colorName='splashBg' style={styles.container}>
-      <LogoIcon width={230} height={230} color={colors.splashIcon} />
+      <LogoIcon width={230} height={230} color={splashIcon} />
     </ThemedView>
   );
 };

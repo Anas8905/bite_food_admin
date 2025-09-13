@@ -1,6 +1,5 @@
-import { useThemeColors } from '@/hooks/useThemeColors';
 import { isAndroid } from '@/utils/common.utils';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Animated,
   Dimensions,
@@ -11,10 +10,11 @@ import {
   ViewStyle,
 } from 'react-native';
 import { ThemedView } from '../ThemedView';
+import { createThemedStyles } from '@/utils/styles';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
-function parseWidth(w?: number | `${number}%`) {
+const parseWidth = (w?: number | `${number}%`) => {
   if (typeof w === 'number') return w;
   if (typeof w === 'string' && w.endsWith('%')) {
     const pct = parseFloat(w);
@@ -38,7 +38,7 @@ export default function CustomDrawer({
   children,
   styles: stylesOverride = {},
 }: DrawerBaseProps): React.JSX.Element | null {
-  const colors = useThemeColors();
+  const styles = useThemedStyles();
   const drawerWidth = useMemo(() => parseWidth(width), [width]);
   const offscreenX = side === 'left' ? -drawerWidth : drawerWidth;
 
@@ -112,34 +112,34 @@ export default function CustomDrawer({
 
     // Cleanup animations on unmount or dependency change
     return () => {
-      if (translateAnimation) {
-        translateAnimation.stop();
-      }
-      if (opacityAnimation) {
-        opacityAnimation.stop();
-      }
+      if (translateAnimation) translateAnimation.stop();
+      if (opacityAnimation) opacityAnimation.stop();
     };
-  }, [isOpen, offscreenX, duration, translateX, backdropOpacity, handleAnimationComplete, preventUpdates, mounted]);
+  }, [
+      isOpen,
+      offscreenX,
+      duration,
+      translateX,
+      backdropOpacity,
+      handleAnimationComplete,
+      preventUpdates,
+      mounted,
+    ]);
 
   // Cleanup on unmount
   useEffect(() => {
-    return () => {
-      isMountedRef.current = false;
-    };
+    return () => { isMountedRef.current = false };
   }, []);
 
   const ctx: DrawerBaseContext = { close: onClose, isOpen };
 
   if (preventUpdates) return null;
-
   if (!mounted) return null;
 
   return (
     <ThemedView style={[StyleSheet.absoluteFill, stylesOverride.root]}>
       {/* Backdrop */}
-      <TouchableWithoutFeedback
-        onPress={closeOnBackdropPress ? onClose : undefined}
-      >
+      <TouchableWithoutFeedback onPress={closeOnBackdropPress ? onClose : undefined}>
         <Animated.View
           style={[
             styles.backdrop,
@@ -164,16 +164,13 @@ export default function CustomDrawer({
             width: drawerWidth,
             [side]: 0,
             transform: [{ translateX }],
-            backgroundColor: colors.bgPrimary,
           },
           stylesOverride.drawer,
         ]}
       >
         {/* Optional slots */}
         {renderHeader ? (
-          <View style={[styles.header, stylesOverride.header]}>
-            {renderHeader(ctx)}
-          </View>
+          <View style={[styles.header, stylesOverride.header]}>{renderHeader(ctx)}</View>
         ) : null}
 
         <View style={[styles.content, stylesOverride.content]}>
@@ -181,16 +178,14 @@ export default function CustomDrawer({
         </View>
 
         {renderFooter ? (
-          <View style={[styles.footer, stylesOverride.footer, { borderTopColor: colors.borderLight }]}>
-            {renderFooter(ctx)}
-          </View>
+          <View style={[styles.footer, stylesOverride.footer]}>{renderFooter(ctx)}</View>
         ) : null}
       </Animated.View>
     </ThemedView>
   );
 }
 
-const styles = StyleSheet.create({
+const useThemedStyles = createThemedStyles(({ bgPrimary, borderLight }) => ({
   backdrop: {
     ...StyleSheet.absoluteFillObject,
   },
@@ -201,6 +196,7 @@ const styles = StyleSheet.create({
     zIndex: 2,
     paddingTop: isAndroid ? 30 : 60,
     paddingHorizontal: 20,
+    backgroundColor: bgPrimary,
     // shadow for iOS
     shadowColor: '#000',
     shadowOpacity: 0.15,
@@ -212,8 +208,9 @@ const styles = StyleSheet.create({
   header: { marginBottom: 20 },
   content: { flex: 1 },
   footer: {
+    borderTopColor: borderLight,
     borderTopWidth: StyleSheet.hairlineWidth,
     paddingTop: 12,
     marginBottom: 24,
   },
-});
+}));

@@ -1,9 +1,9 @@
-import { Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import { ThemedView } from '@/components/ThemedView';
-import { useThemeColors } from '@/hooks/useThemeColors';
-import { useCallback, useEffect, useState } from 'react';
-import HorizontalPizzaCard from '@/components/HorizontalPizzaCard';
 import { orders as data } from '@/api/mockApi';
+import HorizontalPizzaCard from '@/components/HorizontalPizzaCard';
+import { ThemedView } from '@/components/ThemedView';
+import { createThemedStyles } from '@/utils/styles';
+import { useCallback, useEffect, useState } from 'react';
+import { Pressable, SafeAreaView, Text, View } from 'react-native';
 
 type TabKey = 'ongoing' | 'incoming' | 'completed';
 
@@ -14,7 +14,7 @@ const TABS: { key: TabKey; label: string }[] = [
 ];
 
 export default function OrderScreen(): React.JSX.Element {
-  const colors = useThemeColors();
+  const styles = useThemedStyles();
   const [activeTab, setActiveTab] = useState<TabKey>('ongoing');
   const [orders, setOrders] = useState<any[]>([]);
 
@@ -27,7 +27,7 @@ export default function OrderScreen(): React.JSX.Element {
   }, [getOrders])
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.bgPrimary }]}>
+    <SafeAreaView style={styles.container}>
       {/* Tab Navbar */}
       <View style={styles.tabsGroup} accessibilityRole="tablist">
         {TABS.map(tab => {
@@ -38,19 +38,9 @@ export default function OrderScreen(): React.JSX.Element {
               onPress={() => setActiveTab(tab.key)}
               accessibilityRole="tab"
               accessibilityState={{ selected }}
-              style={() => [
-                styles.tab,
-                { borderBottomColor: colors.borderLight },
-                selected && {
-                  borderBottomWidth: 1,
-                  borderBottomColor: colors.accentPrimary,
-                }
-              ]}
+              style={[styles.tab, selected && styles.activeTab]}
             >
-              <Text style={[styles.tabText, { color: colors.textMuted },
-                selected && { color: colors.accentPrimary }]}>
-                {tab.label}
-              </Text>
+              <Text style={[styles.tabText, selected && styles.activeTabText]}>{tab.label}</Text>
             </Pressable>
           );
         })}
@@ -63,9 +53,10 @@ export default function OrderScreen(): React.JSX.Element {
   );
 }
 
-const styles = StyleSheet.create({
+const useThemedStyles = createThemedStyles(({ bgPrimary, accentPrimary, textMuted, borderLight,  }) => ({
   container: {
     flex: 1,
+    backgroundColor: bgPrimary,
   },
   tabsGroup: {
     flexDirection: 'row',
@@ -75,10 +66,19 @@ const styles = StyleSheet.create({
   tab: {
     flex: 1,
     alignItems: 'center',
+    borderBottomColor: borderLight,
     paddingBottom: 8,
     borderBottomWidth: 0.5,
   },
+  activeTab: {
+    borderBottomWidth: 1,
+    borderBottomColor: accentPrimary,
+  },
   tabText: {
+    color: textMuted,
     fontSize: 14,
   },
-});
+  activeTabText: {
+    color: accentPrimary,
+  },
+}))

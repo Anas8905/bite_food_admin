@@ -5,7 +5,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { useThemeColors } from "@/hooks/useThemeColors";
 
 export default function ReviewCard(): React.JSX.Element {
-    const colors = useThemeColors();
+    const { tint } = useThemeColors();
 
   return (
     <ThemedView colorName="bgSecondary" style={styles.reviewCard}>
@@ -18,7 +18,7 @@ export default function ReviewCard(): React.JSX.Element {
 
         <View style={styles.content}>
             <View style={styles.lefside}>
-                <FontAwesome name="star" size={24} color={colors.tint} />
+                <FontAwesome name="star" size={24} color={tint} />
                 <ThemedText type='subtitle' colorName="accentPrimary">4.9</ThemedText>
             </View>
             <ThemedText style={styles.rightside}>Total 20 Reviews</ThemedText>

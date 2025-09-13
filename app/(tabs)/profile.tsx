@@ -1,89 +1,86 @@
-import { ActivityIndicator, Dimensions, Image, Pressable, SafeAreaView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { useRouter } from 'expo-router';
 import { useAlert } from '@/hooks/useAlert';
 import { useAuth } from '@/hooks/useAuth';
-import { useState } from 'react';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { isAndroid } from '@/utils/common.utils';
+import { createThemedStyles } from '@/utils/styles';
 import { Octicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { ActivityIndicator, Image, Pressable, SafeAreaView, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function ProfileScreen(): React.JSX.Element {
-      const router = useRouter();
-      const colors = useThemeColors();
-      const { showAlert } = useAlert();
-      const { user, updateProfile } = useAuth();
-      const [fullName, setFullName] = useState(user?.fullName);
-      const [email, setEmail] = useState(user?.email);
-      const [password] = useState(user?.password);
-      const [avatar, setAvatar] = useState(user?.avatar);
-      const [isUpdating, setIsUpdating] = useState(false);
+  const styles = useThemedStyles();
+  const { textPrimary, textMuted } = useThemeColors();
+  const router = useRouter();
+  const { showAlert } = useAlert();
+  const { user, updateProfile } = useAuth();
+  const [fullName, setFullName] = useState(user?.fullName);
+  const [email, setEmail] = useState(user?.email);
+  const [password] = useState(user?.password);
+  const [avatar, setAvatar] = useState(user?.avatar);
+  const [isUpdating, setIsUpdating] = useState(false);
 
-      const pickImage = async () => {
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  const pickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-        if (status !== 'granted') {
-          return showAlert(
-            'Warning',
-            'We need camera roll permissions to make this work!'
-          );
-        }
+    if (status !== 'granted') {
+      return showAlert(
+        'Warning',
+        'We need camera roll permissions to make this work!'
+      );
+    }
 
-        let result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ['images'],
-          allowsEditing: true,
-          aspect: [4, 3],
-          quality: 1,
-        });
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
 
-        if (!result.canceled) {
-          setAvatar(result.assets[0].uri);
-        } else {
-          return showAlert('Warning', "You did not select any image.")
-        }
-      };
+    if (!result.canceled) {
+      setAvatar(result.assets[0].uri);
+    } else {
+      return showAlert('Warning', "You did not select any image.")
+    }
+  };
 
-      const saveProfile = async () => {
-        if (!fullName || !email || !avatar || !password) {
-          return showAlert('Missing fields', 'Please fill all fields.');
-        }
+  const saveProfile = async () => {
+    if (!fullName || !email || !avatar || !password) {
+      return showAlert('Missing fields', 'Please fill all fields.');
+    }
 
-        setIsUpdating(true);
-        const updatedUser: User = { fullName, email, avatar, password };
+    setIsUpdating(true);
+    const updatedUser: User = { fullName, email, avatar, password };
 
-        try {
-          const response = await updateProfile(updatedUser);
+    try {
+      const response = await updateProfile(updatedUser);
 
-          if (response.success) {
-              return showAlert('Profile Updated', `Name: ${fullName}\nEmail: ${email}`);
-          }
-        } catch {
-          showAlert('Update Failed', 'Profile is not updated.');
-        } finally {
-          setIsUpdating(false);
-        }
-      };
+      if (response.success) {
+          return showAlert('Profile Updated', `Name: ${fullName}\nEmail: ${email}`);
+      }
+    } catch {
+      showAlert('Update Failed', 'Profile is not updated.');
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.bgPrimary }]}>
+    <SafeAreaView style={styles.container}>
         <View style={styles.innerContainer}>
           <View style={styles.avatarSection}>
             <View style={styles.avatarCircle}>
-              <View style={styles.avatarClipper}>
-                {avatar ? (
+              <ThemedView colorName="bgGray" style={styles.avatarClipper}>
+                {avatar && (
                   <Image source={{ uri: avatar }} style={styles.avatarImage} />
-                ) : (
-                  <ThemedView colorName="greyBg" style={styles.avatarFallback} />
                 )}
-              </View>
+              </ThemedView>
 
-              <Pressable
-                style={[styles.editIcon, { backgroundColor: colors.accentPrimary }]}
-                onPress={pickImage}
-              >
-                <Octicons name="pencil" size={14} color={colors.textPrimary} />
+              <Pressable style={styles.editIcon} onPress={pickImage}>
+                <Octicons name="pencil" size={14} color={textPrimary} />
               </Pressable>
             </View>
           </View>
@@ -95,14 +92,9 @@ export default function ProfileScreen(): React.JSX.Element {
               <TextInput
                   value={fullName}
                   onChangeText={setFullName}
-                  style={[styles.input, {
-                    backgroundColor: colors.inputBackground,
-                    color: colors.textPrimary,
-                    opacity: 0.9,
-                    }
-                  ]}
+                  style={styles.input}
                   placeholder="Full Name"
-                  placeholderTextColor={colors.textMuted}
+                  placeholderTextColor={textMuted}
                   autoCorrect={false}
                   editable={false}
               />
@@ -113,17 +105,12 @@ export default function ProfileScreen(): React.JSX.Element {
               <TextInput
                   value={email}
                   onChangeText={setEmail}
-                  style={[styles.input, {
-                    backgroundColor: colors.inputBackground,
-                    color: colors.textPrimary,
-                    opacity: 0.9,
-                    }
-                  ]}
+                  style={styles.input}
                   keyboardType="email-address"
                   autoCapitalize="none"
                   autoCorrect={false}
                   placeholder="Full Name"
-                  placeholderTextColor={colors.textMuted}
+                  placeholderTextColor={textMuted}
                   editable={false}
               />
             </View>
@@ -133,19 +120,19 @@ export default function ProfileScreen(): React.JSX.Element {
         {/* Footer Buttons */}
         <View style={styles.buttonRow}>
           <TouchableOpacity
-            style={[styles.cancelBtn, { backgroundColor: colors.greyBg }]}
+            style={styles.cancelBtn}
             onPress={() => router.back()}
             disabled={isUpdating}
           >
           <ThemedText style={styles.cancelText}>Discard Changes</ThemedText>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.saveBtn, { backgroundColor: colors.accentPrimary }]}
+            style={styles.saveBtn}
             onPress={saveProfile}
             disabled={isUpdating}
           >
           {isUpdating ? (
-              <ActivityIndicator color={colors.textPrimary} size={16} />
+              <ActivityIndicator color={textPrimary} size={16} />
               ) : (
               <ThemedText colorName='textPrimary' style={styles.saveText}>SAVE</ThemedText>
           )}
@@ -155,10 +142,17 @@ export default function ProfileScreen(): React.JSX.Element {
   );
 }
 
-  const styles = StyleSheet.create({
+const useThemedStyles = createThemedStyles(({
+  bgPrimary,
+  accentPrimary,
+  textPrimary,
+  inputBackground,
+  bgGray,
+}) => ({
     container: {
       flex: 1,
       justifyContent: 'space-between',
+      backgroundColor: bgPrimary,
     },
     innerContainer: {
       marginTop: isAndroid ? 56 : 10,
@@ -185,14 +179,11 @@ export default function ProfileScreen(): React.JSX.Element {
       height: '100%',
       resizeMode: 'cover',
     },
-    avatarFallback: {
-      flex: 1,
-      borderRadius: 62,
-    },
     editIcon: {
       position: 'absolute',
       bottom: 2,
       right: 6,
+      backgroundColor: accentPrimary,
       borderRadius: 20,
       padding: 11,
       width: 35,
@@ -214,10 +205,12 @@ export default function ProfileScreen(): React.JSX.Element {
       marginTop: 10,
     },
     input: {
+      backgroundColor: inputBackground,
+      color: textPrimary,
+      opacity: 0.9,
       borderRadius: 10,
       padding: 12,
       fontSize: 14,
-      color: '#333',
     },
     buttonRow: {
       marginTop: 15,
@@ -227,12 +220,14 @@ export default function ProfileScreen(): React.JSX.Element {
       paddingHorizontal: 20,
     },
     cancelBtn: {
+      backgroundColor: bgGray,
       paddingVertical: 14,
       borderRadius: 30,
       flex: 1,
       alignItems: 'center',
     },
     saveBtn: {
+      backgroundColor: accentPrimary,
       paddingVertical: 14,
       borderRadius: 30,
       flex: 1,
@@ -246,4 +241,4 @@ export default function ProfileScreen(): React.JSX.Element {
     saveText: {
       fontWeight: 600,
     },
-  });
+  }));

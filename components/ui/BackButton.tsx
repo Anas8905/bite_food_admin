@@ -1,25 +1,28 @@
 import { useThemeColors } from '@/hooks/useThemeColors';
+import { createThemedStyles } from '@/utils/styles';
 import { Ionicons } from '@expo/vector-icons';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 
 const BackButton = ({ onPress }: { onPress: () => void }): React.JSX.Element => {
-    const colors = useThemeColors();
+  const styles = useThemedStyles();
+    const { textSecondary } = useThemeColors();
 
   return (
-    <TouchableOpacity style={[styles.button, { backgroundColor: colors.greyBg }]} onPress={onPress}>
-      <Ionicons name="chevron-back" size={24} color={colors.textSecondary} />
+    <TouchableOpacity style={styles.button} onPress={onPress}>
+      <Ionicons name="chevron-back" size={24} color={textSecondary} />
     </TouchableOpacity>
   );
 };
 
-const styles = StyleSheet.create({
+const useThemedStyles = createThemedStyles(({ bgGray  }) => ({
   button: {
     width: 40,
     height: 40,
-    borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: bgGray,
+    borderRadius: 20,
   },
-});
+}));
 
 export default BackButton;

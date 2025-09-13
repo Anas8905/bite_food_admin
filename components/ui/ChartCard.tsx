@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { ThemedView } from "../ThemedView";
 import { ThemedText } from "../ThemedText";
 import { Dropdown } from 'react-native-element-dropdown';
@@ -7,6 +7,7 @@ import { useThemeColors } from "@/hooks/useThemeColors";
 import { AntDesign } from "@expo/vector-icons";
 import Chart from "./Chart";
 import { useRouter } from "expo-router";
+import { createThemedStyles } from "@/utils/styles";
 
 const data = [
   { label: 'Weekly', value: 'weekly' },
@@ -15,7 +16,8 @@ const data = [
 ];
 
 export default function ChartCard(): React.JSX.Element {
-  const colors = useThemeColors();
+  const styles = useThemedStyles();
+  const { tint, bgPrimary } = useThemeColors();
   const router = useRouter();
   const [period, setPeriod] = useState('weekly');
 
@@ -33,19 +35,15 @@ export default function ChartCard(): React.JSX.Element {
             labelField="label"
             valueField="value"
             value={period}
-            onChange={(item) => {
-              setPeriod(item.value);
-            }}
-            placeholderStyle={{ color: colors.textSecondary, fontSize: 12, }}
-            containerStyle={{ borderColor: colors.borderDark }}
-            selectedTextStyle={{ color: colors.textPrimary, fontSize: 12, }}
-            activeColor={colors.bgPrimary}
-            itemTextStyle={{ color: colors.textPrimary, fontSize: 12, }}
-            itemContainerStyle={{ backgroundColor: colors.bgSecondary }}
-            renderRightIcon={() => (
-              <AntDesign name="down" size={9} color={colors.tint} />
-            )}
-            style={[styles.input, { borderColor: colors.borderLight }]}
+            onChange={(item) => { setPeriod(item.value) }}
+            placeholderStyle={styles.placeholder}
+            selectedTextStyle={styles.selectedText}
+            containerStyle={styles.dropdownContainer}
+            itemContainerStyle={styles.itemContainer}
+            itemTextStyle={styles.selectedText}
+            activeColor={bgPrimary}
+            renderRightIcon={() => (<AntDesign name="down" size={9} color={tint} />)}
+            style={styles.input}
           />
 
           <Pressable onPress={() => router.navigate('/order')}>
@@ -61,7 +59,7 @@ export default function ChartCard(): React.JSX.Element {
   )
 }
 
-const styles = StyleSheet.create({
+const useThemedStyles = createThemedStyles(({ bgSecondary, textPrimary, textTertiary, borderDark, borderLight }) => ({
   graphCard: {
     borderRadius: 20,
     paddingVertical: 16,
@@ -84,14 +82,29 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 700,
   },
+  dropdownContainer: {
+    borderColor: borderDark
+  },
+  placeholder: {
+    color: textTertiary,
+    fontSize: 12,
+  },
+  selectedText: {
+    color: textPrimary,
+    fontSize: 12,
+  },
+  itemContainer: {
+    backgroundColor: bgSecondary,
+  },
   actionBtn: {
     fontSize: 13,
   },
   input: {
     width: 82,
     height: 28,
+    borderColor: borderLight,
     paddingHorizontal: 12,
     borderWidth: 0.5,
     borderRadius: 8,
   },
-});
+}));

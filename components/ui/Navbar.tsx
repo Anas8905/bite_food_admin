@@ -1,18 +1,17 @@
-import { useDrawer } from '@/hooks/useDrawer';
-import {
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
 import MenuIcon from '@/assets/images/menu.svg';
 import LogoIcon from '@/assets/images/Ratatouille.svg';
-import { ThemedView } from '../ThemedView';
+import { useDrawer } from '@/hooks/useDrawer';
 import { useThemeColors } from '@/hooks/useThemeColors';
-import { ThemedText } from '../ThemedText';
 import { useSegments } from 'expo-router';
+import { TouchableOpacity } from 'react-native';
+import { ThemedText } from '../ThemedText';
+import { ThemedView } from '../ThemedView';
+import { createThemedStyles } from '@/utils/styles';
 
 export default function Navbar(): React.JSX.Element{
+  const styles = useThemedStyles();
+  const { textPrimary } = useThemeColors();
   const { openDrawer } = useDrawer();
-  const colors = useThemeColors();
   const segments = useSegments();
   const screenName = segments[segments.length - 1]?.toUpperCase() ?? "";
 
@@ -20,27 +19,19 @@ export default function Navbar(): React.JSX.Element{
     <ThemedView style={styles.navbar}>
       {/* Left side */}
       <ThemedView style={styles.leftSide}>
-        <TouchableOpacity
-          onPress={openDrawer}
-          style={[
-            styles.circleButton,
-            { backgroundColor: colors.greyBg }
-          ]}
-        >
-          <MenuIcon width={46} height={46} color={colors.textPrimary} />
+        <TouchableOpacity onPress={openDrawer} style={styles.circleButton}>
+          <MenuIcon width={46} height={46} color={textPrimary} />
         </TouchableOpacity>
-        <ThemedText type='defaultSemiBold' colorName='accentPrimary'>
-          {screenName}
-        </ThemedText>
+        <ThemedText type='defaultSemiBold' colorName='accentPrimary'>{screenName}</ThemedText>
       </ThemedView>
 
       {/* Right side */}
-      <LogoIcon width={100} height={100} color={colors.textPrimary} />
+      <LogoIcon width={100} height={100} color={textPrimary} />
     </ThemedView>
   );
 };
 
-const styles = StyleSheet.create({
+const useThemedStyles = createThemedStyles(({ bgGray }) => ({
   navbar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -55,14 +46,13 @@ const styles = StyleSheet.create({
   circleButton: {
     width: 40,
     height: 40,
+    backgroundColor: bgGray,
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'relative',
   },
   centerText: {
     alignItems: 'center',
     minWidth: 94,
   },
-});
-
+}));

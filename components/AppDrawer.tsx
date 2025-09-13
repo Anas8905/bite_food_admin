@@ -1,20 +1,138 @@
-import { router } from 'expo-router';
-import { Feather, Ionicons } from '@expo/vector-icons';
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { useDrawer } from '../hooks/useDrawer';
-import CustomDrawer from './ui/CustomDrawer';
-import { useAuth } from '@/hooks/useAuth';
-import { ThemedText } from './ThemedText';
 import ProfileIcon from '@/assets/images/profile.svg';
+import { useAuth } from '@/hooks/useAuth';
 import { useThemeColors } from '@/hooks/useThemeColors';
-import { capitalize } from '@/utils/common.utils';
 import { useThemePreference } from '@/hooks/useThemePreference';
+import { createThemedStyles } from '@/utils/styles';
+import { Feather, Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
+import { Image, TouchableOpacity, View } from 'react-native';
+import { Dropdown } from 'react-native-element-dropdown';
+import { useDrawer } from '../hooks/useDrawer';
+import { ThemedText } from './ThemedText';
+import CustomDrawer from './ui/CustomDrawer';
+
+const themeOptions: ThemeOption[] = [
+  { label: 'System', value: 'system', icon: 'smartphone' },
+  { label: 'Light', value: 'light', icon: 'sun' },
+  { label: 'Dark', value: 'dark', icon: 'moon' },
+];
 
 export default function AppDrawer(): React.JSX.Element {
+  const styles = useThemedStyles();
+  const { textPrimary, dropdownItemBg } = useThemeColors();
+  const { preference, setPreference } = useThemePreference();
   const { isOpen, closeDrawer } = useDrawer();
-  const { preference, cyclePreference } = useThemePreference();
   const { user, logout } = useAuth();
-  const colors = useThemeColors();
+
+  const DrawerHeader = () => (
+    <View style={{ marginTop: 10, marginBottom: 10 }}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={closeDrawer} style={styles.closeBtn}>
+          <Ionicons name="close" size={18} color={textPrimary} />
+        </TouchableOpacity>
+
+        {user?.avatar && (
+          <View style={styles.avatarCircle}>
+                <Image source={{ uri: user?.avatar }} style={styles.avatarImage} />
+          </View>
+        )}
+      </View>
+
+      <View style={{ marginTop: 30, gap: 2 }}>
+        <ThemedText type='subtitle' colorName='accentPrimary'>{user?.fullName}</ThemedText>
+        <ThemedText style={styles.phone}>{user?.email}</ThemedText>
+      </View>
+    </View>
+  )
+
+  const DrawerItem = ({ label, icon, onPress }: {
+    label: string;
+    icon?: React.ReactNode;
+    onPress?: () => void;
+  }) => {
+    const styles = useThemedStyles();
+    return (
+      <TouchableOpacity style={styles.drawerItem} onPress={onPress}>
+        {icon ? <View>{icon}</View> : null}
+        <ThemedText style={styles.drawerItemText}>{label}</ThemedText>
+      </TouchableOpacity>
+    );
+  }
+
+  const themeIcon = () => {
+    const current = themeOptions.find(t => t.value === preference);
+    return (
+      <View style={{ marginRight: 8 }}>
+        <Feather
+          name={current?.icon ?? 'smartphone'}
+          size={20}
+          color={textPrimary}
+        />
+      </View>
+    );
+  }
+
+  const renderThemeOptions = (item: ThemeOption) => (
+    <View style={styles.dropdownItem}>
+      <Feather
+        name={item.icon}
+        size={18}
+        color={textPrimary}
+        style={{ marginRight: 8 }}
+      />
+      <ThemedText style={{ color: textPrimary }}>{item.label}</ThemedText>
+    </View>
+  )
+
+  const DrawerContent = ({ close }) => (
+    <View style={{ marginTop: 10, gap: 22 }}>
+      <DrawerItem
+        label="Profile"
+        icon={<ProfileIcon width={18} height={18} color={textPrimary} />}
+        onPress={() => {
+          router.navigate('/profile');
+          close();
+        }}
+      />
+
+      <Dropdown
+        placeholderStyle={styles.placeholder}
+        style={styles.dropdown}
+        selectedTextStyle={styles.drawerItemText}
+        containerStyle={styles.dropdownContainer}
+        itemContainerStyle={styles.itemContainer}
+        itemTextStyle={styles.itemText}
+        activeColor={dropdownItemBg}
+        data={themeOptions}
+        labelField="label"
+        valueField="value"
+        value={preference}
+        renderLeftIcon={themeIcon}
+        renderItem={renderThemeOptions}
+        onChange={(item) => {
+          setPreference(item.value as 'system' | 'light' | 'dark');
+        }}
+      />
+
+      <DrawerItem
+        label="Settings"
+        icon={<Ionicons name="settings-outline" size={20} color={textPrimary} />}
+        onPress={() => {
+          router.navigate('/settings');
+          close();
+        }}
+      />
+    </View>
+  )
+
+  const DrawerFooter = () => (
+    <View>
+      <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
+        <Feather name="log-out" size={20} color={textPrimary} />
+        <ThemedText style={styles.drawerItemText}>Logout</ThemedText>
+      </TouchableOpacity>
+    </View>
+  );
 
   const handleLogout = async () => {
     await logout();
@@ -28,95 +146,28 @@ export default function AppDrawer(): React.JSX.Element {
       onClose={closeDrawer}
       width="75%"
       side="left"
-      duration={300}
-      renderHeader={() => (
-        <View style={{ marginTop: 10, marginBottom: 10 }}>
-          <View style={styles.header}>
-            <TouchableOpacity onPress={closeDrawer} style={[styles.closeBtn, { backgroundColor: colors.greyBg }]}>
-              <Ionicons name="close" size={18} color={colors.textPrimary} />
-            </TouchableOpacity>
-
-            {user?.avatar && (
-              <View style={styles.avatarCircle}>
-                    <Image source={{ uri: user?.avatar }} style={styles.avatarImage} />
-              </View>
-            )}
-          </View>
-
-          <View style={{ marginTop: 30, gap: 2 }}>
-            <ThemedText type='subtitle' colorName='accentPrimary'>{user?.fullName}</ThemedText>
-            <ThemedText style={[styles.phone, { color: colors.textTertiary}]}>{user?.email}</ThemedText>
-          </View>
-        </View>
-      )}
-      renderContent={({ close }) => (
-        <View style={{ marginTop: 10, gap: 22 }}>
-          <DrawerItem
-            label="Profile"
-            icon={<ProfileIcon width={20} height={20} color={colors.text} />}
-            onPress={() => {
-              router.navigate('/profile');
-              close();
-            }}
-          />
-
-          <DrawerItem
-            label={capitalize(preference)}
-            icon={
-              <Feather
-                name={
-                  preference === 'system'
-                    ? 'smartphone'
-                    : preference === 'light'
-                    ? 'sun'
-                    : 'moon'
-                }
-                size={20}
-                color={colors.text}
-              />
-            }
-            onPress={cyclePreference}
-          />
-
-          <DrawerItem label="Settings" icon={<Ionicons name="settings-outline" size={20} color={colors.text} />} />
-        </View>
-      )}
-      renderFooter={() => (
-        <View>
-          <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
-            <Feather name="log-out" size={20} color={colors.text} />
-            <ThemedText style={styles.drawerItemText}>Logout</ThemedText>
-          </TouchableOpacity>
-        </View>
-      )}
+      duration={400}
+      renderHeader={DrawerHeader}
+      renderContent={DrawerContent}
+      renderFooter={DrawerFooter}
     />
   );
 }
 
-const DrawerItem = ({
-  label,
-  icon,
-  onPress,
-}: {
-  label: string;
-  icon?: React.ReactNode;
-  onPress?: () => void;
-}) => {
-  return (
-    <TouchableOpacity style={styles.drawerItem} onPress={onPress}>
-      {icon ? <View>{icon}</View> : null}
-      <ThemedText style={styles.drawerItemText}>{label}</ThemedText>
-    </TouchableOpacity>
-  );
-}
-
-const styles = StyleSheet.create({
+const useThemedStyles = createThemedStyles(({
+  bgGray,
+  textPrimary,
+  textTertiary,
+  borderLight,
+  dropdownBg,
+}) => ({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   closeBtn: {
+    backgroundColor: bgGray,
     width: 36,
     height: 36,
     borderRadius: 24,
@@ -140,6 +191,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   phone: {
+    color: textTertiary,
     fontSize: 14,
   },
   drawerItem: {
@@ -148,12 +200,33 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   drawerItemText: {
+    color: textPrimary,
     fontWeight: '500',
   },
-  switchContainer: {
+  dropdown: {
+    borderColor: borderLight,
+    borderWidth: 0.5,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 12,
+  },
+  dropdownItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    paddingHorizontal: 8,
+    paddingVertical: 16,
+  },
+  placeholder: {
+    color: textTertiary,
+  },
+  dropdownContainer: {
+    borderColor: borderLight,
+  },
+  itemContainer: {
+    backgroundColor: dropdownBg,
+  },
+  itemText: {
+    color: textPrimary,
   },
   logoutBtn: {
     flexDirection: 'row',
@@ -164,4 +237,4 @@ const styles = StyleSheet.create({
   logoutText: {
     fontSize: 16,
   },
-});
+}))

@@ -1,5 +1,5 @@
-import { Feather } from '@expo/vector-icons';
 import React, { useState } from 'react';
+import { Feather } from '@expo/vector-icons';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const NoInternet = ({ onRetry }: { onRetry: () => void }): React.JSX.Element => {
@@ -16,7 +16,7 @@ const NoInternet = ({ onRetry }: { onRetry: () => void }): React.JSX.Element => 
 
   return (
     <View style={styles.container}>
-      <Feather name="wifi-off" size={60} color="#FA4A0C" />
+      <Feather name="wifi-off" size={60} color="accentPrimary" />
       <Text style={styles.title}>No Internet Connection</Text>
       <Text style={styles.message}>
         Your internet connection is currently not available please check or try again.

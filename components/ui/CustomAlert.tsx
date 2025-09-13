@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   Platform,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
@@ -10,7 +9,7 @@ import {
 import Modal from 'react-native-modal';
 import { ThemedView } from '../ThemedView';
 import { ThemedText } from '../ThemedText';
-import { useThemeColors } from '@/hooks/useThemeColors';
+import { createThemedStyles } from '@/utils/styles';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -22,7 +21,7 @@ const CustomAlert: React.FC<CustomAlertProps> = ({
   onDismiss,
   type = 'default'
 }) => {
-  const colors = useThemeColors();
+  const styles = useThemedStyles();
   const [useHorizontalLayout, setUseHorizontalLayout] = useState(true);
 
   useEffect(() => {
@@ -85,13 +84,9 @@ const CustomAlert: React.FC<CustomAlertProps> = ({
       hideModalContentWhileAnimating
     >
       <View style={styles.overlay}>
-        <ThemedView style={[styles.alertContainer, { borderColor: colors.borderLight }]}>
+        <ThemedView style={styles.alertContainer}>
           {/* Title */}
-          {title && (
-            <ThemedText style={styles.title} numberOfLines={2}>
-              {title}
-            </ThemedText>
-          )}
+          {title && <ThemedText style={styles.title} numberOfLines={2}>{title}</ThemedText>}
 
           {/* Message */}
           {message && (
@@ -103,7 +98,6 @@ const CustomAlert: React.FC<CustomAlertProps> = ({
           {/* Buttons */}
           <ThemedView style={[
             styles.buttonContainer,
-            { borderTopColor: colors.borderLight },
             buttons.length === 2 && useHorizontalLayout && styles.horizontalButtonContainer
           ]}>
             {buttons.map(renderButton)}
@@ -126,18 +120,9 @@ const useCustomAlert = (): UseCustomAlertReturn => {
     title?: string,
     message?: string,
     buttons: AlertButton[] = [{ text: 'OK', style: 'default' }],
-  ): void => {
-    setAlertConfig({
-      visible: true,
-      title,
-      message,
-      buttons,
-    });
-  };
+  ): void => { setAlertConfig({ visible: true, title, message, buttons }) };
 
-  const hideAlert = (): void => {
-    setAlertConfig(prev => ({ ...prev, visible: false }));
-  };
+  const hideAlert = (): void => { setAlertConfig(prev => ({ ...prev, visible: false })) };
 
   const AlertComponent = (): React.JSX.Element => (
     <CustomAlert
@@ -149,14 +134,10 @@ const useCustomAlert = (): UseCustomAlertReturn => {
     />
   );
 
-  return {
-    showAlert,
-    hideAlert,
-    AlertComponent,
-  };
+  return { showAlert, hideAlert, AlertComponent };
 };
 
-const styles = StyleSheet.create({
+const useThemedStyles = createThemedStyles(({ borderLight }) => ({
   overlay: {
     flex: 1,
     justifyContent: 'center',
@@ -168,6 +149,7 @@ const styles = StyleSheet.create({
     minWidth: Math.min(270, screenWidth - 140),
     maxWidth: screenWidth - 140,
     overflow: 'hidden',
+    borderColor: borderLight,
     backdropFilter: 'blur(20px)',
     borderWidth: 0.5,
     ...Platform.select({
@@ -202,6 +184,7 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   buttonContainer: {
+    borderTopColor: borderLight,
     borderTopWidth: 0.5,
   },
   horizontalButtonContainer: {
@@ -244,6 +227,6 @@ const styles = StyleSheet.create({
     color: '#FF3B30',
     fontWeight: '400',
   },
-});
+}));
 
 export { CustomAlert, useCustomAlert };

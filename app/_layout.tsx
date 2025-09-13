@@ -1,23 +1,23 @@
+import { AlertHost } from '@/components/AlertHost';
+import AppDrawer from '@/components/AppDrawer';
+import { NetworkListener } from '@/components/NetworkListener';
+import { ThemedView } from '@/components/ThemedView';
+import Navbar from '@/components/ui/Navbar';
+import { noNavScreens, screens } from '@/constants/Screens';
+import { useResolvedTheme } from '@/stores/theme';
+import { isAndroid } from '@/utils/common.utils';
+import { createThemedStyles } from '@/utils/styles';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack, usePathname } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { SafeAreaView } from 'react-native';
 import 'react-native-reanimated';
-import { noNavScreens, screens } from '@/constants/Screens';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import AppDrawer from '@/components/AppDrawer';
-import { AlertHost } from '@/components/AlertHost';
-import { NetworkListener } from '@/components/NetworkListener';
-import { SafeAreaView, StyleSheet } from 'react-native';
-import { isAndroid } from '@/utils/common.utils';
-import { ThemedView } from '@/components/ThemedView';
-import Navbar from '@/components/ui/Navbar';
-import { useThemeColors } from '@/hooks/useThemeColors';
-import { useResolvedTheme } from '@/stores/theme';
 
 export default function RootLayout(): React.JSX.Element | null {
   const theme = useResolvedTheme();
-  const colors = useThemeColors();
+  const styles = useThemedStyles();
   const [loaded] = useFonts({ SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf') });
   const pathname = usePathname();
   const showNavbar = !noNavScreens.includes(pathname);
@@ -29,7 +29,7 @@ export default function RootLayout(): React.JSX.Element | null {
       <SafeAreaProvider>
         <NetworkListener />
         {showNavbar && (
-          <SafeAreaView style={{ backgroundColor: colors.bgPrimary }}>
+          <SafeAreaView style={styles.safeAreaView}>
             <ThemedView style={styles.container}>
               <Navbar />
             </ThemedView>
@@ -49,9 +49,12 @@ export default function RootLayout(): React.JSX.Element | null {
   );
 }
 
-const styles = StyleSheet.create({
+const useThemedStyles = createThemedStyles(({ bgPrimary }) => ({
+  safeAreaView: {
+    backgroundColor: bgPrimary,
+  },
   container: {
     paddingHorizontal: 20,
     paddingTop: isAndroid ?  46 : 0,
   },
-})
+}))
