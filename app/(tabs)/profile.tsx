@@ -120,14 +120,14 @@ export default function ProfileScreen(): React.JSX.Element {
         {/* Footer Buttons */}
         <View style={styles.buttonRow}>
           <TouchableOpacity
-            style={styles.cancelBtn}
+            style={[styles.actionBtn, styles.cancelBtn]}
             onPress={() => router.back()}
             disabled={isUpdating}
           >
           <ThemedText style={styles.cancelText}>Discard Changes</ThemedText>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.saveBtn}
+            style={[styles.actionBtn, styles.saveBtn]}
             onPress={saveProfile}
             disabled={isUpdating}
           >
@@ -160,6 +160,7 @@ const useThemedStyles = createThemedStyles(({
     },
     avatarSection: {
       alignItems: 'center',
+      marginBottom: 40,
     },
     avatarCircle: {
       width: 124,
@@ -199,8 +200,7 @@ const useThemedStyles = createThemedStyles(({
       gap: 4,
     },
     label: {
-      fontSize: 13,
-      fontWeight: '600',
+      fontSize: 14,
       marginBottom: 6,
       marginTop: 10,
     },
@@ -213,32 +213,28 @@ const useThemedStyles = createThemedStyles(({
       fontSize: 14,
     },
     buttonRow: {
-      marginTop: 15,
       flexDirection: 'row',
-      justifyContent: 'space-between',
-      marginBottom: 20,
+      gap: 8,
+      marginBottom: 30,
       paddingHorizontal: 20,
     },
-    cancelBtn: {
-      backgroundColor: bgGray,
-      paddingVertical: 14,
-      borderRadius: 30,
+    actionBtn: {
       flex: 1,
       alignItems: 'center',
+      paddingVertical: 14,
+      borderRadius: 30,
     },
     saveBtn: {
       backgroundColor: accentPrimary,
-      paddingVertical: 14,
-      borderRadius: 30,
-      flex: 1,
-      alignItems: 'center',
-      marginLeft: 8,
-    },
-    cancelText: {
-      fontWeight: 600,
-      opacity: 0.9
     },
     saveText: {
-      fontWeight: 600,
+      fontWeight: 500,
+    },
+    cancelBtn: {
+      backgroundColor: bgGray,
+    },
+    cancelText: {
+      fontWeight: 500,
+      opacity: 0.9
     },
   }));

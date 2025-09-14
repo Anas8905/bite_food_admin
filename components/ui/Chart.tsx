@@ -1,8 +1,9 @@
 import { monthlyOrders, weeklyOrders, yearlyOrders } from '@/api/mockApi';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { createThemedStyles } from '@/utils/styles';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
+import { ThemedText } from '../ThemedText';
 
 export default function Chart({ period }: { period: string }): React.JSX.Element {
     const styles = useThemedStyles();
@@ -32,13 +33,13 @@ export default function Chart({ period }: { period: string }): React.JSX.Element
             const firstItem = data[0];
             return (
                 <View style={styles.pointerLabel}>
-                    <Text
+                    <ThemedText
                         style={styles.pointerLabelText}
                         numberOfLines={1}
                         ellipsizeMode='clip'
                     >
                         {firstItem?.value}
-                    </Text>
+                    </ThemedText>
                 </View>
             );
         },
@@ -89,6 +90,7 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, textPrimary, textSecond
     },
     pointerLabelText: {
         color: bgPrimary,
+        fontSize: 14,
         fontWeight: '600',
         textAlign: 'center',
     },

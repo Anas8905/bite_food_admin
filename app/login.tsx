@@ -6,7 +6,6 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
   ActivityIndicator,
-  Text,
   TextInput,
   TouchableOpacity,
   View,
@@ -54,7 +53,7 @@ export default function LoginScreen(): React.JSX.Element {
       </View> */}
 
       <View style={styles.content}>
-        <ThemedText style={styles.title}>Hi, there..</ThemedText>
+        <ThemedText type='subtitle' style={styles.title}>Hi, there..</ThemedText>
 
         <View style={styles.inputGroup}>
           <ThemedText type='defaultSemiBold' style={styles.label}>What&apos;s your Full Name?</ThemedText>
@@ -103,7 +102,7 @@ export default function LoginScreen(): React.JSX.Element {
           {loading ? (
             <ActivityIndicator color="white" />
           ) : (
-            <Text style={styles.buttonText}>LOGIN</Text>
+            <ThemedText type='subtitle' style={styles.buttonText}>LOGIN</ThemedText>
           )}
         </TouchableOpacity>
       </View>
@@ -131,9 +130,8 @@ const useThemedStyles = createThemedStyles(({
     marginTop: 30,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 30,
+    fontSize: 26,
+    marginBottom: 20,
   },
   inputGroup: {
     marginBottom: 20,
@@ -157,8 +155,7 @@ const useThemedStyles = createThemedStyles(({
     marginTop: 10,
   },
   buttonText: {
-    color: 'white',
+    color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: 'bold',
   },
 }));

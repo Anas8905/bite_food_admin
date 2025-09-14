@@ -1,9 +1,10 @@
 import { orders as data } from '@/api/mockApi';
 import HorizontalPizzaCard from '@/components/HorizontalPizzaCard';
+import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { createThemedStyles } from '@/utils/styles';
 import { useCallback, useEffect, useState } from 'react';
-import { Pressable, SafeAreaView, Text, View } from 'react-native';
+import { Pressable, SafeAreaView, View } from 'react-native';
 
 type TabKey = 'ongoing' | 'incoming' | 'completed';
 
@@ -40,7 +41,11 @@ export default function OrderScreen(): React.JSX.Element {
               accessibilityState={{ selected }}
               style={[styles.tab, selected && styles.activeTab]}
             >
-              <Text style={[styles.tabText, selected && styles.activeTabText]}>{tab.label}</Text>
+              <ThemedText
+                colorName='textMuted'
+                style={[styles.tabText, selected && styles.activeTabText]}>
+                  {tab.label}
+              </ThemedText>
             </Pressable>
           );
         })}
@@ -53,7 +58,7 @@ export default function OrderScreen(): React.JSX.Element {
   );
 }
 
-const useThemedStyles = createThemedStyles(({ bgPrimary, accentPrimary, textMuted, borderLight,  }) => ({
+const useThemedStyles = createThemedStyles(({ bgPrimary, accentPrimary, borderLight,  }) => ({
   container: {
     flex: 1,
     backgroundColor: bgPrimary,
@@ -75,7 +80,6 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, accentPrimary, textMute
     borderBottomColor: accentPrimary,
   },
   tabText: {
-    color: textMuted,
     fontSize: 14,
   },
   activeTabText: {

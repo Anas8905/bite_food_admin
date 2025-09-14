@@ -81,7 +81,7 @@ const useThemedStyles = createThemedStyles(({ accentPrimary, borderDark }) => ({
       fontSize: 13,
     },
   name: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: 500,
     maxWidth: '80%',
   },

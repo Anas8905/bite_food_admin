@@ -52,9 +52,7 @@ export default function ChartCard(): React.JSX.Element {
         </View>
 
         {/* Chart */}
-        <View style={{ paddingRight: 20, }}>
-          <Chart period={period} />
-        </View>
+        <View style={{ paddingRight: 20, }}><Chart period={period} /></View>
     </ThemedView>
   )
 }
@@ -75,7 +73,7 @@ const useThemedStyles = createThemedStyles(({ bgSecondary, textPrimary, textTert
     gap: 4,
   },
   title: {
-    fontWeight: 600,
+    fontWeight: 500,
     fontSize: 14,
   },
   orderCount: {

@@ -18,7 +18,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 export default function RootLayout(): React.JSX.Element | null {
   const theme = useResolvedTheme();
   const styles = useThemedStyles();
-  const [loaded] = useFonts({ SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf') });
+  const [loaded] = useFonts({ Sen: require('../assets/fonts/Sen-Regular.ttf') });
   const pathname = usePathname();
   const showNavbar = !noNavScreens.includes(pathname);
 

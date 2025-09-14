@@ -54,7 +54,7 @@ const CustomAlert: React.FC<CustomAlertProps> = ({
         }}
         activeOpacity={0.6}
       >
-        <Text
+        <ThemedText
           style={[
             styles.buttonText,
             isDestructive && styles.destructiveButtonText,
@@ -63,7 +63,7 @@ const CustomAlert: React.FC<CustomAlertProps> = ({
           ]}
         >
           {button.text}
-        </Text>
+        </ThemedText>
       </TouchableOpacity>
     );
   };
@@ -213,7 +213,6 @@ const useThemedStyles = createThemedStyles(({ borderLight }) => ({
   buttonText: {
     fontSize: 17,
     textAlign: 'center',
-    fontWeight: '400',
   },
   defaultButtonText: {
     color: '#007AFF',

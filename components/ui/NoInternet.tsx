@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Feather } from '@expo/vector-icons';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ThemedText } from '../ThemedText';
 
 const NoInternet = ({ onRetry }: { onRetry: () => void }): React.JSX.Element => {
   const [isRetrying, setIsRetrying] = useState(false);
@@ -17,18 +18,18 @@ const NoInternet = ({ onRetry }: { onRetry: () => void }): React.JSX.Element => 
   return (
     <View style={styles.container}>
       <Feather name="wifi-off" size={60} color="accentPrimary" />
-      <Text style={styles.title}>No Internet Connection</Text>
-      <Text style={styles.message}>
+      <ThemedText style={styles.title}>No Internet Connection</ThemedText>
+      <ThemedText style={styles.message}>
         Your internet connection is currently not available please check or try again.
-      </Text>
+      </ThemedText>
       <TouchableOpacity
         style={[styles.button, isRetrying && styles.disabledBtn]}
         onPress={handleRetry}
         disabled={isRetrying}
       >
-        <Text style={styles.buttonText}>
+        <ThemedText type='subtitle' style={styles.buttonText}>
           {isRetrying ? 'Checking...' : 'Try again'}
-        </Text>
+        </ThemedText>
       </TouchableOpacity>
     </View>
   );
@@ -50,7 +51,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   message: {
-    fontSize: 16,
     color: '#666',
     textAlign: 'center',
     marginBottom: 30,
@@ -69,7 +69,6 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontSize: 16,
-    fontWeight: 'bold',
   },
 });
 

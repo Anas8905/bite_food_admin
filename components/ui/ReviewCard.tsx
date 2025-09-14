@@ -10,7 +10,7 @@ export default function ReviewCard(): React.JSX.Element {
   return (
     <ThemedView colorName="bgSecondary" style={styles.reviewCard}>
         <View style={styles.header}>
-            <ThemedText style={{ fontSize: 13, }}>Reviews</ThemedText>
+            <ThemedText style={{ fontSize: 14, }}>Reviews</ThemedText>
             <Pressable>
                 <ThemedText colorName='accentPrimary' style={styles.actionBtn}>See All Reviews</ThemedText>
             </Pressable>
@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   rightside: {
-    fontSize: 16,
+    fontSize: 14,
+    fontWeight: 500,
   },
 });
