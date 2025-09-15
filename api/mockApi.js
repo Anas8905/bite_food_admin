@@ -1,10 +1,16 @@
-const pizzas = [
+export const categories = [
+  { id: 'popular', name: 'Popular' },
+  { id: 'classics', name: 'Classics' },
+  { id: 'deals', name: 'Deals' },
+];
+
+export const pizzas = [
     {
       id: '1',
       name: 'Pepperoni Feast',
       description: 'Classic pepperoni, mozzarella cheese, tomato sauce on a hand-tossed crust',
       image: require('../assets/images/pizza_pepperoni.png'),
-      category: 'Popular',
+      categoryId: 'popular',
       rating: 4.5,
       reviewCount: '1.5k+',
       deliveryTime: 25,
@@ -21,7 +27,7 @@ const pizzas = [
       name: 'Meat Lovers',
       description: 'Pepperoni, ham, bacon, sausage, beef on a hand-tossed crust',
       image: require('../assets/images/pizza_italian.png'),
-      category: 'Popular',
+      categoryId: 'popular',
       rating: 4.7,
       reviewCount: '1.8k+',
       deliveryTime: 30,
@@ -38,7 +44,7 @@ const pizzas = [
       name: 'BBQ Chicken',
       description: 'Grilled chicken, BBQ sauce, red onions, cilantro on a hand-tossed crust',
       image: require('../assets/images/pizza_special.png'),
-      category: 'Popular',
+      categoryId: 'popular',
       rating: 4.6,
       reviewCount: '1.2k+',
       deliveryTime: 25,
@@ -55,7 +61,7 @@ const pizzas = [
       name: 'Chicago Bold',
       description: 'Crispy golden crust, Spicy BBQ Chicken, Tomato Sauce, Onions, Chillies & Coriander.',
       image: require('../assets/images/pizza_dark.png'),
-      category: 'Popular',
+      categoryId: 'popular',
       rating: 4.8,
       reviewCount: '2k+',
       deliveryTime: 20,
@@ -72,7 +78,7 @@ const pizzas = [
       name: 'Veggie Supreme',
       description: 'Bell peppers, mushrooms, onions, black olives, tomatoes on a thin crust',
       image: require('../assets/images/pizza_dark.png'),
-      category: 'Classics',
+      categoryId: 'classics',
       rating: 4.3,
       reviewCount: '1k+',
       deliveryTime: 20,
@@ -89,7 +95,7 @@ const pizzas = [
       name: 'Hawaiian',
       description: 'Ham, pineapple, mozzarella cheese on a hand-tossed crust',
       image: require('../assets/images/pizza_special.png'),
-      category: 'Classics',
+      categoryId: 'classics',
       rating: 4.2,
       reviewCount: '900+',
       deliveryTime: 20,
@@ -106,7 +112,7 @@ const pizzas = [
       name: 'Deal 1',
       description: 'Chicago Bold 9" Special or Chicken Supreme 2"',
       image: require('../assets/images/pizza_pepperoni.png'),
-      category: 'Deals',
+      categoryId: 'deals',
       deliveryTime: 40,
       deliveryFee: 'Free',
       price: 1100,
@@ -116,7 +122,7 @@ const pizzas = [
       name: 'Deal 2',
       description: 'Chicago Bold 9" Special or Chicken Supreme 2"',
       image: require('../assets/images/pizza_italian.png'),
-      category: 'Deals',
+      categoryId: 'deals',
       deliveryTime: 35,
       deliveryFee: 'Free',
       price: 4300,
@@ -126,7 +132,7 @@ const pizzas = [
       name: 'Deal 3',
       description: 'Chicago Bold 9" Special or Chicken Supreme 2"',
       image: require('../assets/images/pizza_special.png'),
-      category: 'Deals',
+      categoryId: 'deals',
       deliveryTime: 70,
       deliveryFee: 'Free',
       price: 5100,
@@ -136,7 +142,7 @@ const pizzas = [
       name: 'Deal 4',
       description: 'Chicago Bold 9" Special or Chicken Supreme 2"',
       image: require('../assets/images/pizza_dark.png'),
-      category: 'Deals',
+      categoryId: 'deals',
       deliveryTime: 80,
       deliveryFee: 'Free',
       price: 7600,
@@ -336,6 +342,6 @@ export const mockPizzaAPI = {
   popularPizzas: async () => {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000));
-    return pizzas.filter((pizza) => pizza.category === 'Popular');
+    return pizzas.filter((pizza) => pizza.categoryId === 'popular');
   }
 }

@@ -6,13 +6,15 @@ export const useAlertStore = create<AlertState>()((set) => ({
   show: (
     title?: string,
     message?: string,
-    buttons: AlertButton[] = [{ text: 'OK', style: 'default' }]
+    buttons: AlertButton[] = [{ text: 'OK', style: 'default' }],
+    content?: React.ReactNode
   ) =>
     set({
       visible: true,
       title,
       message,
       buttons,
+      content,
     }),
-  hide: () => set({ visible: false, title: undefined, message: undefined, buttons: [] })
+  hide: () => set({ visible: false, title: undefined, message: undefined, buttons: [], content: undefined })
 }));

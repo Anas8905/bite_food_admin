@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   Platform,
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -19,7 +18,8 @@ const CustomAlert: React.FC<CustomAlertProps> = ({
   message,
   buttons = [],
   onDismiss,
-  type = 'default'
+  type = 'default',
+  content,
 }) => {
   const styles = useThemedStyles();
   const [useHorizontalLayout, setUseHorizontalLayout] = useState(true);
@@ -49,8 +49,11 @@ const CustomAlert: React.FC<CustomAlertProps> = ({
           buttons.length > 2 && !isLastButton && styles.buttonWithBorder,
         ]}
         onPress={() => {
-          if (button.onPress) button.onPress();
-          if (onDismiss) onDismiss();
+          button.onPress?.();
+
+          if (!button.keepOpen && onDismiss) {
+            onDismiss();
+          }
         }}
         activeOpacity={0.6}
       >
@@ -95,6 +98,8 @@ const CustomAlert: React.FC<CustomAlertProps> = ({
             </ThemedText>
           )}
 
+          {content && <View style={styles.customContent}>{content}</View>}
+
           {/* Buttons */}
           <ThemedView style={[
             styles.buttonContainer,
@@ -130,6 +135,7 @@ const useCustomAlert = (): UseCustomAlertReturn => {
       title={alertConfig.title}
       message={alertConfig.message}
       buttons={alertConfig.buttons}
+      content={alertConfig.content}
       onDismiss={hideAlert}
     />
   );
@@ -201,14 +207,17 @@ const useThemedStyles = createThemedStyles(({ borderLight }) => ({
   leftButton: {
     flex: 1,
     borderRightWidth: 0.5,
-    borderRightColor: 'rgba(0, 0, 0, 0.15)',
+    borderRightColor: borderLight,
   },
   rightButton: {
     flex: 1,
   },
+  customContent: {
+    marginBottom: 20,
+  },
   buttonWithBorder: {
     borderBottomWidth: 0.5,
-    borderBottomColor: 'rgba(0, 0, 0, 0.15)',
+    borderBottomColor: borderLight,
   },
   buttonText: {
     fontSize: 17,

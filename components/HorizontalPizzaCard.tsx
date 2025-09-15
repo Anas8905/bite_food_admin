@@ -45,6 +45,7 @@ export default function HorizontalPizzaCard({ orders, activeTab }: { orders: any
       data={orders}
       renderItem={renderItem}
       keyExtractor={item => String(item.id)}
+      showsVerticalScrollIndicator={false}
       ItemSeparatorComponent={() => (<View style={styles.itemSeparator} />)}
       ListFooterComponent={() => (<View style={styles.listFooter} />)}
     />

@@ -1,6 +1,7 @@
 interface AlertButton {
   text: string;
   onPress?: () => void;
+  keepOpen?: boolean;
   style?: 'default' | 'cancel' | 'destructive';
 }
 
@@ -9,8 +10,9 @@ type AlertState = {
   title?: string | undefined;
   message?: string | undefined;
   buttons: AlertButton[];
+  content?: React.ReactNode;
 
-  show: (title?: string, message?: string, buttons?: AlertButton[]) => void;
+  show: (title?: string, message?: string, buttons?: AlertButton[], content?: React.ReactNode) => void;
   hide: () => void;
 };
 
@@ -21,6 +23,7 @@ interface CustomAlertProps {
   buttons?: AlertButton[];
   onDismiss?: () => void;
   type?: 'default' | 'destructive';
+  content?: React.ReactNode;
 }
 
 interface AlertConfig {
@@ -28,10 +31,11 @@ interface AlertConfig {
   title?: string | undefined;
   message?: string | undefined;
   buttons: AlertButton[];
+  content?: React.ReactNode;
 }
 
 interface UseCustomAlertReturn {
-  showAlert: (title?: string, message?: string, buttons?: AlertButton[]) => void;
+  showAlert: (title?: string, message?: string, buttons?: AlertButton[], content?: React.ReactNode) => void;
   hideAlert: () => void;
   AlertComponent: () => React.JSX.Element;
 }

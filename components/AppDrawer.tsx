@@ -97,7 +97,6 @@ export default function AppDrawer(): React.JSX.Element {
 
       <Dropdown
         placeholderStyle={styles.placeholder}
-        style={styles.dropdown}
         selectedTextStyle={styles.drawerItemText}
         containerStyle={styles.dropdownContainer}
         itemContainerStyle={styles.itemContainer}
@@ -202,13 +201,6 @@ const useThemedStyles = createThemedStyles(({
   drawerItemText: {
     color: textPrimary,
     fontWeight: '500',
-  },
-  dropdown: {
-    borderColor: borderLight,
-    borderWidth: 0.5,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 12,
   },
   dropdownItem: {
     flexDirection: 'row',

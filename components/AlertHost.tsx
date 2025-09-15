@@ -6,6 +6,7 @@ export const AlertHost = (): React.JSX.Element => {
   const title   = useAlertStore((s) => s.title);
   const message = useAlertStore((s) => s.message);
   const buttons = useAlertStore((s) => s.buttons);
+  const content = useAlertStore((s) => s.content);
   const hide    = useAlertStore((s) => s.hide);
 
   return (
@@ -14,6 +15,7 @@ export const AlertHost = (): React.JSX.Element => {
       title={title}
       message={message}
       buttons={buttons}
+      content={content}
       onDismiss={hide}
     />
   );

@@ -1,15 +1,60 @@
-import { Tabs } from 'expo-router';
+import AddIcon from '@/assets/images/add.svg';
+import ForkIcon from '@/assets/images/fork.svg';
 import GridIcon from '@/assets/images/grid.svg';
 import OrderIcon from '@/assets/images/order.svg';
-import ForkIcon from '@/assets/images/fork.svg';
 import ProfileIcon from '@/assets/images/profile.svg';
 import { TabBarIcon } from '@/components/ui/TabBarIcon';
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useAlert } from '@/hooks/useAlert';
+import { useInputAlert } from '@/hooks/useInputAlert';
 import { useThemeColors } from '@/hooks/useThemeColors';
+import { usePizzaStore } from '@/stores/pizza';
+import { capitalize } from '@/utils/common.utils';
+import { BottomTabBarButtonProps } from '@react-navigation/bottom-tabs';
+import { Tabs, usePathname } from 'expo-router';
+import { TouchableOpacity } from 'react-native';
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function TabLayout(): React.JSX.Element {
-  const { icon, iconActive, bgSecondary } = useThemeColors();
+  const { tint, icon, iconActive, bgSecondary } = useThemeColors();
+  const pathname = usePathname();
   const insets = useSafeAreaInsets();
+  const showAddButton = pathname === '/menu';
+  const { showInputAlert } = useInputAlert();
+  const { showAlert } = useAlert();
+  const { addCategory } = usePizzaStore();
+
+  const handleAddCategory = () => {
+    showInputAlert("Add Category", "Enter a category name you want to add:", {
+      placeholder: "Category Name",
+      onSubmit: (name) => {
+        name = name.trim().toLowerCase();
+        if (!name) return;
+
+        const result = addCategory(name);
+        const formattedName = capitalize(name);
+
+        if (!result) {
+          return showAlert(
+            "Error",
+            `The category "${formattedName}" already exists.`,
+            [
+              { text: "Cancel", style: "cancel" },
+              {
+                text: "Try again",
+                style: "default",
+                keepOpen: true,
+                onPress: handleAddCategory,
+              },
+            ]
+          );
+        }
+
+        showAlert("Category Added", `Category "${formattedName}" has been added.`, [
+          { text: "OK", style: "default" },
+        ]);
+      },
+    });
+  };
 
   return (
     <Tabs
@@ -46,6 +91,33 @@ export default function TabLayout(): React.JSX.Element {
           ),
         }}
       />
+
+        <Tabs.Screen
+          name="add"
+          listeners={{
+            tabPress: (e) => {
+              e.preventDefault();
+              handleAddCategory();
+            },
+          }}
+          options={{
+            ...(showAddButton
+              ? {
+                  tabBarButton: ({ onPress }: BottomTabBarButtonProps) => (
+                    <TouchableOpacity
+                      onPress={onPress}
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <AddIcon width={50} height={50} color={tint} />
+                    </TouchableOpacity>
+                  ),
+                }
+              : { href: null }),
+          }}
+        />
       <Tabs.Screen
         name="menu"
         options={{
