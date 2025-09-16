@@ -1,20 +1,27 @@
+import EmptyIcon from '@/assets/images/empty.svg';
 import CategoryTabs from '@/components/CategoryTabs';
 import CustomPizzaCard from '@/components/CustomPizzaCard';
 import DisableUI from '@/components/DisableUI';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import ConfigIcons from '@/components/ui/ConfigIcons';
+import EmptyState from '@/components/ui/EmptyState';
 import { useAlert } from '@/hooks/useAlert';
+import { useInputAlert } from '@/hooks/useInputAlert';
 import { useThemeColors } from '@/hooks/useThemeColors';
+import { useConfigIconsStore } from '@/stores/configIcons';
 import { usePizzaStore } from '@/stores/pizza';
 import { createThemedStyles } from '@/utils/styles';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback } from 'react';
 import { SafeAreaView, SectionList, StyleSheet, View } from 'react-native';
 
 export default function MenuScreen(): React.JSX.Element {
   const styles = useThemedStyles();
   const { tint, bgPrimary,  } = useThemeColors();
   const { showAlert } = useAlert();
+  const { showInputAlert } = useInputAlert();
+  const { resetAllExpanded } = useConfigIconsStore();
   const router = useRouter();
   const {
     sections,
@@ -26,19 +33,43 @@ export default function MenuScreen(): React.JSX.Element {
     enableCategory,
   } = usePizzaStore();
 
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        resetAllExpanded();
+      };
+    }, [resetAllExpanded])
+  );
+
 
   const handleDeleteCategory = (id: string, name: string) => {
-    showAlert(
-      'Delete Category',
-      `Are you sure you want to delete the "${name}" category?`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: () => deleteCategory(id),
+    showInputAlert(
+      'Delete Menu Category',
+      `Please type the category name "${name}" to confirm:`,
+      {
+        placeholder: name,
+        submitText: 'Delete',
+        submitStyle: 'destructive',
+        onSubmit: (enteredName) => {
+          if(!enteredName.trim()) return;
+
+          if (enteredName === name) {
+            deleteCategory(id);
+            return showAlert(
+              'Success',
+              `Category "${name}" has been deleted successfully.`,
+              [{ text: 'OK', style: 'default' }]
+            );
+          } else {
+            return showAlert(
+              'Deletion Failed',
+              'The entered name does not match the category name.',
+              [{ text: 'OK', style: 'default' }]
+            );
+          }
         },
-      ]
+        onCancel: () => {}
+      }
     );
   };
 
@@ -60,7 +91,7 @@ export default function MenuScreen(): React.JSX.Element {
         <SectionList
           sections={sections()}
           keyExtractor={(item) => String(item.id)}
-          renderSectionHeader={({ section: { title, data, disabled } }) => {
+          renderSectionHeader={({ section: { categoryId, title, data, disabled } }) => {
             return (
               <View>
                 {/* Header */}
@@ -69,42 +100,42 @@ export default function MenuScreen(): React.JSX.Element {
                     {title}
                   </ThemedText>
                   <ConfigIcons
+                    id={`category-${title}`}
                     key={title}
                     tint={tint}
                     bgColor={tint}
                     foreColor={bgPrimary}
-                    onDisable={() => toggleDisableCategory(
-                      availableCategories().find((c) => c.name === title)!.id
-                    )}
-                    onEdit={() => router.push(`/category/${availableCategories().find((c) => c.name === title)!.id}`)}
-                    onDelete={() =>
-                      handleDeleteCategory(
-                        availableCategories().find((c) => c.name === title)!.id,
-                        title
-                      )
-                    }
+                    onDisable={() => toggleDisableCategory(categoryId)}
+                    onEdit={() => router.push(`/category/${categoryId}`)}
+                    onDelete={() => handleDeleteCategory(categoryId, title)}
                   />
                 </View>
 
                 <View style={{ position: "relative" }}>
                   {/* Cards */}
-                    {data.map((pizza) => (
-                    <CustomPizzaCard
-                      key={pizza.id}
-                      pizzas={[pizza]}
-                      disabled={disabled}
-                    />
-                    ))}
+                    {data.length > 0 ? (
+                      data.map((pizza) => (
+                        <CustomPizzaCard
+                          key={pizza.id}
+                          pizzas={[pizza]}
+                          disabled={disabled}
+                        />
+                        ))
+                    ) : (
+                      <EmptyState
+                        icon={<EmptyIcon width={60} height={60} color={tint} />}
+                        title='No items'
+                        message='Click the button below to add a pizza item.'
+                        buttonText='Add New Item'
+                        onButtonPress={() => router.push(`/pizza/add/${categoryId}`)}
+                      />
+                    )}
 
                   {/* Disable overlay */}
                   {disabled && (
                     <View style={styles.sectionOverlay}>
                       <DisableUI
-                        onPress={() =>
-                          enableCategory(
-                            availableCategories().find((c) => c.name === title)!.id
-                          )
-                        }
+                        onPress={() => enableCategory(categoryId)}
                       />
                     </View>
                   )}

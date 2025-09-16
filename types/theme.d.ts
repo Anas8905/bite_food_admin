@@ -1,4 +1,4 @@
-type ThemePreference = 'system' | 'light' | 'dark';
+type ThemePreference = 'device' | 'light' | 'dark';
 
 type ThemeState = {
   preference: ThemePreference;
@@ -7,6 +7,6 @@ type ThemeState = {
 
 type ThemeOption = {
   label: string;
-  value: 'system' | 'light' | 'dark';
+  value: 'device' | 'light' | 'dark';
   icon: React.ComponentProps<typeof Feather>['name'];
 };

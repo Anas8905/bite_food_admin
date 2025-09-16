@@ -1,10 +1,13 @@
-import React, { useState } from "react";
-import { View, Pressable, StyleProp, ViewStyle } from "react-native";
 import ConfigIcon from '@/assets/images/config.svg';
-import { AntDesign, Feather, Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { useConfigIconsStore } from '@/stores/configIcons';
 import { createThemedStyles } from "@/utils/styles";
+import { AntDesign, Feather, Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { useSegments } from 'expo-router';
+import React from "react";
+import { Pressable, StyleProp, View, ViewStyle } from "react-native";
 
 type ConfigIconsProps = {
+  id: string;
   tint: string;
   bgColor: string;
   foreColor: string;
@@ -17,6 +20,7 @@ type ConfigIconsProps = {
 };
 
 export default function ConfigIcons({
+  id,
   tint,
   bgColor,
   foreColor,
@@ -27,34 +31,42 @@ export default function ConfigIcons({
   dynamicIconsStyle,
   toggleIconStyle,
 }: ConfigIconsProps): React.JSX.Element {
-  const [expanded, setExpanded] = useState(false);
+  const { isExpanded, setExpanded } = useConfigIconsStore();
+  const expanded = isExpanded(id);
   const styles = useThemedStyles();
+  const segments = useSegments();
+
+  const isMenuScreen = segments[1] === "menu";
+
+  const toggleExpanded = () => {
+    setExpanded(id, !expanded);
+  };
 
   return (
-    <View style={[styles.allIcons, containerStyle]}>
+    <View style={[styles.allIcons, containerStyle, !expanded && { borderWidth: 0 }]}>
       {expanded && (
         <View style={[styles.dynamicIcons, dynamicIconsStyle]}>
           <Pressable onPress={onEdit}>
-            <Feather name="edit" size={24} color={tint} />
+            <Feather name="edit" size={22} color={tint} />
           </Pressable>
           <Pressable onPress={onDisable}>
-            <Ionicons name="ban-outline" size={24} color={tint} />
+            <Ionicons name="ban-outline" size={22} color={tint} />
           </Pressable>
 
           <Pressable onPress={onDelete}>
-            <MaterialIcons name="delete-outline" size={24} color={tint} />
+            <MaterialIcons name="delete-outline" size={22} color={tint} />
           </Pressable>
         </View>
       )}
 
       <Pressable
-        style={[styles.toggleIcon, toggleIconStyle, { backgroundColor: bgColor }]}
-        onPress={() => setExpanded((prev) => !prev)}
+        style={[styles.toggleIcon, toggleIconStyle, isMenuScreen && { backgroundColor: bgColor }]}
+        onPress={toggleExpanded}
       >
         {expanded ? (
-          <AntDesign name="close" size={22} color={foreColor} />
+          <AntDesign name="close" size={22} color={isMenuScreen ? foreColor : tint} />
         ) : (
-          <ConfigIcon width={22} height={22} color={foreColor} />
+          <ConfigIcon width={22} height={22} color={isMenuScreen ? foreColor : tint} />
         )}
       </Pressable>
     </View>
@@ -77,7 +89,7 @@ const useThemedStyles = createThemedStyles(({ borderDark }) => ({
         paddingLeft: 20,
       },
       toggleIcon: {
-        padding: 9,
+        padding: 8,
         borderRadius: 8,
         alignSelf: "flex-start",
       },

@@ -343,5 +343,11 @@ export const mockPizzaAPI = {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000));
     return pizzas.filter((pizza) => pizza.categoryId === 'popular');
+  },
+
+  getOrdersByStatus: async (status) => {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+    return orders.filter((order) => order.status === status);
   }
 }

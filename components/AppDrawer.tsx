@@ -12,7 +12,7 @@ import { ThemedText } from './ThemedText';
 import CustomDrawer from './ui/CustomDrawer';
 
 const themeOptions: ThemeOption[] = [
-  { label: 'System', value: 'system', icon: 'smartphone' },
+  { label: 'Device', value: 'device', icon: 'smartphone' },
   { label: 'Light', value: 'light', icon: 'sun' },
   { label: 'Dark', value: 'dark', icon: 'moon' },
 ];
@@ -85,7 +85,7 @@ export default function AppDrawer(): React.JSX.Element {
   )
 
   const DrawerContent = ({ close }) => (
-    <View style={{ marginTop: 10, gap: 22 }}>
+    <View style={styles.itemsWrapper}>
       <DrawerItem
         label="Profile"
         icon={<ProfileIcon width={18} height={18} color={textPrimary} />}
@@ -109,7 +109,7 @@ export default function AppDrawer(): React.JSX.Element {
         renderLeftIcon={themeIcon}
         renderItem={renderThemeOptions}
         onChange={(item) => {
-          setPreference(item.value as 'system' | 'light' | 'dark');
+          setPreference(item.value as 'device' | 'light' | 'dark');
         }}
       />
 
@@ -207,6 +207,10 @@ const useThemedStyles = createThemedStyles(({
     alignItems: 'center',
     paddingHorizontal: 8,
     paddingVertical: 16,
+  },
+  itemsWrapper: {
+    marginTop: 10,
+    gap: 36,
   },
   placeholder: {
     color: textTertiary,

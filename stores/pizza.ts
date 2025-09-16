@@ -9,16 +9,19 @@ type PizzaStore = {
 
   // derived selectors
   availableCategories: () => Category[];
-  sections: () => { title: string; data: Pizza[]; disabled?: boolean }[];
+  sections: () => { categoryId: string; title: string; data: Pizza[]; disabled?: boolean }[];
+  getPizzasByCategoryId: (categoryId: string) => Pizza[];
 
   // actions
   setPizzas: (pizzas: Pizza[]) => void;
+  getCategoryById: (id: string) => Category | undefined;
   toggleCategory: (id: string) => void;
   addCategory: (name: string) => boolean;
   updateCategory: (id: string, name: string) => boolean;
   deleteCategory: (id: string) => void;
   toggleDisableCategory: (id: string) => void;
   enableCategory: (id: string) => void;
+  getPizzaById: (id: string) => Pizza | undefined;
   deletePizza: (id: string) => void;
   toggleDisablePizza: (id: string) => void;
   enablePizza: (id: string) => void;
@@ -42,14 +45,23 @@ export const usePizzaStore = create<PizzaStore>((set, get) => ({
           selectedCategories.includes(cat.id)
       )
       .map((cat) => ({
+        categoryId: cat.id,
         title: cat.name,
         disabled: cat.disabled,
         data: pizzas.filter((p) => p.categoryId === cat.id),
       }));
   },
 
+  getPizzasByCategoryId: (categoryId: string) => {
+    return get().pizzas.filter((pizza) => pizza.categoryId === categoryId);
+  },
+
   // ---- actions ----
   setPizzas: (pizzas) => set({ pizzas }),
+
+  getCategoryById: (id: string) => {
+    return get().categories.find((c) => c.id === id);
+  },
 
   toggleCategory: (id) => {
     set((state) => {
@@ -83,7 +95,7 @@ export const usePizzaStore = create<PizzaStore>((set, get) => ({
     };
 
     set((state) => ({
-      categories: [...state.categories, newCategory],
+      categories: [newCategory, ...state.categories],
     }));
 
     return true;
@@ -127,12 +139,12 @@ export const usePizzaStore = create<PizzaStore>((set, get) => ({
     set((state) => {
       const category = state.categories.find((c) => c.id === id);
       const isBeingDisabled = !category?.disabled;
-      
+
       return {
         categories: state.categories.map((c) =>
           c.id === id ? { ...c, disabled: !c.disabled } : c
         ),
-        pizzas: isBeingDisabled 
+        pizzas: isBeingDisabled
           ? state.pizzas.map((p) =>
               p.categoryId === id ? { ...p, disabled: false } : p
             )
@@ -149,6 +161,10 @@ export const usePizzaStore = create<PizzaStore>((set, get) => ({
     }));
   },
 
+  getPizzaById: (id: string) => {
+    return get().pizzas.find((p) => p.id === id);
+  },
+
   deletePizza: (id) => {
     set((state) => ({
       pizzas: state.pizzas.filter((p) => p.id !== id),
@@ -160,7 +176,7 @@ export const usePizzaStore = create<PizzaStore>((set, get) => ({
       const pizza = state.pizzas.find((p) => p.id === id);
       const category = state.categories.find((c) => c.id === pizza?.categoryId);
       const isPizzaBeingDisabled = !pizza?.disabled;
-      
+
       return {
         categories: state.categories.map((c) =>
           c.id === pizza?.categoryId && isPizzaBeingDisabled && category?.disabled

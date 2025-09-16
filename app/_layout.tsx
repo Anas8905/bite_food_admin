@@ -22,6 +22,10 @@ export default function RootLayout(): React.JSX.Element | null {
   const pathname = usePathname();
   const showNavbar = !noNavScreens.includes(pathname);
 
+  const categoryId = pathname.startsWith('/category/')
+    ? pathname.split('/category/')[1]
+    : undefined;
+
   if (!loaded) return null;
 
   return (
@@ -31,7 +35,7 @@ export default function RootLayout(): React.JSX.Element | null {
         {showNavbar && (
           <SafeAreaView style={styles.safeAreaView}>
             <ThemedView style={styles.container}>
-              <Navbar />
+              <Navbar categoryId={categoryId} />
             </ThemedView>
           </SafeAreaView>
         )}
@@ -42,7 +46,6 @@ export default function RootLayout(): React.JSX.Element | null {
         </Stack>
         <AppDrawer />
         <AlertHost />
-        <StatusBar style="auto" />
         {/* <StatusBar style={theme === 'dark' ? 'light' : 'dark'} /> */}
       </SafeAreaProvider>
     </ThemeProvider>

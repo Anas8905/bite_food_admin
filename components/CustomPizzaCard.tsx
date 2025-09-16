@@ -30,47 +30,48 @@ export default function CustomPizzaCard({
 
     const renderItem = ({ item }) => (
         <View style={styles.card}>
-            <Image 
-                source={item.image} 
-                style={[styles.image, (disabled || item.disabled) && { opacity: 0.2 }]} 
+            <Image
+              source={item.image}
+              style={[styles.image, (disabled || item.disabled) && { opacity: 0.2 }]}
             />
             <View style={[styles.details, (disabled || item.disabled) && { opacity: 0.2 }]}>
-                <View style={styles.primeRow}>
-                    <View style={styles.nameRow}>
-                        <ThemedText colorName='textPrimary' style={styles.name}>{item.name}</ThemedText>
-                        {configIconsProps && (
-                            <ConfigIcons
-                                key={item.id}
-                                tint={configIconsProps.tint}
-                                bgColor={configIconsProps.bgColor}
-                                foreColor={configIconsProps.foreColor}
-                                onDisable={configIconsProps.onDisable}
-                                onEdit={configIconsProps.onEdit}
-                                onDelete={configIconsProps.onDelete}
-                            />
-                        )}
-                    </View>
-                    <ThemedText
-                      colorName='textSecondary'
-                      style={styles.description}
-                      numberOfLines={1}
-                      ellipsizeMode="tail"
-                    >
-                      {item.description}
-                    </ThemedText>
+              <View style={styles.primeRow}>
+                <View style={styles.nameRow}>
+                  <ThemedText colorName='textPrimary' style={styles.name}>{item.name}</ThemedText>
+                  {configIconsProps && (
+                      <ConfigIcons
+                        id={`pizza-${item.id}`}
+                        key={item.id}
+                        tint={configIconsProps.tint}
+                        bgColor={configIconsProps.bgColor}
+                        foreColor={configIconsProps.foreColor}
+                        onDisable={configIconsProps.onDisable}
+                        onEdit={configIconsProps.onEdit}
+                        onDelete={configIconsProps.onDelete}
+                      />
+                  )}
                 </View>
-                <View style={styles.row}>
-                    <ThemedText colorName='textSecondary' style={styles.price}>
-                        PKR {item.price || item.variations[0].price}
-                    </ThemedText>
-                    <View style={styles.timeContainer}>
-                        <Ionicons name="time-outline" size={14} color={accentPrimary} />
-                        <ThemedText colorName='accentPrimary' style={styles.time}>{item.deliveryTime} min</ThemedText>
-                    </View>
-                </View>
+                <ThemedText
+                  colorName='textSecondary'
+                  style={styles.description}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  {item.description}
+                </ThemedText>
+              </View>
+              <View style={styles.row}>
+                  <ThemedText colorName='textSecondary' style={styles.price}>
+                      PKR {item.price || item.variations[0].price}
+                  </ThemedText>
+                  <View style={styles.timeContainer}>
+                      <Ionicons name="time-outline" size={14} color={accentPrimary} />
+                      <ThemedText colorName='accentPrimary' style={styles.time}>{item.deliveryTime} min</ThemedText>
+                  </View>
+              </View>
             </View>
-            
-            {/* Disable overlay for individual pizza - always at full opacity */}
+
+            {/* Disable overlay */}
             {item.disabled && (
                 <View style={styles.pizzaOverlay}>
                     <DisableUI

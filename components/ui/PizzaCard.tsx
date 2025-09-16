@@ -1,16 +1,23 @@
-import { Image, Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { mockPizzaAPI } from "@/api/mockApi";
+import { useThemeColors } from "@/hooks/useThemeColors";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { ThemedText } from "../ThemedText";
 import { ThemedView } from "../ThemedView";
-import { useEffect, useState } from "react";
-import { mockPizzaAPI } from "@/api/mockApi";
 
 export default function PizzaCard(): React.JSX.Element {
   const [popularPizzas, setPopularPizzas] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { accentPrimary } = useThemeColors();
 
   useEffect(() => {
     const fetchPizzas = async () => {
-      const pizzas = await mockPizzaAPI.popularPizzas();
-      setPopularPizzas(pizzas);
+      try {
+        const pizzas = await mockPizzaAPI.popularPizzas();
+        setPopularPizzas(pizzas);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     fetchPizzas();
@@ -25,21 +32,24 @@ export default function PizzaCard(): React.JSX.Element {
           </Pressable>
       </View>
 
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ gap: 16 }}
-      >
-        {popularPizzas.length > 0 && (
-          popularPizzas.map(pizza => (
-            <Image
-            key={pizza.id}
-            source={pizza.image}
-            style={styles.image}
-          />
-          ))
-        )}
-      </ScrollView>
+      {isLoading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size='large' color={accentPrimary} />
+          <ThemedText style={styles.loadingText}>
+            Loading popular pizzas...
+          </ThemedText>
+        </View>
+      ) : (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ gap: 16 }}
+        >
+          {popularPizzas.map((pizza) => (
+            <Image key={pizza.id} source={pizza.image} style={styles.image} />
+          ))}
+        </ScrollView>
+      )}
     </ThemedView>
   )
 }
@@ -63,5 +73,16 @@ const styles = StyleSheet.create({
     width: 120,
     resizeMode: 'cover',
     borderRadius: 12,
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 20,
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 14,
+    textAlign: 'center',
+    opacity: 0.5,
   },
 });

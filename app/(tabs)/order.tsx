@@ -1,10 +1,10 @@
-import { orders as data } from '@/api/mockApi';
+import { mockPizzaAPI } from '@/api/mockApi';
 import HorizontalPizzaCard from '@/components/HorizontalPizzaCard';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { createThemedStyles } from '@/utils/styles';
 import { useCallback, useEffect, useState } from 'react';
-import { Pressable, SafeAreaView, View } from 'react-native';
+import { ActivityIndicator, Pressable, SafeAreaView, View } from 'react-native';
 
 type TabKey = 'ongoing' | 'incoming' | 'completed';
 
@@ -17,15 +17,25 @@ const TABS: { key: TabKey; label: string }[] = [
 export default function OrderScreen(): React.JSX.Element {
   const styles = useThemedStyles();
   const [activeTab, setActiveTab] = useState<TabKey>('ongoing');
-  const [orders, setOrders] = useState<any[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const getOrders = useCallback(() => {
-    setOrders(data.filter(o => o.status === activeTab));
+  const fetchOrders = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const ordersData = await mockPizzaAPI.getOrdersByStatus(activeTab);
+      setOrders(ordersData);
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+      setOrders([]);
+    } finally {
+      setIsLoading(false);
+    }
   }, [activeTab]);
 
   useEffect(() => {
-    getOrders();
-  }, [getOrders])
+    fetchOrders();
+  }, [fetchOrders])
 
   return (
     <SafeAreaView style={styles.container}>
@@ -44,21 +54,36 @@ export default function OrderScreen(): React.JSX.Element {
               <ThemedText
                 colorName='textMuted'
                 style={[styles.tabText, selected && styles.activeTabText]}>
-                  {tab.label}
+                {tab.label}
               </ThemedText>
             </Pressable>
           );
         })}
       </View>
 
-      <ThemedView style={{ paddingHorizontal: 20 }}>
-        <HorizontalPizzaCard orders={orders} activeTab={activeTab} />
+      <ThemedView style={isLoading ? styles.fullHeightContainer : { paddingHorizontal: 20 }}>
+        {isLoading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator
+              size="large"
+              color={styles.activeTabText.color}
+            />
+            <ThemedText
+              colorName='textMuted'
+              style={styles.loadingText}
+            >
+              Loading {activeTab} orders...
+            </ThemedText>
+          </View>
+        ) : (
+          <HorizontalPizzaCard orders={orders} activeTab={activeTab} />
+        )}
       </ThemedView>
     </SafeAreaView>
   );
 }
 
-const useThemedStyles = createThemedStyles(({ bgPrimary, accentPrimary, borderLight,  }) => ({
+const useThemedStyles = createThemedStyles(({ bgPrimary, accentPrimary, borderLight }) => ({
   container: {
     flex: 1,
     backgroundColor: bgPrimary,
@@ -84,5 +109,20 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, accentPrimary, borderLi
   },
   activeTabText: {
     color: accentPrimary,
+  },
+  fullHeightContainer: {
+    flex: 1,
+    paddingHorizontal: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: 90,
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+    textAlign: 'center',
   },
 }))

@@ -9,9 +9,9 @@ export function useThemePreference(): {
   const setPreference = useThemeStore((s) => s.setPreference);
 
   const cyclePreference = () => {
-    if (preference === 'system') setPreference('light');
+    if (preference === 'device') setPreference('light');
     else if (preference === 'light') setPreference('dark');
-    else setPreference('system');
+    else setPreference('device');
   };
 
   return { preference, setPreference, cyclePreference };

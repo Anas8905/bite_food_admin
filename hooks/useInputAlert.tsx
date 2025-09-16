@@ -1,8 +1,8 @@
-import { TextInput } from "react-native";
-import { useAlert } from "@/hooks/useAlert";
 import { ThemedView } from '@/components/ThemedView';
-import { useThemeColors } from "./useThemeColors";
+import { useAlert } from "@/hooks/useAlert";
 import { createThemedStyles } from "@/utils/styles";
+import { TextInput } from "react-native";
+import { useThemeColors } from "./useThemeColors";
 
 export const useInputAlert = () => {
   const styles = useThemedStyles();
@@ -14,10 +14,14 @@ export const useInputAlert = () => {
     message: string,
     {
       placeholder = "",
+      submitText = "Save",
+      submitStyle = "default",
       onSubmit,
       onCancel,
     }: {
       placeholder?: string;
+      submitText?: string;
+      submitStyle?: "default" | "cancel" | "destructive";
       onSubmit: (value: string) => void;
       onCancel?: () => void;
     }
@@ -30,8 +34,8 @@ export const useInputAlert = () => {
       [
         { text: "Cancel", style: "cancel", onPress: onCancel },
         {
-          text: "Save",
-          style: "default",
+          text: submitText,
+          style: submitStyle,
           keepOpen: true,
           onPress: () => { onSubmit(value.trim()) },
         },

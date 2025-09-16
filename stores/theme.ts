@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set) => ({
-      preference: 'system',
+      preference: 'device',
       setPreference: (pref) => set({ preference: pref }),
     }),
     {
@@ -17,11 +17,11 @@ export const useThemeStore = create<ThemeState>()(
 );
 
 export const useResolvedTheme = (): 'light' | 'dark' => {
-  const systemTheme = useColorScheme();
+  const deviceTheme = useColorScheme();
   const preference = useThemeStore((s) => s.preference);
 
-  if (preference === 'system') {
-    return systemTheme === 'dark' ? 'dark' : 'light';
+  if (preference === 'device') {
+    return deviceTheme === 'dark' ? 'dark' : 'light';
   }
   return preference;
 }
