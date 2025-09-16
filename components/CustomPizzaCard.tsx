@@ -1,13 +1,28 @@
-import { FlatList, Image, View } from 'react-native';
-import { createThemedStyles } from '@/utils/styles';
-import { ThemedText } from './ThemedText';
-import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors } from '@/hooks/useThemeColors';
+import { createThemedStyles } from '@/utils/styles';
+import { Ionicons } from '@expo/vector-icons';
+import { FlatList, Image, View } from 'react-native';
+import { ThemedText } from './ThemedText';
+import ConfigIcons from './ui/ConfigIcons';
+
+type CustomPizzaCardProps = {
+  pizzas: Pizza[];
+  disabled?: boolean;
+  configIconsProps?: {
+    tint: string;
+    bgColor: string;
+    foreColor: string;
+    onDisable?: () => void;
+    onEdit?: () => void;
+    onDelete?: () => void;
+  };
+};
 
 export default function CustomPizzaCard({
   pizzas,
   disabled = false,
-}: { pizzas: Pizza[]; disabled?: boolean }): React.JSX.Element {
+  configIconsProps,
+}: CustomPizzaCardProps): React.JSX.Element {
     const styles = useThemedStyles();
     const { accentPrimary, } = useThemeColors();
 
@@ -16,7 +31,20 @@ export default function CustomPizzaCard({
             <Image source={item.image} style={styles.image} />
             <View style={styles.details}>
                 <View style={styles.primeRow}>
-                    <ThemedText colorName='textPrimary' style={styles.name}>{item.name}</ThemedText>
+                    <View style={styles.nameRow}>
+                        <ThemedText colorName='textPrimary' style={styles.name}>{item.name}</ThemedText>
+                        {configIconsProps && (
+                            <ConfigIcons
+                                key={item.id}
+                                tint={configIconsProps.tint}
+                                bgColor={configIconsProps.bgColor}
+                                foreColor={configIconsProps.foreColor}
+                                onDisable={configIconsProps.onDisable}
+                                onEdit={configIconsProps.onEdit}
+                                onDelete={configIconsProps.onDelete}
+                            />
+                        )}
+                    </View>
                     <ThemedText
                       colorName='textSecondary'
                       style={styles.description}
@@ -67,6 +95,11 @@ const useThemedStyles = createThemedStyles(({ accentPrimary, borderDark }) => ({
   },
   primeRow: {
     gap: 4,
+  },
+  nameRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   row: {
     flexDirection: 'row',

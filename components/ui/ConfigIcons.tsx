@@ -9,6 +9,7 @@ type ConfigIconsProps = {
   bgColor: string;
   foreColor: string;
   onDisable?: () => void;
+  onEdit?: () => void;
   onDelete?: () => void;
   containerStyle?: StyleProp<ViewStyle>;
   dynamicIconsStyle?: StyleProp<ViewStyle>;
@@ -20,6 +21,7 @@ export default function ConfigIcons({
   bgColor,
   foreColor,
   onDisable,
+  onEdit,
   onDelete,
   containerStyle,
   dynamicIconsStyle,
@@ -32,7 +34,9 @@ export default function ConfigIcons({
     <View style={[styles.allIcons, containerStyle]}>
       {expanded && (
         <View style={[styles.dynamicIcons, dynamicIconsStyle]}>
-          <Feather name="edit" size={24} color={tint} />
+          <Pressable onPress={onEdit}>
+            <Feather name="edit" size={24} color={tint} />
+          </Pressable>
           <Pressable onPress={onDisable}>
             <Ionicons name="ban-outline" size={24} color={tint} />
           </Pressable>
@@ -57,9 +61,7 @@ export default function ConfigIcons({
   );
 }
 
-const useThemedStyles = createThemedStyles(({
-  borderDark,
-}) => ({
+const useThemedStyles = createThemedStyles(({ borderDark }) => ({
     allIcons: {
         flexDirection: 'row',
         alignItems: 'center',

@@ -1,4 +1,4 @@
-import { pizzas as initialPizzas, categories as initialCategories } from '@/api/mockApi';
+import { categories as initialCategories, pizzas as initialPizzas } from '@/api/mockApi';
 import { capitalize } from '@/utils/common.utils';
 import { create } from 'zustand';
 
@@ -15,9 +15,11 @@ type PizzaStore = {
   setPizzas: (pizzas: Pizza[]) => void;
   toggleCategory: (id: string) => void;
   addCategory: (name: string) => boolean;
+  updateCategory: (id: string, name: string) => boolean;
   deleteCategory: (id: string) => void;
   toggleDisableCategory: (id: string) => void;
   enableCategory: (id: string) => void;
+  deletePizza: (id: string) => void;
 };
 
 export const usePizzaStore = create<PizzaStore>((set, get) => ({
@@ -85,6 +87,31 @@ export const usePizzaStore = create<PizzaStore>((set, get) => ({
     return true;
   },
 
+  updateCategory: (id, name) => {
+    const normalized = name.toLowerCase();
+    const { categories } = get();
+
+    const category = categories.find((c) => c.id === id);
+    if (!category) return false;
+
+    if (category.name.toLowerCase() === normalized) {
+      return false;
+    }
+
+    const exists = categories.some(
+      (c) => c.id !== id && (c.name.toLowerCase() === normalized || normalized === "all")
+    );
+    if (exists) return false;
+
+    set((state) => ({
+      categories: state.categories.map((c) =>
+        c.id === id ? { ...c, name: capitalize(normalized) } : c
+      ),
+    }));
+
+    return true;
+  },
+
   deleteCategory: (id) => {
     set((state) => ({
       categories: state.categories.filter((c) => c.id !== id),
@@ -107,6 +134,12 @@ export const usePizzaStore = create<PizzaStore>((set, get) => ({
       categories: state.categories.map((c) =>
         c.id === id ? { ...c, disabled: false } : c
       ),
+    }));
+  },
+
+  deletePizza: (id) => {
+    set((state) => ({
+      pizzas: state.pizzas.filter((p) => p.id !== id),
     }));
   },
 }));

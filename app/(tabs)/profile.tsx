@@ -134,7 +134,7 @@ export default function ProfileScreen(): React.JSX.Element {
           {isUpdating ? (
               <ActivityIndicator color={textPrimary} size={16} />
               ) : (
-              <ThemedText colorName='textPrimary' style={styles.saveText}>SAVE</ThemedText>
+              <ThemedText style={styles.saveText}>SAVE</ThemedText>
           )}
           </TouchableOpacity>
         </View>
@@ -229,6 +229,7 @@ const useThemedStyles = createThemedStyles(({
     },
     saveText: {
       fontWeight: 500,
+      color: '#FFFFFF',
     },
     cancelBtn: {
       backgroundColor: bgGray,

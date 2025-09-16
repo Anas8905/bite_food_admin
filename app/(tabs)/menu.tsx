@@ -8,12 +8,14 @@ import { useAlert } from '@/hooks/useAlert';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { usePizzaStore } from '@/stores/pizza';
 import { createThemedStyles } from '@/utils/styles';
+import { useRouter } from 'expo-router';
 import { SafeAreaView, SectionList, StyleSheet, View } from 'react-native';
 
 export default function MenuScreen(): React.JSX.Element {
   const styles = useThemedStyles();
   const { tint, bgPrimary,  } = useThemeColors();
   const { showAlert } = useAlert();
+  const router = useRouter();
   const {
     sections,
     availableCategories,
@@ -74,6 +76,7 @@ export default function MenuScreen(): React.JSX.Element {
                     onDisable={() => toggleDisableCategory(
                       availableCategories().find((c) => c.name === title)!.id
                     )}
+                    onEdit={() => router.push(`/category/${availableCategories().find((c) => c.name === title)!.id}`)}
                     onDelete={() =>
                       handleDeleteCategory(
                         availableCategories().find((c) => c.name === title)!.id,
