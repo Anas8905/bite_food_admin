@@ -20,6 +20,8 @@ type PizzaStore = {
   toggleDisableCategory: (id: string) => void;
   enableCategory: (id: string) => void;
   deletePizza: (id: string) => void;
+  toggleDisablePizza: (id: string) => void;
+  enablePizza: (id: string) => void;
 };
 
 export const usePizzaStore = create<PizzaStore>((set, get) => ({
@@ -122,11 +124,21 @@ export const usePizzaStore = create<PizzaStore>((set, get) => ({
   },
 
   toggleDisableCategory: (id) => {
-    set((state) => ({
-      categories: state.categories.map((c) =>
-        c.id === id ? { ...c, disabled: !c.disabled } : c
-      ),
-    }));
+    set((state) => {
+      const category = state.categories.find((c) => c.id === id);
+      const isBeingDisabled = !category?.disabled;
+      
+      return {
+        categories: state.categories.map((c) =>
+          c.id === id ? { ...c, disabled: !c.disabled } : c
+        ),
+        pizzas: isBeingDisabled 
+          ? state.pizzas.map((p) =>
+              p.categoryId === id ? { ...p, disabled: false } : p
+            )
+          : state.pizzas,
+      };
+    });
   },
 
   enableCategory: (id) => {
@@ -140,6 +152,33 @@ export const usePizzaStore = create<PizzaStore>((set, get) => ({
   deletePizza: (id) => {
     set((state) => ({
       pizzas: state.pizzas.filter((p) => p.id !== id),
+    }));
+  },
+
+  toggleDisablePizza: (id) => {
+    set((state) => {
+      const pizza = state.pizzas.find((p) => p.id === id);
+      const category = state.categories.find((c) => c.id === pizza?.categoryId);
+      const isPizzaBeingDisabled = !pizza?.disabled;
+      
+      return {
+        categories: state.categories.map((c) =>
+          c.id === pizza?.categoryId && isPizzaBeingDisabled && category?.disabled
+            ? { ...c, disabled: false }
+            : c
+        ),
+        pizzas: state.pizzas.map((p) =>
+          p.id === id ? { ...p, disabled: !p.disabled } : p
+        ),
+      };
+    });
+  },
+
+  enablePizza: (id) => {
+    set((state) => ({
+      pizzas: state.pizzas.map((p) =>
+        p.id === id ? { ...p, disabled: false } : p
+      ),
     }));
   },
 }));

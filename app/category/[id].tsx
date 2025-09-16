@@ -13,7 +13,7 @@ export default function CategoryScreen(): React.JSX.Element {
   const { id } = useLocalSearchParams<{ id: string }>();
   const styles = useThemedStyles();
   const { tint, bgPrimary, textPrimary } = useThemeColors();
-  const { availableCategories, updateCategory, pizzas, deletePizza } = usePizzaStore();
+  const { availableCategories, updateCategory, pizzas, deletePizza, toggleDisablePizza, enablePizza } = usePizzaStore();
   const { showAlert } = useAlert();
   const router = useRouter();
   const [categoryName, setCategoryName] = useState<string>("");
@@ -63,6 +63,14 @@ export default function CategoryScreen(): React.JSX.Element {
     );
   };
 
+  const handleTogglePizzaDisable = (pizzaId: string) => {
+    toggleDisablePizza(pizzaId);
+  };
+
+  const handleEnablePizza = (pizzaId: string) => {
+    enablePizza(pizzaId);
+  };
+
   const categoryPizzas = id ? pizzas.filter(pizza => pizza.categoryId === id) : [];
 
   return (
@@ -93,12 +101,14 @@ export default function CategoryScreen(): React.JSX.Element {
                         <CustomPizzaCard
                             key={pizza.id}
                             pizzas={[pizza]}
-                            configIconsProps={{
-                                tint,
-                                bgColor: tint,
-                                foreColor: bgPrimary,
-                                onDelete: () => handleDeletePizza(pizza.id, pizza.name),
-                            }}
+                        configIconsProps={{
+                            tint,
+                            bgColor: tint,
+                            foreColor: bgPrimary,
+                            onDisable: () => handleTogglePizzaDisable(pizza.id),
+                            onEnable: () => handleEnablePizza(pizza.id),
+                            onDelete: () => handleDeletePizza(pizza.id, pizza.name),
+                        }}
                         />
                     ))}
                 </ScrollView>

@@ -16,4 +16,5 @@ type Pizza = {
   deliveryFee: string;
   variations?: { size: string; price: number }[];
   price?: number;
+  disabled?: boolean;
 };

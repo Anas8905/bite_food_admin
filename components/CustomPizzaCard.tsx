@@ -1,7 +1,8 @@
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { createThemedStyles } from '@/utils/styles';
 import { Ionicons } from '@expo/vector-icons';
-import { FlatList, Image, View } from 'react-native';
+import { FlatList, Image, StyleSheet, View } from 'react-native';
+import DisableUI from './DisableUI';
 import { ThemedText } from './ThemedText';
 import ConfigIcons from './ui/ConfigIcons';
 
@@ -13,6 +14,7 @@ type CustomPizzaCardProps = {
     bgColor: string;
     foreColor: string;
     onDisable?: () => void;
+    onEnable?: () => void;
     onEdit?: () => void;
     onDelete?: () => void;
   };
@@ -27,9 +29,12 @@ export default function CustomPizzaCard({
     const { accentPrimary, } = useThemeColors();
 
     const renderItem = ({ item }) => (
-        <View style={[styles.card, disabled && { opacity: 0.2 }]}>
-            <Image source={item.image} style={styles.image} />
-            <View style={styles.details}>
+        <View style={styles.card}>
+            <Image 
+                source={item.image} 
+                style={[styles.image, (disabled || item.disabled) && { opacity: 0.2 }]} 
+            />
+            <View style={[styles.details, (disabled || item.disabled) && { opacity: 0.2 }]}>
                 <View style={styles.primeRow}>
                     <View style={styles.nameRow}>
                         <ThemedText colorName='textPrimary' style={styles.name}>{item.name}</ThemedText>
@@ -64,6 +69,15 @@ export default function CustomPizzaCard({
                     </View>
                 </View>
             </View>
+            
+            {/* Disable overlay for individual pizza - always at full opacity */}
+            {item.disabled && (
+                <View style={styles.pizzaOverlay}>
+                    <DisableUI
+                        onPress={() => configIconsProps?.onEnable?.()}
+                    />
+                </View>
+            )}
         </View>
     );
 
@@ -83,6 +97,7 @@ const useThemedStyles = createThemedStyles(({ accentPrimary, borderDark }) => ({
   card: {
     flexDirection: 'row',
     gap: 12,
+    position: 'relative',
   },
   image: {
     width: 52,
@@ -130,5 +145,10 @@ const useThemedStyles = createThemedStyles(({ accentPrimary, borderDark }) => ({
     height: 1,
     backgroundColor: borderDark,
     marginVertical: 12,
+  },
+  pizzaOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: "center",
+    alignItems: "center",
   },
 }));
