@@ -22,6 +22,7 @@ type PizzaStore = {
   toggleDisableCategory: (id: string) => void;
   enableCategory: (id: string) => void;
   getPizzaById: (id: string) => Pizza | undefined;
+  addPizza: (pizzaData: Omit<Pizza, 'id' | 'description' | 'rating' | 'reviewCount' | 'deliveryTime' | 'deliveryFee'> & { id?: string }) => boolean;
   deletePizza: (id: string) => void;
   toggleDisablePizza: (id: string) => void;
   enablePizza: (id: string) => void;
@@ -163,6 +164,59 @@ export const usePizzaStore = create<PizzaStore>((set, get) => ({
 
   getPizzaById: (id: string) => {
     return get().pizzas.find((p) => p.id === id);
+  },
+
+  addPizza: (pizzaData) => {
+    const { pizzas, categories } = get();
+
+    const category = categories.find((c) => c.id === pizzaData.categoryId);
+
+    if (!category) throw new Error("Selected category does not exist.");
+
+    if (pizzaData.id) {
+      const existingPizzaIndex = pizzas.findIndex((p) => p.id === pizzaData.id);
+
+      if (existingPizzaIndex === -1) throw new Error("Pizza not found for update.");
+
+      const duplicateName = pizzas.some(
+        (p) =>
+          p.id !== pizzaData.id &&
+          p.categoryId === pizzaData.categoryId &&
+          p.name.toLowerCase() === pizzaData.name.toLowerCase()
+      );
+
+      if (duplicateName) throw new Error("A pizza with this name already exists in this category.");
+
+      set((state) => ({
+        pizzas: state.pizzas.map((p) =>
+          p.id === pizzaData.id ? { ...p, ...pizzaData } : p
+        ),
+      }));
+    } else {
+      const duplicateName = pizzas.some(
+        (p) =>
+          p.categoryId === pizzaData.categoryId &&
+          p.name.toLowerCase() === pizzaData.name.toLowerCase()
+      );
+
+      if (duplicateName) throw new Error("A pizza with this name already exists in this category.");
+
+      const newPizza: Pizza = {
+        id: Date.now().toString(),
+        description: "",
+        rating: 0,
+        reviewCount: "0",
+        deliveryTime: 30,
+        deliveryFee: "0",
+        ...pizzaData,
+      };
+
+      set((state) => ({
+        pizzas: [newPizza, ...state.pizzas],
+      }));
+    }
+
+    return true;
   },
 
   deletePizza: (id) => {

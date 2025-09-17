@@ -43,7 +43,7 @@ export default function Variants({ variants, onAdd, onEdit, onDelete }: VariantP
 
 const useThemedStyles = createThemedStyles(({ accentPrimary }) => ({
     addBtn: {
-        paddingVertical: 5,
+        paddingVertical: 6,
         paddingHorizontal: 16,
         borderRadius: 30,
         borderWidth: 0.5,

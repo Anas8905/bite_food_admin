@@ -8,21 +8,22 @@ type Pizza = {
   id: string;
   name: string;
   description: string;
-  image: any;
+  image: PizzaImage;
   categoryId: string;
   rating?: number;
   reviewCount?: string;
   deliveryTime: number;
   deliveryFee: string;
-  variations?: { id: string; size: string; price: number }[];
-  price?: number;
+  ingredients?: Ingredient[];
+  variations?: Variant[];
+  dips?: Dip[];
   disabled?: boolean;
 };
 
 type Order = {
   id: string;
   customer: string;
-  image: any;
+  image: PizzaImage;
   name: string;
   description: string;
   category: string;
@@ -36,6 +37,8 @@ type Order = {
   estimatedDeliveryTime: number;
   time: string;
 }
+
+type PizzaFormProps = { categoryId?: string; pizzaId?: string; resetKey: number; }
 
 type Ingredient = {id: string; name: string; }
 
@@ -53,3 +56,15 @@ type VariantProps = {
   onEdit: (id: string) => void;
   onDelete: (id: string) => void;
 }
+
+type Dip = {id: string; name: string; price: number; selected: boolean; }
+
+type DipProps = {
+  dips: Dip[];
+  setDips: React.Dispatch<React.SetStateAction<Dip[]>>;
+  isExpanded: boolean;
+  setIsExpanded: React.Dispatch<React.SetStateAction<boolean>>;
+  onAdd: () => void;
+}
+
+type PizzaImage = string | number;

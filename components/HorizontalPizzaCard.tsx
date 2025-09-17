@@ -1,12 +1,14 @@
-import { FlatList, Image, View } from 'react-native';
+import { FlatList, Image, Pressable, View } from 'react-native';
 import { createThemedStyles } from '@/utils/styles';
 import { ThemedText } from './ThemedText';
+import { useRouter } from 'expo-router';
 
-export default function HorizontalPizzaCard({ orders, activeTab }: { orders: any; activeTab: string; }): React.JSX.Element {
+export default function HorizontalPizzaCard({ orders, activeTab }: { orders: Order[]; activeTab: string; }): React.JSX.Element {
     const styles = useThemedStyles();
+    const router = useRouter();
 
     const renderItem = ({ item }) => (
-        <View style={styles.card}>
+        <Pressable style={styles.card} onPress={() => router.navigate(`/order/${item.id}`)}>
             <Image source={item.image} style={styles.image} />
 
             <View style={styles.details}>
@@ -37,7 +39,7 @@ export default function HorizontalPizzaCard({ orders, activeTab }: { orders: any
                     </View>
                 </View>
             </View>
-        </View>
+        </Pressable>
     );
 
   return (

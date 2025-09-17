@@ -31,7 +31,7 @@ export default function CustomPizzaCard({
     const renderItem = ({ item }) => (
         <View style={styles.card}>
             <Image
-              source={item.image}
+              source={typeof item.image === 'string' ? { uri: item.image } : item.image}
               style={[styles.image, (disabled || item.disabled) && { opacity: 0.2 }]}
             />
             <View style={[styles.details, (disabled || item.disabled) && { opacity: 0.2 }]}>
@@ -62,7 +62,7 @@ export default function CustomPizzaCard({
               </View>
               <View style={styles.row}>
                   <ThemedText colorName='textSecondary' style={styles.price}>
-                      PKR {item.price || item.variations[0].price}
+                      PKR {item.variations[0]?.price || 'N/A'}
                   </ThemedText>
                   <View style={styles.timeContainer}>
                       <Ionicons name="time-outline" size={14} color={accentPrimary} />

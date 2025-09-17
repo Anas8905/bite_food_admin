@@ -36,7 +36,7 @@ export default function Ingredients({ ingredients, onAdd, onDelete }: Ingredient
 
 const useThemedStyles = createThemedStyles(({ textMuted, accentPrimary, bgGray }) => ({
     addBtn: {
-        paddingVertical: 5,
+        paddingVertical: 6,
         paddingHorizontal: 16,
         borderRadius: 30,
         borderWidth: 0.5,

@@ -1,142 +1,207 @@
-import { ScrollView, TextInput, TouchableOpacity, View } from "react-native";
-import { ThemedText } from "./ThemedText";
-import { createThemedStyles } from "@/utils/styles";
-import { useEffect, useState } from "react";
-import { usePizzaStore } from "@/stores/pizza";
-import * as ImagePicker from 'expo-image-picker';
 import { useAlert } from "@/hooks/useAlert";
-import UploadPhoto from "./UploadPhoto";
-import Ingredients from "./Ingredients";
-import Variants from "./Variants";
 import { useInputAlert } from "@/hooks/useInputAlert";
-import DipList from "./DipList";
+import { usePizzaStore } from "@/stores/pizza";
+import { createThemedStyles } from "@/utils/styles";
+import * as ImagePicker from 'expo-image-picker';
+import { useCallback, useEffect, useState } from "react";
+import { ScrollView, TextInput, TouchableOpacity, View } from "react-native";
+import Dip from "./Dip";
+import Ingredients from "./Ingredients";
+import { ThemedText } from "./ThemedText";
+import UploadPhoto from "./UploadPhoto";
+import Variants from "./Variants";
+import { useRouter } from "expo-router";
 
-export default function PizzaForm({ categoryId, pizzaId }: { categoryId?: string; pizzaId?: string; }): React.JSX.Element {
+export default function PizzaForm({ categoryId, pizzaId, resetKey }: PizzaFormProps): React.JSX.Element {
   const styles = useThemedStyles();
-  const { getCategoryById, getPizzaById } = usePizzaStore();
+  const { getPizzaById, addPizza } = usePizzaStore();
   const { showInputAlert } = useInputAlert();
   const { showAlert, hideAlert } = useAlert();
+  const router = useRouter();
 
-  const [categoryName, setCategoryName] = useState<string>("");
+  const [category, setCategory] = useState<string>("");
   const [pizzaName, setPizzaName] = useState<string>("");
-  const [pizzaImage, setPizzaImage] = useState("");
-  const [pizzaPrice, setPizzaPrice] = useState(0);
+  const [pizzaDesc, setPizzaDesc] = useState<string>("");
+  const [pizzaImage, setPizzaImage] = useState<PizzaImage>("");
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [variants, setVariants] = useState<Variant[]>([]);
+  const [dips, setDips] = useState<Dip[]>([]);
+  const [isDipExpanded, setIsDipExpanded] = useState(false);
 
-    useEffect(() => {
-      if (pizzaId) {
-        const pizza = getPizzaById(pizzaId);
-        if (pizza) {
-          setPizzaName(pizza.name);
-          setPizzaImage(pizza.image);
+  const resetEmpty = useCallback(() => {
+    setPizzaName("");
+    setPizzaDesc("");
+    setPizzaImage("");
+    setCategory(categoryId ?? "");
+    setIngredients([]);
+    setVariants([]);
+    setDips([]);
+    setIsDipExpanded(false);
+  }, [categoryId]);
 
-          if (pizza.variations) {
-            setVariants(pizza.variations);
-          } else {
-            setVariants([]);
-          }
+  const fillFromPizza = useCallback((pizza: Pizza) => {
+    setPizzaName(pizza.name);
+    setPizzaDesc(pizza.description);
+    setPizzaImage(pizza.image);
+    setCategory(pizza.categoryId);
 
-          if (pizza.price) {
-            setPizzaPrice(pizza.price);
-          } else {
-            setPizzaPrice(0);
-          }
-        }
-      }
-    }, [pizzaId, getPizzaById]);
+    setIngredients(pizza.ingredients || []);
+    setVariants(pizza.variations || []);
+    setDips(pizza.dips || []);
+    setIsDipExpanded(!!pizza.dips?.length);
+  }, []);
 
-    useEffect(() => {
-      if (categoryId) {
-        const category = getCategoryById(categoryId);
-        if (category) {
-          setCategoryName(category.name);
-        }
-      }
-    }, [categoryId, getCategoryById]);
-
-    const uploadImage = async () => {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-      if (status !== 'granted') {
-        return showAlert(
-          'Warning',
-          'We need camera roll permissions to make this work!'
-        );
-      }
-
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ['images'],
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
-
-      if (!result.canceled) {
-        setPizzaImage(result.assets[0].uri);
+  useEffect(() => {
+    if (pizzaId) {
+      const pizza = getPizzaById(pizzaId);
+      if (pizza) {
+        fillFromPizza(pizza);
       } else {
-        return showAlert('Warning', "You did not select any image.")
+        resetEmpty();
       }
-    };
+    } else {
+      resetEmpty();
+    }
+  }, [pizzaId, categoryId, getPizzaById, resetKey, resetEmpty, fillFromPizza]);
 
-    const addIngredient = () => {
-      showInputAlert("Add Ingredient",
-        "Enter an ingredient name you want to add:", {
-        inputs: [
-          {
-            placeholder: 'Peppers',
-          },
-        ],
-        submitText: "Add",
-        onSubmit: (values) => {
-          let [name] = values;
-          name = name.trim();
+  const uploadImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-          if (!name) return;
+    if (status !== 'granted') {
+      return showAlert(
+        'Warning',
+        'We need camera roll permissions to make this work!'
+      );
+    }
 
-          const normalized = name.toLowerCase();
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
 
-          if (ingredients.some((i) => i.name.toLowerCase() === normalized)) {
-            return showAlert(
-              "Duplicate Ingredient",
-              "The entered ingredient already exists.",
-              [{ text: "OK", style: "default" }]
-            );
-          }
+    if (!result.canceled) {
+      setPizzaImage(result.assets[0].uri);
+    } else {
+      return showAlert('Warning', "You did not select any image.")
+    }
+  };
 
-          setIngredients((prev) => [
-            ...prev,
-            {
-              id: Date.now().toString(),
-              name,
-            },
-          ]);
-
-          hideAlert();
+  const addIngredient = () => {
+    showInputAlert("Add Ingredient",
+      "Enter an ingredient name you want to add:", {
+      inputs: [
+        {
+          placeholder: 'Peppers',
         },
-      });
-    };
+      ],
+      submitText: "Add",
+      onSubmit: (values) => {
+        let [name] = values;
+        name = name.trim();
 
-    const addVariant = () => {
-      showInputAlert("Add Variant", "", {
+        if (!name) return;
+
+        const normalized = name.toLowerCase();
+
+        if (ingredients.some((i) => i.name.toLowerCase() === normalized)) {
+          return showAlert(
+            "Duplicate Ingredient",
+            "The entered ingredient already exists.",
+            [{ text: "OK", style: "default" }]
+          );
+        }
+
+        setIngredients((prev) => [
+          ...prev,
+          {
+            id: Date.now().toString(),
+            name,
+          },
+        ]);
+
+        hideAlert();
+      },
+    });
+  };
+
+  const addVariant = () => {
+    showInputAlert("Add Variant", "", {
+      inputs: [
+        {
+          label: "Size",
+          placeholder: '12" - Large (2-3)',
+        },
+        {
+          label: "Price",
+          placeholder: "1600",
+        //   keyboardType: "numeric",
+        },
+      ],
+      submitText: "Add",
+      onSubmit: (values) => {
+        const [size, priceStr] = values;
+        const trimmedSize = size.trim();
+        const trimmedPrice = priceStr.trim();
+
+        if (!trimmedSize || !trimmedPrice) return;
+
+        const price = Number(trimmedPrice);
+        if (isNaN(price)) {
+          return showAlert("Invalid Price", "Price must be a valid number.", [
+            { text: "OK", style: "default" },
+          ]);
+        }
+
+        if (
+          variants.some(
+            (v) =>
+              v.size.toLowerCase() === trimmedSize.toLowerCase() &&
+              v.price === price
+          )
+        ) {
+          return showAlert("Duplicate", "This variant already exists.", [
+            { text: "OK", style: "default" },
+          ]);
+        }
+
+        setVariants((prev) => [
+          ...prev,
+          {
+            id: Date.now().toString(),
+            size: trimmedSize,
+            price,
+          },
+        ]);
+
+        hideAlert();
+      },
+    });
+  };
+
+  const addDip = () => {
+    showInputAlert(
+      "Add Dip",
+      "",
+      {
         inputs: [
           {
-            label: "Size",
-            placeholder: '12" - Large (2-3)',
+            label: 'Name',
+            placeholder: 'BBQ Sauce',
           },
           {
-            label: "Price",
-            placeholder: "1600",
-          //   keyboardType: "numeric",
+            label: 'Price',
+            placeholder: '60',
           },
         ],
-        submitText: "Add",
+        submitText: "Save",
         onSubmit: (values) => {
-          const [size, priceStr] = values;
-          const trimmedSize = size.trim();
+          const [name, priceStr] = values;
+          const trimmedName = name.trim();
           const trimmedPrice = priceStr.trim();
 
-          if (!trimmedSize || !trimmedPrice) return;
+          if (!trimmedName || !trimmedPrice) return;
 
           const price = Number(trimmedPrice);
           if (isNaN(price)) {
@@ -146,45 +211,125 @@ export default function PizzaForm({ categoryId, pizzaId }: { categoryId?: string
           }
 
           if (
-            variants.some(
+            dips.some(
               (v) =>
-                v.size.toLowerCase() === trimmedSize.toLowerCase() &&
+                v.name.toLowerCase() === trimmedName.toLowerCase() &&
                 v.price === price
             )
           ) {
-            return showAlert("Duplicate", "This variant already exists.", [
-              { text: "OK", style: "default" },
-            ]);
+            return showAlert("Duplicate", "This variant already exists.",
+              [ { text: "OK", style: "default" }]
+            );
           }
 
-          setVariants((prev) => [
+          setDips((prev) => [
             ...prev,
             {
               id: Date.now().toString(),
-              size: trimmedSize,
+              name: trimmedName,
               price,
+              selected: false,
             },
           ]);
 
           hideAlert();
         },
-      });
+      }
+    )
+  }
+
+  const removeIngredient = (id: string) => {
+    setIngredients((prev) => prev.filter((i) => i.id !== id))
+  }
+
+  const removeVariant = (id: string) => {
+    setVariants((prev) => prev.filter((v) => v.id !== id));
+  }
+
+  const editVariant = (id: string) => {}
+
+  const saveChanges = () => {
+    if (!pizzaName.trim()) {
+      return showAlert(
+        "Validation Error",
+        "Please enter a pizza name.",
+        [{ text: "OK", style: "default" }]
+      );
+    }
+
+    if (!pizzaDesc.trim()) {
+      return showAlert(
+        "Validation Error",
+        "Please enter a brief description about pizza.",
+        [{ text: "OK", style: "default" }]
+      );
+    }
+
+    if (!categoryId && !category) {
+      return showAlert(
+        "Validation Error",
+        "Category is required.",
+        [{ text: "OK", style: "default" }]
+      );
+    }
+
+    if (!pizzaImage) {
+      return showAlert(
+        "Validation Error",
+        "Please upload a pizza image.",
+        [{ text: "OK", style: "default" }]
+      );
+    }
+
+    if(variants.length <= 0) {
+      return showAlert(
+        "Validation Error",
+        "Atleast one variant is required.",
+        [{ text: "OK", style: "default" }]
+      );
+    }
+
+    const pizzaData = {
+      ...(pizzaId && { id: pizzaId }),
+      name: pizzaName.trim(),
+      description: pizzaDesc.trim(),
+      image: pizzaImage,
+      categoryId: categoryId ?? category,
+      ingredients,
+      variations: variants,
+      dips: dips.filter(dip => dip.selected),
     };
 
-    const removeIngredient = (id: string) => {
-      setIngredients((prev) => prev.filter((i) => i.id !== id))
-    }
+    try {
+      addPizza(pizzaData);
 
-    const removeVariant = (id: string) => {
-      setVariants((prev) => prev.filter((v) => v.id !== id));
-    }
+      showAlert(
+        "Success",
+        pizzaId
+          ? "Item updated successfully!"
+          : "New item added successfully!",
+          [
+            {
+              text: "OK",
+              style: "default",
+              onPress: () => { router.back() },
+            },
+          ]
 
-    const editVariant = (id: string) => {}
+      );
+    } catch (error) {
+      showAlert(
+        "Error",
+        error instanceof Error ? error.message : "Something went wrong.",
+        [{ text: "OK", style: "default" }]
+      );
+    }
+  }
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
-      {/* Header */}
-      <View style={styles.header}>
+      {/* Item Name */}
+      <View style={styles.itemName}>
           <ThemedText style={styles.label}>ITEM NAME</ThemedText>
           <TextInput
               value={pizzaName}
@@ -196,8 +341,21 @@ export default function PizzaForm({ categoryId, pizzaId }: { categoryId?: string
           />
       </View>
 
+      {/* Item Description */}
+      <View style={styles.itemDesc}>
+          <ThemedText style={styles.label}>ITEM DESCRIPTION</ThemedText>
+          <TextInput
+              value={pizzaDesc}
+              onChangeText={setPizzaDesc}
+              autoCapitalize="none"
+              autoCorrect={false}
+              style={styles.input}
+              placeholder="Enter pizza description"
+          />
+      </View>
+
       {/* Upload and preview image */}
-      <View style={styles.uploadSection}>
+      <View>
         <ThemedText style={styles.label}>UPLOAD PHOTO</ThemedText>
         <UploadPhoto pizzaImage={pizzaImage} uploadImage={uploadImage}/>
       </View>
@@ -221,23 +379,29 @@ export default function PizzaForm({ categoryId, pizzaId }: { categoryId?: string
       {/* Extras */}
       <View style={styles.details}>
         <ThemedText type="defaultSemiBold" colorName="textPrimary" style={styles.extras}>EXTRAS</ThemedText>
-        <DipList />
+        <Dip
+          dips={dips}
+          setDips={setDips}
+          isExpanded={isDipExpanded}
+          setIsExpanded={setIsDipExpanded}
+          onAdd={addDip}
+        />
       </View>
 
       {/* Save Button */}
-      <TouchableOpacity style={styles.saveBtn}>
+      <TouchableOpacity style={styles.saveBtn} onPress={saveChanges}>
         <ThemedText style={styles.saveBtnText}>SAVE CHANGES</ThemedText>
       </TouchableOpacity>
     </ScrollView>
-
-
   )
 }
 
 const useThemedStyles = createThemedStyles(({ bgPrimary, borderLight, textPrimary, accentPrimary }) => ({
-  header: {
-    paddingHorizontal: 20,
+  itemName: {
     marginVertical: 20,
+  },
+  itemDesc: {
+    marginBottom: 20,
   },
   label: {
     fontSize: 14,
@@ -253,19 +417,15 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, borderLight, textPrimar
     color: textPrimary,
     fontSize: 16,
   },
-  uploadSection: {
-    paddingHorizontal: 20,
-  },
   details:{
     gap: 20,
     marginTop: 30,
-    marginHorizontal: 20,
   },
   extras: {
     textAlign: 'center',
   },
   saveBtn: {
-    margin: 20,
+    marginVertical: 20,
     alignItems: 'center',
     borderRadius: 8,
     backgroundColor: accentPrimary,

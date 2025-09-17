@@ -115,7 +115,10 @@ export const pizzas = [
       categoryId: 'deals',
       deliveryTime: 40,
       deliveryFee: 'Free',
-      price: 1100,
+      variations: [
+        { id: '1', size: '6" - Small (1)', price: 480 },
+        { id: '2', size: '9" - Medium (2)', price: 1000 },
+      ]
     },
     {
       id: 'd2',
@@ -125,7 +128,11 @@ export const pizzas = [
       categoryId: 'deals',
       deliveryTime: 35,
       deliveryFee: 'Free',
-      price: 4300,
+      variations: [
+        { id: '1', size: '6" - Small (1)', price: 480 },
+        { id: '2', size: '9" - Medium (2)', price: 1000 },
+        { id: '3', size: '12" - Large (2-3)', price: 1500 },
+      ]
     },
     {
       id: 'd3',
@@ -135,7 +142,10 @@ export const pizzas = [
       categoryId: 'deals',
       deliveryTime: 70,
       deliveryFee: 'Free',
-      price: 5100,
+      variations: [
+        { id: '1', size: '6" - Small (1)', price: 480 },
+        { id: '2', size: '9" - Medium (2)', price: 1000 },
+      ]
     },
     {
       id: 'd4',
@@ -145,7 +155,9 @@ export const pizzas = [
       categoryId: 'deals',
       deliveryTime: 80,
       deliveryFee: 'Free',
-      price: 7600,
+      variations: [
+        { id: '1', size: '6" - Small (1)', price: 480 },
+      ]
     },
 ];
 

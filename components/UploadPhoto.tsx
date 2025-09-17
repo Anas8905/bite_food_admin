@@ -2,37 +2,38 @@ import { SimpleLineIcons } from "@expo/vector-icons";
 import { Image, Pressable, View } from "react-native";
 import { ThemedText } from "./ThemedText";
 import { createThemedStyles } from "@/utils/styles";
+import { useThemeColors } from "@/hooks/useThemeColors";
 
 type UploadPhotoProps = {
-    pizzaImage: number | string | null;
+    pizzaImage: PizzaImage;
     uploadImage: () => Promise<void>;
   };
 
 export default function UploadPhoto({ pizzaImage, uploadImage }: UploadPhotoProps): React.JSX.Element {
   const styles = useThemedStyles();
+  const { textSecondary } = useThemeColors();
 
   return (
     <View style={styles.uploadContainer}>
         <Pressable style={[styles.baseUpload, styles.upload]} onPress={uploadImage}>
             <View style={styles.iconContainer}>
-                <SimpleLineIcons name="cloud-upload" size={24} color="textPrimary" />
+                <SimpleLineIcons name="cloud-upload" size={24} color={textSecondary} />
             </View>
             <ThemedText colorName="textSecondary" style={styles.uploadText}>Upload</ThemedText>
         </Pressable>
         <View style={[styles.baseUpload, styles.preview]}>
             {pizzaImage && (
-            <Image
-                source={typeof pizzaImage === 'string' ? { uri: pizzaImage } : pizzaImage}
-                style={styles.pizzaImage}
-            />
-
+                <Image
+                    source={typeof pizzaImage === 'string' ? { uri: pizzaImage } : pizzaImage}
+                    style={styles.pizzaImage}
+                />
             )}
         </View>
     </View>
   )
 }
 
-const useThemedStyles = createThemedStyles(({ bgGray, borderDark }) => ({
+const useThemedStyles = createThemedStyles(({ bgGray, textMuted }) => ({
     uploadContainer: {
         flexDirection: 'row',
         gap: 14,
@@ -44,7 +45,7 @@ const useThemedStyles = createThemedStyles(({ bgGray, borderDark }) => ({
     },
     upload: {
         borderWidth: 1,
-        borderColor: borderDark,
+        borderColor: textMuted,
         borderStyle: 'dashed',
         alignItems: 'center',
         justifyContent: 'center',
@@ -64,7 +65,7 @@ const useThemedStyles = createThemedStyles(({ bgGray, borderDark }) => ({
         height: 50,
         borderRadius: 24,
         padding: 12,
-        backgroundColor: '#ECEAF5',
+        backgroundColor: bgGray,
     },
     uploadText: {
         fontSize: 14,

@@ -11,9 +11,8 @@ import { useRouter, useSegments } from 'expo-router';
 import { TouchableOpacity } from 'react-native';
 import { ThemedText } from '../ThemedText';
 import { ThemedView } from '../ThemedView';
-import BackButton from './BackButton';
 
-export default function Navbar({ categoryId }: { categoryId?: string }): React.JSX.Element{
+export default function Navbar({ categoryId }: { categoryId?: string }): React.JSX.Element | null {
   const styles = useThemedStyles();
   const { textPrimary } = useThemeColors();
   const { openDrawer } = useDrawer();
@@ -87,17 +86,15 @@ export default function Navbar({ categoryId }: { categoryId?: string }): React.J
     });
   };
 
+  if (isAddNewScreen || isEditScreen) return null;
+
   return (
     <ThemedView style={styles.navbar}>
       {/* Left side */}
       <ThemedView style={styles.leftSide}>
-        {isAddNewScreen || isEditScreen ? (
-          <BackButton />
-        ) : (
-          <TouchableOpacity onPress={openDrawer} style={styles.circleButton}>
-            <MenuIcon width={46} height={46} color={textPrimary} />
-          </TouchableOpacity>
-        )}
+        <TouchableOpacity onPress={openDrawer} style={styles.circleButton}>
+          <MenuIcon width={46} height={46} color={textPrimary} />
+        </TouchableOpacity>
         <ThemedText type="defaultSemiBold" colorName="accentPrimary">{title}</ThemedText>
       </ThemedView>
 
@@ -112,11 +109,7 @@ export default function Navbar({ categoryId }: { categoryId?: string }): React.J
           onPress={() => { router.push(`/pizza/add/${categoryId}`)}}
         >
           <ThemedText style={styles.addBtnText}>Add New Item</ThemedText>
-      </TouchableOpacity>
-      ) : isAddNewScreen || isEditScreen ? (
-        <TouchableOpacity style={styles.addBtn}>
-          <ThemedText style={styles.addBtnText}>RESET</ThemedText>
-      </TouchableOpacity>
+        </TouchableOpacity>
       ) : (
         <LogoIcon width={100} height={100} color={textPrimary} />
       )}
