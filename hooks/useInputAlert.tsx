@@ -1,12 +1,12 @@
-import { ThemedView } from '@/components/ThemedView';
-import { useAlert } from "@/hooks/useAlert";
+import { ThemedView } from "@/components/ThemedView";
 import { createThemedStyles } from "@/utils/styles";
 import { TextInput } from "react-native";
+import { useAlert } from "./useAlert";
 import { useThemeColors } from "./useThemeColors";
 
-export const useInputAlert = () => {
-  const styles = useThemedStyles();
+export const useInputAlert = (): showInputAlertProps => {
   const { textMuted } = useThemeColors();
+  const styles = useThemedStyles();
   const { showAlert } = useAlert();
 
   const showInputAlert = (
@@ -25,7 +25,7 @@ export const useInputAlert = () => {
       onSubmit: (value: string) => void;
       onCancel?: () => void;
     }
-  ) => {
+  ): void => {
     let value = "";
 
     showAlert(

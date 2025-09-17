@@ -1,11 +1,12 @@
-import { Image, Pressable, TextInput, View } from "react-native";
+import { TextInput, View } from "react-native";
 import { ThemedText } from "./ThemedText";
 import { createThemedStyles } from "@/utils/styles";
 import { useEffect, useState } from "react";
 import { usePizzaStore } from "@/stores/pizza";
-import { SimpleLineIcons } from "@expo/vector-icons";
 import * as ImagePicker from 'expo-image-picker';
 import { useAlert } from "@/hooks/useAlert";
+import UploadPhoto from "./UploadPhoto";
+import Ingredients from "./Ingredients";
 
 export default function PizzaForm({ categoryId, pizzaId }: { categoryId?: string; pizzaId?: string; }): React.JSX.Element {
   const styles = useThemedStyles();
@@ -74,29 +75,22 @@ export default function PizzaForm({ categoryId, pizzaId }: { categoryId?: string
           />
       </View>
 
-      {/* Upload and Preview Photo */}
+      {/* Upload and preview image */}
       <View style={styles.uploadSection}>
-        <Pressable style={[styles.baseUpload, styles.upload]} onPress={uploadImage}>
-          <View style={styles.iconContainer}>
-            <SimpleLineIcons name="cloud-upload" size={24} color="textPrimary" />
-          </View>
-          <ThemedText colorName="textSecondary" style={styles.uploadText}>Upload</ThemedText>
-        </Pressable>
-        <View style={[styles.baseUpload, styles.preview]}>
-          {pizzaImage && (
-            <Image
-              source={typeof pizzaImage === 'string' ? { uri: pizzaImage } : pizzaImage}
-              style={styles.pizzaImage}
-          />
+        <ThemedText style={styles.label}>UPLOAD PHOTO</ThemedText>
+        <UploadPhoto pizzaImage={pizzaImage} uploadImage={uploadImage}/>
+      </View>
 
-          )}
-        </View>
+      {/* Details */}
+      <View style={styles.details}>
+        <ThemedText type="defaultSemiBold" colorName="textPrimary">DETAILS</ThemedText>
+        <Ingredients />
       </View>
     </View>
   )
 }
 
-const useThemedStyles = createThemedStyles(({ bgPrimary, bgSecondary, borderLight, borderDark, textPrimary, accentPrimary, bgGray }) => ({
+const useThemedStyles = createThemedStyles(({ bgPrimary, borderLight, textPrimary}) => ({
   header: {
     paddingHorizontal: 20,
     marginVertical: 20,
@@ -116,39 +110,11 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, bgSecondary, borderLigh
     fontSize: 16,
   },
   uploadSection: {
-    flexDirection: 'row',
-    gap: 14,
+    paddingHorizontal: 20,
+  },
+  details:{
+    gap: 20,
+    marginTop: 30,
     marginHorizontal: 20,
-  },
-  baseUpload: {
-    width: 140,
-    height: 140,
-    borderRadius: 16,
-    borderWidth: 1,
-  },
-  upload: {
-    borderColor: borderDark,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-  },
-  preview: {
-    backgroundColor: bgSecondary,
-    overflow: 'hidden',
-  },
-  pizzaImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-  },
-  iconContainer: {
-    width: 50,
-    height: 50,
-    borderRadius: 24,
-    padding: 12,
-    backgroundColor: '#ECEAF5',
-  },
-  uploadText: {
-    fontSize: 14,
   },
 }))
