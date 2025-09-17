@@ -15,7 +15,7 @@ export default function UploadPhoto({ pizzaImage, uploadImage }: UploadPhotoProp
     <View style={styles.uploadContainer}>
         <Pressable style={[styles.baseUpload, styles.upload]} onPress={uploadImage}>
             <View style={styles.iconContainer}>
-            <SimpleLineIcons name="cloud-upload" size={24} color="textPrimary" />
+                <SimpleLineIcons name="cloud-upload" size={24} color="textPrimary" />
             </View>
             <ThemedText colorName="textSecondary" style={styles.uploadText}>Upload</ThemedText>
         </Pressable>
@@ -32,7 +32,7 @@ export default function UploadPhoto({ pizzaImage, uploadImage }: UploadPhotoProp
   )
 }
 
-const useThemedStyles = createThemedStyles(({ bgSecondary, borderDark }) => ({
+const useThemedStyles = createThemedStyles(({ bgGray, borderDark }) => ({
     uploadContainer: {
         flexDirection: 'row',
         gap: 14,
@@ -41,16 +41,17 @@ const useThemedStyles = createThemedStyles(({ bgSecondary, borderDark }) => ({
         width: 140,
         height: 140,
         borderRadius: 16,
-        borderWidth: 1,
     },
     upload: {
+        borderWidth: 1,
         borderColor: borderDark,
+        borderStyle: 'dashed',
         alignItems: 'center',
         justifyContent: 'center',
         gap: 8,
     },
     preview: {
-        backgroundColor: bgSecondary,
+        backgroundColor: bgGray,
         overflow: 'hidden',
     },
     pizzaImage: {

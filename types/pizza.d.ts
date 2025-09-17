@@ -14,7 +14,7 @@ type Pizza = {
   reviewCount?: string;
   deliveryTime: number;
   deliveryFee: string;
-  variations?: { size: string; price: number }[];
+  variations?: { id: string; size: string; price: number }[];
   price?: number;
   disabled?: boolean;
 };
@@ -35,4 +35,21 @@ type Order = {
   deliveryAddress: string;
   estimatedDeliveryTime: number;
   time: string;
+}
+
+type Ingredient = {id: string; name: string; }
+
+type IngredientsProps = {
+  ingredients: Ingredient[];
+  onAdd: () => void;
+  onDelete: (id: string) => void;
+}
+
+type Variant = {id: string; size: string; price: number}
+
+type VariantProps = {
+  variants: Variant[];
+  onAdd: () => void;
+  onEdit: (id: string) => void;
+  onDelete: (id: string) => void;
 }

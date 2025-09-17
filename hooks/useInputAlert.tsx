@@ -1,3 +1,4 @@
+import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { createThemedStyles } from "@/utils/styles";
 import { TextInput } from "react-native";
@@ -18,15 +19,34 @@ export const useInputAlert = (): showInputAlertProps => {
       submitStyle = "default",
       onSubmit,
       onCancel,
-    }: {
-      placeholder?: string;
-      submitText?: string;
-      submitStyle?: "default" | "cancel" | "destructive";
-      onSubmit: (value: string) => void;
-      onCancel?: () => void;
-    }
+      inputs,
+    }: InputAlertOptions
   ): void => {
-    let value = "";
+    const values: string[] = new Array(inputs.length).fill("");
+    const setValue = (index: number, value: string) => {
+      values[index] = value;
+    };
+
+    const renderInputs = () => (
+      <ThemedView style={styles.inputsContainer}>
+        {inputs.map((input, index) => (
+          <ThemedView key={index} style={styles.inputFieldWrapper}>
+            {input.label && (
+              <ThemedText style={styles.inputLabel}>{input.label}</ThemedText>
+            )}
+            <TextInput
+              placeholder={input.placeholder || placeholder}
+              placeholderTextColor={textMuted}
+              onChangeText={(text) => setValue(index, text)}
+              autoCapitalize="words"
+              autoCorrect={false}
+              autoFocus={index === 0}
+              style={styles.input}
+            />
+          </ThemedView>
+        ))}
+      </ThemedView>
+    );
 
     showAlert(
       title,
@@ -37,21 +57,10 @@ export const useInputAlert = (): showInputAlertProps => {
           text: submitText,
           style: submitStyle,
           keepOpen: true,
-          onPress: () => { onSubmit(value.trim()) },
+          onPress: () => { onSubmit(values.map(v => v.trim())) },
         },
       ],
-
-      <ThemedView style={styles.inputWrapper}>
-        <TextInput
-            placeholder={placeholder}
-            placeholderTextColor={textMuted}
-            onChangeText={(text) => (value = text)}
-            autoCapitalize="words"
-            autoCorrect={false}
-            autoFocus
-            style={styles.input}
-        />
-    </ThemedView>
+      renderInputs()
     );
   };
 
@@ -62,12 +71,25 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, textPrimary, borderLigh
   inputWrapper: {
     paddingHorizontal: 20,
   },
+  inputsContainer: {
+    paddingHorizontal: 20,
+    gap: 16,
+  },
+  inputFieldWrapper: {
+    gap: 8,
+  },
+  inputLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: textPrimary,
+  },
   input: {
     backgroundColor: bgPrimary,
-    padding: 10,
+    padding: 12,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: borderLight,
     color: textPrimary,
+    fontSize: 16,
   },
 }))

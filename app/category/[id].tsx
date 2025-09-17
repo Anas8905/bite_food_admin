@@ -74,10 +74,15 @@ export default function CategoryScreen(): React.JSX.Element {
       'Delete Item',
       `Please type the item name "${pizzaName}" to confirm:`,
       {
-        placeholder: pizzaName,
+        inputs: [
+          {
+            placeholder: "Category Name",
+          },
+        ],
         submitText: 'Delete',
         submitStyle: 'destructive',
-        onSubmit: (enteredName) => {
+        onSubmit: (values) => {
+          const [enteredName] = values;
           if(!enteredName.trim()) return;
 
           if (enteredName === pizzaName) {

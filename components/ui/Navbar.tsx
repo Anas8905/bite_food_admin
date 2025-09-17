@@ -47,17 +47,26 @@ export default function Navbar({ categoryId }: { categoryId?: string }): React.J
 
   const handleAddCategory = () => {
     showInputAlert("Add Category", "Enter a category name you want to add:", {
-      placeholder: "Category Name",
-      onSubmit: (name) => {
-        name = name.trim().toLowerCase();
+      inputs: [
+        {
+          placeholder: "Category Name",
+        },
+      ],
+      submitText: "Add",
+      onSubmit: (values) => {
+        let [name] = values;
+        name = name.trim();
+
         if (!name) return;
 
-        const result = addCategory(name);
-        const formattedName = capitalize(name);
+        const normalized = name.toLowerCase();
+
+        const result = addCategory(normalized);
+        const formattedName = capitalize(normalized);
 
         if (!result) {
           return showAlert(
-            "Error",
+            "Duplicate Category",
             `The category "${formattedName}" already exists.`,
             [
               { text: "Cancel", style: "cancel" },

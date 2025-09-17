@@ -40,14 +40,24 @@ interface UseCustomAlertReturn {
   AlertComponent: () => React.JSX.Element;
 }
 
-type showInputAlertProps = { showInputAlert: (
-  title: string,
-  message: string,
-  options: {
-    placeholder?: string;
-    submitText?: string;
-    submitStyle?: "default" | "cancel" | "destructive";
-    onSubmit: (value: string) => void;
-    onCancel?: () => void;
-  }
-) => void }
+interface InputField {
+  placeholder?: string;
+  label?: string;
+}
+
+interface InputAlertOptions {
+  placeholder?: string;
+  submitText?: string;
+  submitStyle?: "default" | "cancel" | "destructive";
+  onSubmit: (values: string[]) => void;
+  onCancel?: () => void;
+  inputs: InputField[];
+}
+
+type showInputAlertProps = {
+  showInputAlert: (
+    title: string,
+    message: string,
+    options: InputAlertOptions
+  ) => void;
+};

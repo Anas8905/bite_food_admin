@@ -16,10 +16,10 @@ export const pizzas = [
       deliveryTime: 25,
       deliveryFee: 'Free',
       variations: [
-        { size: '6" - Small (1)', price: 510 },
-        { size: '9" - Medium (2)', price: 1100 },
-        { size: '12" - Large (2-3)', price: 1600 },
-        { size: '15" - Party (3-4)', price: 2100 },
+        { id: '1', size: '6" - Small (1)', price: 510 },
+        { id: '2', size: '9" - Medium (2)', price: 1100 },
+        { id: '3', size: '12" - Large (2-3)', price: 1600 },
+        { id: '4', size: '15" - Party (3-4)', price: 2100 },
       ]
     },
     {
@@ -33,10 +33,10 @@ export const pizzas = [
       deliveryTime: 30,
       deliveryFee: 'Free',
       variations: [
-        { size: '6" - Small (1)', price: 510 },
-        { size: '9" - Medium (2)', price: 1200 },
-        { size: '12" - Large (2-3)', price: 1700 },
-        { size: '15" - Party (3-4)', price: 2300 },
+        { id: '1', size: '6" - Small (1)', price: 510 },
+        { id: '2', size: '9" - Medium (2)', price: 1200 },
+        { id: '3', size: '12" - Large (2-3)', price: 1700 },
+        { id: '4', size: '15" - Party (3-4)', price: 2300 },
       ]
     },
     {
@@ -50,10 +50,10 @@ export const pizzas = [
       deliveryTime: 25,
       deliveryFee: 'Free',
       variations: [
-        { size: '6" - Small (1)', price: 510 },
-        { size: '9" - Medium (2)', price: 1100 },
-        { size: '12" - Large (2-3)', price: 1600 },
-        { size: '15" - Party (3-4)', price: 2200 },
+        { id: '1', size: '6" - Small (1)', price: 510 },
+        { id: '2', size: '9" - Medium (2)', price: 1100 },
+        { id: '3', size: '12" - Large (2-3)', price: 1600 },
+        { id: '4', size: '15" - Party (3-4)', price: 2200 },
       ]
     },
     {
@@ -67,10 +67,10 @@ export const pizzas = [
       deliveryTime: 20,
       deliveryFee: 'Free',
       variations: [
-        { size: '6" - Small (1)', price: 510 },
-        { size: '9" - Medium (2)', price: 1100 },
-        { size: '12" - Large (2-3)', price: 1600 },
-        { size: '15" - Party (3-4)', price: 2100 },
+        { id: '1', size: '6" - Small (1)', price: 510 },
+        { id: '2', size: '9" - Medium (2)', price: 1100 },
+        { id: '3', size: '12" - Large (2-3)', price: 1600 },
+        { id: '4', size: '15" - Party (3-4)', price: 2100 },
       ]
     },
     {
@@ -84,10 +84,10 @@ export const pizzas = [
       deliveryTime: 20,
       deliveryFee: 'Free',
       variations: [
-        { size: '6" - Small (1)', price: 450 },
-        { size: '9" - Medium (2)', price: 950 },
-        { size: '12" - Large (2-3)', price: 1400 },
-        { size: '15" - Party (3-4)', price: 2100 },
+        { id: '1', size: '6" - Small (1)', price: 450 },
+        { id: '2', size: '9" - Medium (2)', price: 950 },
+        { id: '3', size: '12" - Large (2-3)', price: 1400 },
+        { id: '4', size: '15" - Party (3-4)', price: 2100 },
       ]
     },
     {
@@ -101,10 +101,10 @@ export const pizzas = [
       deliveryTime: 20,
       deliveryFee: 'Free',
       variations: [
-        { size: '6" - Small (1)', price: 480 },
-        { size: '9" - Medium (2)', price: 1000 },
-        { size: '12" - Large (2-3)', price: 1500 },
-        { size: '15" - Party (3-4)', price: 2100 },
+        { id: '1', size: '6" - Small (1)', price: 480 },
+        { id: '2', size: '9" - Medium (2)', price: 1000 },
+        { id: '3', size: '12" - Large (2-3)', price: 1500 },
+        { id: '4', size: '15" - Party (3-4)', price: 2100 },
       ]
     },
     {

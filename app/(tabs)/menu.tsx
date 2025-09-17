@@ -41,36 +41,40 @@ export default function MenuScreen(): React.JSX.Element {
     }, [resetAllExpanded])
   );
 
-
   const handleDeleteCategory = (id: string, name: string) => {
     showInputAlert(
       'Delete Menu Category',
       `Please type the category name "${name}" to confirm:`,
       {
-        placeholder: name,
-        submitText: 'Delete',
-        submitStyle: 'destructive',
-        onSubmit: (enteredName) => {
-          if(!enteredName.trim()) return;
-
-          if (enteredName === name) {
-            deleteCategory(id);
-            return showAlert(
-              'Success',
-              `Category "${name}" has been deleted successfully.`,
-              [{ text: 'OK', style: 'default' }]
-            );
-          } else {
-            return showAlert(
-              'Deletion Failed',
-              'The entered name does not match the category name.',
-              [{ text: 'OK', style: 'default' }]
-            );
-          }
+      inputs: [
+        {
+          placeholder: name,
         },
-        onCancel: () => {}
-      }
-    );
+      ],
+      submitText: 'Delete',
+      submitStyle: 'destructive',
+      onSubmit: (values) => {
+        let [enteredName] = values;
+
+        if(!enteredName.trim()) return;
+
+        if (enteredName === name) {
+          deleteCategory(id);
+          return showAlert(
+            'Success',
+            `Category "${name}" has been deleted successfully.`,
+            [{ text: 'OK', style: 'default' }]
+          );
+        } else {
+          return showAlert(
+            'Not Found',
+            'The entered category does not exist.',
+            [{ text: 'OK', style: 'default' }]
+          );
+        }
+      },
+      onCancel: () => {}
+    });
   };
 
   return (
