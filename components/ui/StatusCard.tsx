@@ -3,7 +3,7 @@ import { ThemedText } from '../ThemedText'
 import { StyleSheet } from 'react-native';
 
 export default function StatusCard({ statusText, status }: {
-    statusText: string; status: string;
+    statusText: string; status: number;
 }): React.JSX.Element {
     return (
         <ThemedView style={styles.statusCard} colorName="bgSecondary">

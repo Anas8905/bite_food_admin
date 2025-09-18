@@ -1,4 +1,4 @@
-import { categories as initialCategories, pizzas as initialPizzas, orders as initialOrders } from '@/api/mockApi';
+import { categories as initialCategories, pizzas as initialPizzas, orders as initialOrders, reviews as initialReviews } from '@/api/mockApi';
 import { capitalize } from '@/utils/common.utils';
 import { create } from 'zustand';
 
@@ -6,6 +6,7 @@ type PizzaStore = {
   pizzas: Pizza[];
   orders: Order[];
   categories: Category[];
+  reviews: Review[];
   selectedCategories: string[];
 
   // derived selectors
@@ -24,6 +25,8 @@ type PizzaStore = {
   enableCategory: (id: string) => void;
   getPizzaById: (id: string) => Pizza | undefined;
   getOrderById: (id: string) => Order | undefined;
+  getOrdersByStatus: (status: string) => Order[] | [];
+
   addPizza: (
     pizzaData: Omit<
       Pizza,
@@ -40,6 +43,7 @@ export const usePizzaStore = create<PizzaStore>((set, get) => ({
   pizzas: initialPizzas,
   orders: initialOrders,
   categories: initialCategories,
+  reviews: initialReviews,
   selectedCategories: ['All'],
 
   // ---- derived selectors ----
@@ -177,6 +181,10 @@ export const usePizzaStore = create<PizzaStore>((set, get) => ({
 
   getOrderById: (id: string) => {
     return get().orders.find((o) => o.id === id);
+  },
+
+  getOrdersByStatus(status: string) {
+    return get().orders.filter((o) => o.status === status);
   },
 
   addPizza: async (pizzaData): Promise<boolean> => {

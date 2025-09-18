@@ -26,6 +26,7 @@ export default function Navbar({ categoryId }: { categoryId?: string }): React.J
   const isAddNewScreen = segments[0] === "pizza" && segments[1] === "add";
   const isEditScreen = segments[0] === "pizza" && segments[1] === "edit";
   const isOrderDetailScreen = pathname.startsWith("/order/");
+  const isReviewScreen = pathname === "/reviews";
 
   const { showInputAlert } = useInputAlert();
   const { showAlert } = useAlert();
@@ -47,6 +48,8 @@ export default function Navbar({ categoryId }: { categoryId?: string }): React.J
   ? "EDIT ITEM"
   : isOrderDetailScreen
   ? "ORDER DETAILS"
+  : isReviewScreen
+  ? "REVIEWS"
   : screenName;
 
   const handleAddCategory = () => {
@@ -97,7 +100,7 @@ export default function Navbar({ categoryId }: { categoryId?: string }): React.J
     <ThemedView style={styles.navbar}>
       {/* Left side */}
       <ThemedView style={styles.leftSide}>
-        {isOrderDetailScreen ? (
+        {isOrderDetailScreen || isReviewScreen ? (
           <BackButton />
         ) : (
           <TouchableOpacity onPress={openDrawer} style={styles.circleButton}>

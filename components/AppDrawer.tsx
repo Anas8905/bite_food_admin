@@ -86,11 +86,21 @@ export default function AppDrawer(): React.JSX.Element {
 
   const DrawerContent = ({ close }) => (
     <View style={styles.itemsWrapper}>
+
       <DrawerItem
         label="Profile"
         icon={<ProfileIcon width={18} height={18} color={textPrimary} />}
         onPress={() => {
           router.navigate('/profile');
+          close();
+        }}
+      />
+
+      <DrawerItem
+        label="Reviews"
+        icon={<Feather name="star" size={20} color={textPrimary} />}
+        onPress={() => {
+          router.navigate('/reviews');
           close();
         }}
       />
@@ -110,15 +120,6 @@ export default function AppDrawer(): React.JSX.Element {
         renderItem={renderThemeOptions}
         onChange={(item) => {
           setPreference(item.value as 'device' | 'light' | 'dark');
-        }}
-      />
-
-      <DrawerItem
-        label="Settings"
-        icon={<Ionicons name="settings-outline" size={20} color={textPrimary} />}
-        onPress={() => {
-          router.navigate('/settings');
-          close();
         }}
       />
     </View>

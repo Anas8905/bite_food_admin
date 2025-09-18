@@ -45,6 +45,16 @@ type Order = {
   items: OrderItem[];
 };
 
+type Review = {
+  id: string;
+  customer: string;
+  avatar: ImageSourcePropType;
+  date: string;
+  title: string;
+  description: string;
+  rating: number;
+};
+
 type PizzaFormProps = { categoryId?: string; pizzaId?: string; resetKey: number; }
 
 type Ingredient = {id: string; name: string; }

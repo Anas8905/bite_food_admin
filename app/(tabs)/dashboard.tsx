@@ -3,22 +3,33 @@ import ChartCard from '@/components/ui/ChartCard';
 import PizzaCard from '@/components/ui/PizzaCard';
 import ReviewCard from '@/components/ui/ReviewCard';
 import StatusCard from '@/components/ui/StatusCard';
+import { usePizzaStore } from '@/stores/pizza';
+import { useEffect, useState } from 'react';
 import { SafeAreaView, StyleSheet } from 'react-native';
 
 export default function DashboardScreen(): React.JSX.Element {
+  const { getOrdersByStatus } = usePizzaStore();
+  const [ongoing, setOngoing] = useState<Order[]>([]);
+  const [incoming, setIncoming] = useState<Order[]>([]);
+
+  useEffect(() => {
+     setOngoing(getOrdersByStatus("ongoing"));
+     setIncoming(getOrdersByStatus("incoming"));
+  }, [getOrdersByStatus]);
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ThemedView style={styles.container} colorName="bgPrimary">
-        
+
          {/* Status Cards */}
         <ThemedView style={styles.statusContainer}>
           <StatusCard
             statusText="Running Orders"
-            status="20"
+            status={ongoing.length}
           />
           <StatusCard
             statusText="Order Requests"
-            status="05"
+            status={incoming.length}
           />
         </ThemedView>
 
