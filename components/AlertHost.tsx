@@ -9,6 +9,8 @@ export const AlertHost = (): React.JSX.Element => {
   const content = useAlertStore((s) => s.content);
   const hide    = useAlertStore((s) => s.hide);
 
+  const alertType = content ? 'input' : 'simple';
+
   return (
     <CustomAlert
       visible={visible}
@@ -17,6 +19,7 @@ export const AlertHost = (): React.JSX.Element => {
       buttons={buttons}
       content={content}
       onDismiss={hide}
+      alertType={alertType}
     />
   );
 };

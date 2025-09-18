@@ -2,6 +2,7 @@ import ProfileIcon from '@/assets/images/profile.svg';
 import { useAuth } from '@/hooks/useAuth';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { useThemePreference } from '@/hooks/useThemePreference';
+import { isAndroid } from '@/utils/common.utils';
 import { createThemedStyles } from '@/utils/styles';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
@@ -25,22 +26,36 @@ export default function AppDrawer(): React.JSX.Element {
   const { user, logout } = useAuth();
 
   const DrawerHeader = () => (
-    <View style={{ marginTop: 10, marginBottom: 10 }}>
+    <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={closeDrawer} style={styles.closeBtn}>
           <Ionicons name="close" size={18} color={textPrimary} />
         </TouchableOpacity>
+      </View>
 
+      <View style={styles.userInfo}>
         {user?.avatar && (
           <View style={styles.avatarCircle}>
                 <Image source={{ uri: user?.avatar }} style={styles.avatarImage} />
           </View>
         )}
-      </View>
-
-      <View style={{ marginTop: 30, gap: 2 }}>
-        <ThemedText type='subtitle' colorName='accentPrimary'>{user?.fullName}</ThemedText>
-        <ThemedText style={styles.phone}>{user?.email}</ThemedText>
+        <View style={styles.infoContainer}>
+          <ThemedText
+            style={styles.userName}
+            colorName='accentPrimary'
+            numberOfLines={1}
+            ellipsizeMode='tail'
+          >
+            {user?.fullName}
+          </ThemedText>
+          <ThemedText
+            style={styles.phone}
+            numberOfLines={1}
+            ellipsizeMode='tail'
+          >
+            {user?.email}
+          </ThemedText>
+        </View>
       </View>
     </View>
   )
@@ -161,6 +176,10 @@ const useThemedStyles = createThemedStyles(({
   borderLight,
   dropdownBg,
 }) => ({
+  container: {
+    marginTop: isAndroid ? 40 : 10,
+    marginBottom: 10,
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -174,6 +193,12 @@ const useThemedStyles = createThemedStyles(({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  userInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 30,
+  },
   avatarCircle: {
     width: 54,
     height: 54,
@@ -186,9 +211,13 @@ const useThemedStyles = createThemedStyles(({
     height: '100%',
     resizeMode: 'cover',
   },
+  infoContainer: {
+    flex: 1,
+    gap: 2,
+  },
   userName: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: 600,
   },
   phone: {
     color: textTertiary,

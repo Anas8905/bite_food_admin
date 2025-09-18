@@ -33,7 +33,7 @@ export default function OrderDetail(): React.JSX.Element {
                         {order?.time} • {order?.estimatedDeliveryTime} min
                     </ThemedText>
                 </View>
-                {order?.stage && (
+                {order?.stage === "preparing" && (
                     <View style={styles.stagePill}>
                         <ThemedText style={styles.stageText}>{order?.stage?.toUpperCase()}</ThemedText>
                     </View>
@@ -55,6 +55,21 @@ export default function OrderDetail(): React.JSX.Element {
                 </View>
             </View>
 
+            {order?.status === 'incoming' && (
+                <View style={styles.headerActions}>
+                    <TouchableOpacity
+                        style={[styles.baseHeaderBtn, styles.leftHeaderBtn]}
+                    >
+                        <ThemedText style={styles.leftBtnText}>ACCEPT</ThemedText>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[styles.baseHeaderBtn, styles.rightHeaderBtn]}
+                    >
+                        <ThemedText style={styles.rightBtnText}>CANCEL</ThemedText>
+                    </TouchableOpacity>
+                </View>
+            )}
+
             <View style={styles.ordersSection}>
                 <ThemedText type="subtitle">Ordered Items</ThemedText>
             </View>
@@ -67,7 +82,12 @@ export default function OrderDetail(): React.JSX.Element {
             <View style={styles.textualData}>
                 <View style={styles.head}>
                     <View style={styles.headLeft}>
-                        <ThemedText colorName="textPrimary" style={styles.name} >
+                        <ThemedText
+                            colorName="textPrimary"
+                            style={styles.name}
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
+                        >
                             {item.category} • {item.name}
                         </ThemedText>
                         <ThemedText colorName='textSecondary' style={styles.time}>Size: {item.size}</ThemedText>
@@ -114,9 +134,11 @@ export default function OrderDetail(): React.JSX.Element {
                 </View>
             </View>
 
-            <TouchableOpacity style={styles.actionBtn}>
-                <Text style={styles.btnText}>Mark Ready for Delivery</Text>
-            </TouchableOpacity>
+            {order?.stage === "preparing" && (
+                <TouchableOpacity style={styles.actionBtn}>
+                    <Text style={styles.btnText}>Mark Ready for Delivery</Text>
+                </TouchableOpacity>
+            )}
         </View>
     );
 
@@ -136,7 +158,7 @@ export default function OrderDetail(): React.JSX.Element {
     )
 }
 
-const useThemedStyles = createThemedStyles(({ bgPrimary, bgSecondary, accentPrimary, textTertiary, borderDark }) => ({
+const useThemedStyles = createThemedStyles(({ bgPrimary, bgSecondary, accentPrimary, textPrimary, textTertiary, borderDark }) => ({
     safeArea: {
         flex: 1,
         backgroundColor: bgPrimary,
@@ -179,6 +201,7 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, bgSecondary, accentPrim
     stageText: {
         fontWeight: 600,
         fontSize: 14,
+        color: 'white',
     },
     userInfo: {
         padding: 16,
@@ -194,6 +217,36 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, bgSecondary, accentPrim
         flexDirection: 'row',
         alignItems: 'center',
         gap: 12,
+    },
+    headerActions: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
+    },
+    baseHeaderBtn: {
+        flex: 1,
+        paddingVertical: 8,
+        paddingHorizontal: 24,
+        alignItems: 'center',
+        borderRadius: 8,
+        marginTop: 20,
+    },
+    leftHeaderBtn: {
+        backgroundColor: accentPrimary,
+    },
+    leftBtnText: {
+        fontSize: 12,
+        fontWeight: 700,
+        color: textPrimary,
+    },
+    rightHeaderBtn: {
+        borderColor: accentPrimary,
+        borderWidth: 1,
+    },
+    rightBtnText: {
+        fontSize: 12,
+        fontWeight: 700,
+        color: accentPrimary,
     },
     ordersSection: {
         marginTop: 20,
@@ -217,6 +270,7 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, bgSecondary, accentPrim
         justifyContent: 'space-between',
     },
     headLeft: {
+        flex: 1,
         gap: 4,
     },
     qtyContainer: {
@@ -233,6 +287,7 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, bgSecondary, accentPrim
     name: {
         fontSize: 14,
         fontWeight: 500,
+        maxWidth: '90%',
     },
     time: {
         fontSize: 12,

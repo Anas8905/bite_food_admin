@@ -8,6 +8,7 @@ type EmptyStateProps = {
   title: string;
   message: string;
   buttonText?: string;
+  disabled?: boolean;
   onButtonPress?: () => void;
 };
 
@@ -17,11 +18,12 @@ export default function EmptyState({
   message,
   buttonText,
   onButtonPress,
+  disabled,
 }: EmptyStateProps): React.JSX.Element {
   const styles = useThemedStyles();
 
   return (
-    <ThemedView style={styles.container}>
+    <ThemedView style={[styles.container, { opacity: disabled ? 0.2 : 1 }]}>
       <View style={styles.iconContainer}>{icon}</View>
       <ThemedText style={styles.title}>{title}</ThemedText>
       <ThemedText style={styles.message}>{message}</ThemedText>
@@ -59,8 +61,8 @@ const useThemedStyles = createThemedStyles(({ accentPrimary, textSecondary }) =>
   },
   button: {
     backgroundColor: accentPrimary,
-    paddingVertical: 12,
-    paddingHorizontal: 30,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
     borderRadius: 8,
   },
   buttonText: {

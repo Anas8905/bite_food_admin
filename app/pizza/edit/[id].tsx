@@ -1,6 +1,7 @@
 import LocalNavbar from "@/components/LocalNavbar";
 import PizzaForm from "@/components/PizzaForm";
 import { ThemedView } from "@/components/ThemedView";
+import { isAndroid } from "@/utils/common.utils";
 import { createThemedStyles } from "@/utils/styles";
 import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
@@ -25,12 +26,14 @@ export default function EditPizza(): React.JSX.Element {
     )
 }
 
-const useThemedStyles = createThemedStyles(() => ({
+const useThemedStyles = createThemedStyles(({ bgPrimary }) => ({
   safeArea: {
     flex: 1,
+    backgroundColor: bgPrimary,
   },
   container: {
     flex: 1,
     paddingHorizontal: 20,
+    paddingTop: isAndroid ? 40 : 0,
   },
 }));

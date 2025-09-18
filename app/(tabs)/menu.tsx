@@ -21,7 +21,7 @@ export default function MenuScreen(): React.JSX.Element {
   const { tint, bgPrimary,  } = useThemeColors();
   const { showAlert } = useAlert();
   const { showInputAlert } = useInputAlert();
-  const { resetAllExpanded } = useConfigIconsStore();
+  const { resetAllExpanded, resetExpanded } = useConfigIconsStore();
   const router = useRouter();
   const {
     sections,
@@ -60,6 +60,7 @@ export default function MenuScreen(): React.JSX.Element {
 
         if (enteredName === name) {
           deleteCategory(id);
+          resetExpanded(`category-${name}`);
           return showAlert(
             'Success',
             `Category "${name}" has been deleted successfully.`,
@@ -129,9 +130,10 @@ export default function MenuScreen(): React.JSX.Element {
                       <EmptyState
                         icon={<EmptyIcon width={60} height={60} color={tint} />}
                         title='No items'
-                        message='Click the button below to add a pizza item.'
+                        message='Press the button below to add an item.'
                         buttonText='Add New Item'
                         onButtonPress={() => router.push(`/pizza/add/${categoryId}`)}
+                        disabled={disabled}
                       />
                     )}
 

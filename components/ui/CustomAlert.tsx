@@ -1,3 +1,5 @@
+import { isAndroid } from '@/utils/common.utils';
+import { createThemedStyles } from '@/utils/styles';
 import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
@@ -6,9 +8,8 @@ import {
   View,
 } from 'react-native';
 import Modal from 'react-native-modal';
-import { ThemedView } from '../ThemedView';
 import { ThemedText } from '../ThemedText';
-import { createThemedStyles } from '@/utils/styles';
+import { ThemedView } from '../ThemedView';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -20,8 +21,9 @@ const CustomAlert: React.FC<CustomAlertProps> = ({
   onDismiss,
   type = 'default',
   content,
+  alertType = 'simple',
 }) => {
-  const styles = useThemedStyles();
+  const styles = useThemedStyles(alertType)();
   const [useHorizontalLayout, setUseHorizontalLayout] = useState(true);
 
   useEffect(() => {
@@ -143,36 +145,50 @@ const useCustomAlert = (): UseCustomAlertReturn => {
   return { showAlert, hideAlert, AlertComponent };
 };
 
-const useThemedStyles = createThemedStyles(({ borderLight }) => ({
-  overlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-  },
-  alertContainer: {
-    borderRadius: 16,
-    minWidth: Math.min(270, screenWidth - 140),
-    maxWidth: screenWidth - 140,
-    overflow: 'hidden',
-    borderColor: borderLight,
-    backdropFilter: 'blur(20px)',
-    borderWidth: 0.5,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'rgba(0, 0, 0, 0.3)',
-        shadowOffset: {
-          width: 0,
-          height: 8,
+const useThemedStyles = (alertType: 'simple' | 'input' = 'simple') => createThemedStyles(({ borderLight }) => {
+  const widthConfig = {
+    simple: {
+      minWidth: Math.min(230, screenWidth - 140),
+      maxWidth: Math.min(280, screenWidth - 100),
+    },
+    input: {
+      minWidth: Math.min(320, screenWidth - 80),
+      maxWidth: Math.min(400, screenWidth - 40),
+    },
+  };
+
+  const config = widthConfig[alertType];
+
+  return {
+    overlay: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: 20,
+    },
+    alertContainer: {
+      borderRadius: 16,
+      minWidth: config.minWidth,
+      maxWidth: config.maxWidth,
+      overflow: 'hidden',
+      borderColor: borderLight,
+      backdropFilter: 'blur(20px)',
+      borderWidth: 0.5,
+      ...Platform.select({
+        ios: {
+          shadowColor: 'rgba(0, 0, 0, 0.3)',
+          shadowOffset: {
+            width: 0,
+            height: 8,
+          },
+          shadowOpacity: 0.3,
+          shadowRadius: 20,
         },
-        shadowOpacity: 0.3,
-        shadowRadius: 20,
-      },
-      android: {
-        elevation: 12,
-      },
-    }),
-  },
+        android: {
+          elevation: 12,
+        },
+      }),
+    },
   title: {
     fontSize: 17,
     fontWeight: '600',
@@ -191,7 +207,7 @@ const useThemedStyles = createThemedStyles(({ borderLight }) => ({
   },
   buttonContainer: {
     borderTopColor: borderLight,
-    borderTopWidth: 0.5,
+    borderTopWidth: isAndroid ? 0.8 : 0.5,
   },
   horizontalButtonContainer: {
     flexDirection: 'row',
@@ -206,7 +222,7 @@ const useThemedStyles = createThemedStyles(({ borderLight }) => ({
   singleButton: {},
   leftButton: {
     flex: 1,
-    borderRightWidth: 0.5,
+    borderRightWidth: isAndroid ? 0.8 : 0.5,
     borderRightColor: borderLight,
   },
   rightButton: {
@@ -235,6 +251,7 @@ const useThemedStyles = createThemedStyles(({ borderLight }) => ({
     color: '#FF3B30',
     fontWeight: '400',
   },
-}));
+  };
+});
 
 export { CustomAlert, useCustomAlert };

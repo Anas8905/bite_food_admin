@@ -6,6 +6,7 @@ type ConfigIconsStore = {
   // actions
   setExpanded: (id: string, expanded: boolean) => void;
   resetAllExpanded: () => void;
+  resetExpanded: (id: string) => void;
   isExpanded: (id: string) => boolean;
 };
 
@@ -22,6 +23,14 @@ export const useConfigIconsStore = create<ConfigIconsStore>((set, get) => ({
   
   resetAllExpanded: () => {
     set({ expandedStates: new Map() });
+  },
+  
+  resetExpanded: (id: string) => {
+    set((state) => {
+      const newMap = new Map(state.expandedStates);
+      newMap.delete(id);
+      return { expandedStates: newMap };
+    });
   },
   
   isExpanded: (id: string) => {

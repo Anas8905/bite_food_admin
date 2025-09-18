@@ -24,6 +24,7 @@ interface CustomAlertProps {
   onDismiss?: () => void;
   type?: 'default' | 'destructive';
   content?: React.ReactNode;
+  alertType?: 'simple' | 'input';
 }
 
 interface AlertConfig {

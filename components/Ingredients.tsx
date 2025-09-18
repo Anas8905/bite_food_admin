@@ -1,12 +1,14 @@
 import { useThemeColors } from "@/hooks/useThemeColors";
+import { useResolvedTheme } from "@/stores/theme";
 import { createThemedStyles } from "@/utils/styles";
 import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity, View } from "react-native";
 import { ThemedText } from "./ThemedText";
 
 export default function Ingredients({ ingredients, onAdd, onDelete }: IngredientsProps): React.JSX.Element {
-  const styles = useThemedStyles();
-  const { textPrimary } = useThemeColors();
+  const theme = useResolvedTheme();
+  const styles = useThemedStyles(theme)();
+  const { textSecondary } = useThemeColors();
 
   return (
     <View style={styles.container}>
@@ -24,7 +26,7 @@ export default function Ingredients({ ingredients, onAdd, onDelete }: Ingredient
                 <Ionicons
                     name="close"
                     size={18}
-                    color={textPrimary}
+                    color={textSecondary}
                     onPress={() => onDelete(ingrd.id)}
                 />
                 </View>
@@ -34,7 +36,7 @@ export default function Ingredients({ ingredients, onAdd, onDelete }: Ingredient
   )
 }
 
-const useThemedStyles = createThemedStyles(({ textMuted, accentPrimary, bgGray }) => ({
+const useThemedStyles = (theme: 'light' | 'dark') => createThemedStyles(({ textMuted, accentPrimary, bgGray }) => ({
     addBtn: {
         paddingVertical: 6,
         paddingHorizontal: 16,
@@ -67,7 +69,7 @@ const useThemedStyles = createThemedStyles(({ textMuted, accentPrimary, bgGray }
         gap:16,
         paddingVertical: 8,
         paddingHorizontal: 20,
-        borderWidth: 1,
+        borderWidth: theme === 'light' ? 0 : 1,
         borderRadius: 24,
         borderColor: textMuted,
         backgroundColor: bgGray,
@@ -77,4 +79,4 @@ const useThemedStyles = createThemedStyles(({ textMuted, accentPrimary, bgGray }
         fontSize: 14,
     },
 
-}))
+  }));

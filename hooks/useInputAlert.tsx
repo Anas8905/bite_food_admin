@@ -68,9 +68,6 @@ export const useInputAlert = (): showInputAlertProps => {
 };
 
 const useThemedStyles = createThemedStyles(({ bgPrimary, textPrimary, borderLight }) => ({
-  inputWrapper: {
-    paddingHorizontal: 20,
-  },
   inputsContainer: {
     paddingHorizontal: 20,
     gap: 16,

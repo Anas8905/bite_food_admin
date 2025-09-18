@@ -8,6 +8,7 @@ import { useInputAlert } from "@/hooks/useInputAlert";
 import { useThemeColors } from "@/hooks/useThemeColors";
 import { useConfigIconsStore } from "@/stores/configIcons";
 import { usePizzaStore } from "@/stores/pizza";
+import { isAndroid } from '@/utils/common.utils';
 import { createThemedStyles } from "@/utils/styles";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
@@ -28,7 +29,7 @@ export default function CategoryScreen(): React.JSX.Element {
   } = usePizzaStore();
   const { showInputAlert } = useInputAlert();
   const { showAlert } = useAlert();
-  const { resetAllExpanded } = useConfigIconsStore();
+  const { resetAllExpanded, resetExpanded } = useConfigIconsStore();
   const [categoryName, setCategoryName] = useState<string>("");
   const [isSaving, setIsSaving] = useState(false);
 
@@ -87,6 +88,7 @@ export default function CategoryScreen(): React.JSX.Element {
 
           if (enteredName === pizzaName) {
             deletePizza(pizzaId);
+            resetExpanded(`pizza-${pizzaId}`);
             return showAlert(
               'Success',
               `Item "${pizzaName}" has been deleted successfully.`,
@@ -155,7 +157,7 @@ export default function CategoryScreen(): React.JSX.Element {
                   <EmptyState
                     icon={<EmptyIcon width={80} height={80} color={tint} />}
                     title="No items"
-                    message="To add a new item, click the 'Add New Item' button at the top right corner."
+                    message="Press the 'Add New Item' button at the top right corner to add an item."
                   />
                 </View>
               )}
@@ -177,7 +179,7 @@ export default function CategoryScreen(): React.JSX.Element {
                         disabled={isSaving}
                     >
                         {isSaving ? (
-                            <ActivityIndicator color={textPrimary} size={16} />
+                            <ActivityIndicator color='white' size={16} />
                         ) : (
                             <ThemedText style={styles.saveText}>SAVE</ThemedText>
                         )}
@@ -235,7 +237,7 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, borderLight, textPrimar
   },
   footer: {
     paddingHorizontal: 20,
-    paddingBottom: 20,
+    paddingBottom: isAndroid ? 34 : 20,
     paddingTop: 10,
   },
   buttonRow: {

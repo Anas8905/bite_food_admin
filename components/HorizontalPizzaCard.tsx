@@ -2,6 +2,7 @@ import { createThemedStyles } from '@/utils/styles';
 import { useRouter } from 'expo-router';
 import { FlatList, Image, Pressable, View } from 'react-native';
 import { ThemedText } from './ThemedText';
+import { capitalizeWords } from '@/utils/common.utils';
 
 interface HorizontalPizzaCardProps {
   orders?: Order[];
@@ -42,7 +43,9 @@ export default function HorizontalPizzaCard({ orders, activeTab }: HorizontalPiz
                           </ThemedText>
                           {activeTab === 'ongoing' && !!item.stage && (
                             <View style={styles.stageContainer}>
-                              <ThemedText colorName='accentPrimary' style={styles.stage}>{item.stage}</ThemedText>
+                              <ThemedText colorName='accentPrimary' style={styles.stage}>
+                                {capitalizeWords(item.stage)}
+                              </ThemedText>
                             </View>
                           )}
                         </View>

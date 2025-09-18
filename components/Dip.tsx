@@ -3,10 +3,11 @@ import { createThemedStyles } from "@/utils/styles";
 import { Checkbox } from 'expo-checkbox';
 import { Switch, TouchableOpacity, View } from "react-native";
 import { ThemedText } from "./ThemedText";
+import { isAndroid } from "@/utils/common.utils";
 
 export default function Dip({ dips, setDips, isExpanded, setIsExpanded, onAdd }: DipProps): React.JSX.Element {
     const styles = useThemedStyles();
-    const { accentPrimary } = useThemeColors();
+    const { accentPrimary, bgGray } = useThemeColors();
 
   return (
     <View>
@@ -16,7 +17,8 @@ export default function Dip({ dips, setDips, isExpanded, setIsExpanded, onAdd }:
           <Switch
             value={isExpanded}
             onValueChange={setIsExpanded}
-            trackColor={{ false: "", true: accentPrimary }}
+            trackColor={{ false: bgGray, true: accentPrimary }}
+            thumbColor={isAndroid ? '#f1f1f1' : undefined}
           />
         </View>
 

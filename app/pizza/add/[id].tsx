@@ -5,6 +5,7 @@ import { createThemedStyles } from "@/utils/styles";
 import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { SafeAreaView } from "react-native";
+import { isAndroid } from "@/utils/common.utils";
 
 export default function AddPizza(): React.JSX.Element {
     const { id: categoryId } = useLocalSearchParams<{ id: string }>();
@@ -25,12 +26,14 @@ export default function AddPizza(): React.JSX.Element {
     )
 }
 
-const useThemedStyles = createThemedStyles(() => ({
+const useThemedStyles = createThemedStyles(({ bgPrimary }) => ({
   safeArea: {
     flex: 1,
+    backgroundColor: bgPrimary,
   },
   container: {
     flex: 1,
     paddingHorizontal: 20,
+    paddingTop: isAndroid ? 40 : 0,
   },
 }));
