@@ -1,46 +1,56 @@
-import { FlatList, Image, Pressable, View } from 'react-native';
 import { createThemedStyles } from '@/utils/styles';
-import { ThemedText } from './ThemedText';
 import { useRouter } from 'expo-router';
+import { FlatList, Image, Pressable, View } from 'react-native';
+import { ThemedText } from './ThemedText';
 
-export default function HorizontalPizzaCard({ orders, activeTab }: { orders: Order[]; activeTab: string; }): React.JSX.Element {
+interface HorizontalPizzaCardProps {
+  orders?: Order[];
+  activeTab?: string;
+}
+
+export default function HorizontalPizzaCard({ orders, activeTab }: HorizontalPizzaCardProps): React.JSX.Element {
     const styles = useThemedStyles();
     const router = useRouter();
 
-    const renderItem = ({ item }) => (
-        <Pressable style={styles.card} onPress={() => router.navigate(`/order/${item.id}`)}>
-            <Image source={item.image} style={styles.image} />
+    const renderItem = ({ item }) => {
+        const firstItem = item.items?.[0];
+        return (
+            <Pressable style={styles.card} onPress={() => router.navigate(`/order/${item.id}`)}>
+                <Image source={firstItem?.image} style={styles.image} />
 
-            <View style={styles.details}>
-                <View style={styles.primeRow}>
-                    <ThemedText colorName='textPrimary' style={styles.customer}>{item.customer}</ThemedText>
-                    <ThemedText colorName='textSecondary' style={styles.orderId}>#{item.id}</ThemedText>
-                </View>
-                <View style={styles.row}>
-                    <View style={styles.inner1st}>
-                        <ThemedText
-                          colorName="textPrimary"
-                          style={styles.name}
-                          numberOfLines={1}
-                          ellipsizeMode="tail"
-                        >
-                          {item.category} • {item.name}
-                        </ThemedText>
-                        <ThemedText colorName='textSecondary' style={styles.time}>{item.time}</ThemedText>
+                <View style={styles.details}>
+                    <View style={styles.primeRow}>
+                        <ThemedText colorName='textPrimary' style={styles.customer}>{item.customer}</ThemedText>
+                        <ThemedText colorName='textSecondary' style={styles.orderId}>#{item.id}</ThemedText>
                     </View>
-
-                    <View style={styles.inner2nd}>
-                      <ThemedText colorName='textSecondary' style={styles.price}>PKR {item.price}</ThemedText>
-                      {activeTab === 'ongoing' && !!item.stage && (
-                        <View style={styles.stageContainer}>
-                          <ThemedText colorName='accentPrimary' style={styles.stage}>{item.stage}</ThemedText>
+                    <View style={styles.row}>
+                        <View style={styles.inner1st}>
+                            <ThemedText
+                              colorName="textPrimary"
+                              style={styles.name}
+                              numberOfLines={1}
+                              ellipsizeMode="tail"
+                            >
+                              {firstItem?.category || 'Unknown'} • {firstItem?.name || 'Unknown Item'}
+                            </ThemedText>
+                            <ThemedText colorName='textSecondary' style={styles.time}>{item.time}</ThemedText>
                         </View>
-                      )}
+
+                        <View style={styles.inner2nd}>
+                          <ThemedText colorName='textSecondary' style={styles.price}>
+                              PKR {firstItem?.subtotal}
+                          </ThemedText>
+                          {activeTab === 'ongoing' && !!item.stage && (
+                            <View style={styles.stageContainer}>
+                              <ThemedText colorName='accentPrimary' style={styles.stage}>{item.stage}</ThemedText>
+                            </View>
+                          )}
+                        </View>
                     </View>
                 </View>
-            </View>
-        </Pressable>
-    );
+            </Pressable>
+        );
+    };
 
   return (
     <FlatList
@@ -97,7 +107,6 @@ const useThemedStyles = createThemedStyles(({ accentPrimary, borderDark }) => ({
   inner2nd: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 4,
   },
   price: {
     color: accentPrimary,

@@ -20,23 +20,30 @@ type Pizza = {
   disabled?: boolean;
 };
 
-type Order = {
+type OrderItem = {
   id: string;
-  customer: string;
   image: PizzaImage;
   name: string;
   description: string;
   category: string;
-  status: string;
-  stage?: string;
-  price: string;
+  price: number;
   size: string;
   quantity: number;
+  subtotal: number;
+};
+
+type Order = {
+  id: string;
+  customer: string;
+  phone: string;
+  status: string;
+  stage?: string;
   total: number;
   deliveryAddress: string;
   estimatedDeliveryTime: number;
   time: string;
-}
+  items: OrderItem[];
+};
 
 type PizzaFormProps = { categoryId?: string; pizzaId?: string; resetKey: number; }
 

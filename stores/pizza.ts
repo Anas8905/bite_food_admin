@@ -1,9 +1,10 @@
-import { categories as initialCategories, pizzas as initialPizzas } from '@/api/mockApi';
+import { categories as initialCategories, pizzas as initialPizzas, orders as initialOrders } from '@/api/mockApi';
 import { capitalize } from '@/utils/common.utils';
 import { create } from 'zustand';
 
 type PizzaStore = {
   pizzas: Pizza[];
+  orders: Order[];
   categories: Category[];
   selectedCategories: string[];
 
@@ -22,6 +23,7 @@ type PizzaStore = {
   toggleDisableCategory: (id: string) => void;
   enableCategory: (id: string) => void;
   getPizzaById: (id: string) => Pizza | undefined;
+  getOrderById: (id: string) => Order | undefined;
   addPizza: (
     pizzaData: Omit<
       Pizza,
@@ -36,6 +38,7 @@ type PizzaStore = {
 
 export const usePizzaStore = create<PizzaStore>((set, get) => ({
   pizzas: initialPizzas,
+  orders: initialOrders,
   categories: initialCategories,
   selectedCategories: ['All'],
 
@@ -170,6 +173,10 @@ export const usePizzaStore = create<PizzaStore>((set, get) => ({
 
   getPizzaById: (id: string) => {
     return get().pizzas.find((p) => p.id === id);
+  },
+
+  getOrderById: (id: string) => {
+    return get().orders.find((o) => o.id === id);
   },
 
   addPizza: async (pizzaData): Promise<boolean> => {

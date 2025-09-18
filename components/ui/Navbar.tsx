@@ -7,10 +7,11 @@ import { useThemeColors } from '@/hooks/useThemeColors';
 import { usePizzaStore } from '@/stores/pizza';
 import { capitalize } from '@/utils/common.utils';
 import { createThemedStyles } from '@/utils/styles';
-import { useRouter, useSegments } from 'expo-router';
+import { usePathname, useRouter, useSegments } from 'expo-router';
 import { TouchableOpacity } from 'react-native';
 import { ThemedText } from '../ThemedText';
 import { ThemedView } from '../ThemedView';
+import BackButton from './BackButton';
 
 export default function Navbar({ categoryId }: { categoryId?: string }): React.JSX.Element | null {
   const styles = useThemedStyles();
@@ -18,11 +19,13 @@ export default function Navbar({ categoryId }: { categoryId?: string }): React.J
   const { openDrawer } = useDrawer();
   const segments = useSegments();
   const router = useRouter();
+  const pathname = usePathname();
 
   const isMenuScreen = segments[1] === "menu";
   const isCategoryScreen = segments[0] === "category";
   const isAddNewScreen = segments[0] === "pizza" && segments[1] === "add";
   const isEditScreen = segments[0] === "pizza" && segments[1] === "edit";
+  const isOrderDetailScreen = pathname.startsWith("/order/");
 
   const { showInputAlert } = useInputAlert();
   const { showAlert } = useAlert();
@@ -42,6 +45,8 @@ export default function Navbar({ categoryId }: { categoryId?: string }): React.J
   ? "ADD NEW ITEM"
   : isEditScreen
   ? "EDIT ITEM"
+  : isOrderDetailScreen
+  ? "ORDER DETAILS"
   : screenName;
 
   const handleAddCategory = () => {
@@ -92,9 +97,13 @@ export default function Navbar({ categoryId }: { categoryId?: string }): React.J
     <ThemedView style={styles.navbar}>
       {/* Left side */}
       <ThemedView style={styles.leftSide}>
-        <TouchableOpacity onPress={openDrawer} style={styles.circleButton}>
-          <MenuIcon width={46} height={46} color={textPrimary} />
-        </TouchableOpacity>
+        {isOrderDetailScreen ? (
+          <BackButton />
+        ) : (
+          <TouchableOpacity onPress={openDrawer} style={styles.circleButton}>
+            <MenuIcon width={46} height={46} color={textPrimary} />
+          </TouchableOpacity>
+        )}
         <ThemedText type="defaultSemiBold" colorName="accentPrimary">{title}</ThemedText>
       </ThemedView>
 
