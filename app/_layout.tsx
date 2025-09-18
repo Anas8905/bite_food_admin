@@ -20,7 +20,12 @@ export default function RootLayout(): React.JSX.Element | null {
   const styles = useThemedStyles();
   const [loaded] = useFonts({ Sen: require('../assets/fonts/Sen-Regular.ttf') });
   const pathname = usePathname();
-  const showNavbar = !noNavScreens.includes(pathname);
+  const hideNavbar = noNavScreens.some((route) => {
+    if (route.endsWith("/*")) {
+      return pathname.startsWith(route.replace("/*", ""));
+    }
+    return pathname === route;
+  });
 
   const categoryId = pathname.startsWith('/category/')
     ? pathname.split('/category/')[1]
@@ -32,7 +37,7 @@ export default function RootLayout(): React.JSX.Element | null {
     <ThemeProvider value={theme === 'dark' ? DarkTheme : DefaultTheme}>
       <SafeAreaProvider>
         <NetworkListener />
-        {showNavbar && (
+        {!hideNavbar && (
           <SafeAreaView style={styles.safeAreaView}>
             <ThemedView style={styles.container}>
               <Navbar categoryId={categoryId} />

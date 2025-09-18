@@ -3,4 +3,4 @@ export const screens = [
     "login",
   ];
 
-export const noNavScreens = ["/", "/login"];
+  export const noNavScreens = ["/", "/login", "/pizza/*"];

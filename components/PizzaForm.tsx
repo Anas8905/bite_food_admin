@@ -4,7 +4,7 @@ import { usePizzaStore } from "@/stores/pizza";
 import { createThemedStyles } from "@/utils/styles";
 import * as ImagePicker from 'expo-image-picker';
 import { useCallback, useEffect, useState } from "react";
-import { ScrollView, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, ScrollView, TextInput, TouchableOpacity, View } from "react-native";
 import Dip from "./Dip";
 import Ingredients from "./Ingredients";
 import { ThemedText } from "./ThemedText";
@@ -27,6 +27,7 @@ export default function PizzaForm({ categoryId, pizzaId, resetKey }: PizzaFormPr
   const [variants, setVariants] = useState<Variant[]>([]);
   const [dips, setDips] = useState<Dip[]>([]);
   const [isDipExpanded, setIsDipExpanded] = useState(false);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
 
   const resetEmpty = useCallback(() => {
     setPizzaName("");
@@ -248,7 +249,7 @@ export default function PizzaForm({ categoryId, pizzaId, resetKey }: PizzaFormPr
 
   const editVariant = (id: string) => {}
 
-  const saveChanges = () => {
+  const saveChanges = async () => {
     if (!pizzaName.trim()) {
       return showAlert(
         "Validation Error",
@@ -301,7 +302,8 @@ export default function PizzaForm({ categoryId, pizzaId, resetKey }: PizzaFormPr
     };
 
     try {
-      addPizza(pizzaData);
+      setIsSaving(true);
+      await addPizza(pizzaData);
 
       showAlert(
         "Success",
@@ -323,6 +325,8 @@ export default function PizzaForm({ categoryId, pizzaId, resetKey }: PizzaFormPr
         error instanceof Error ? error.message : "Something went wrong.",
         [{ text: "OK", style: "default" }]
       );
+    } finally {
+      setIsSaving(false);
     }
   }
 
@@ -390,7 +394,11 @@ export default function PizzaForm({ categoryId, pizzaId, resetKey }: PizzaFormPr
 
       {/* Save Button */}
       <TouchableOpacity style={styles.saveBtn} onPress={saveChanges}>
+        {isSaving ? (
+          <ActivityIndicator color='white' size={20} />
+        ): (
         <ThemedText style={styles.saveBtnText}>SAVE CHANGES</ThemedText>
+        )}
       </TouchableOpacity>
     </ScrollView>
   )

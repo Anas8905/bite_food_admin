@@ -22,7 +22,13 @@ type PizzaStore = {
   toggleDisableCategory: (id: string) => void;
   enableCategory: (id: string) => void;
   getPizzaById: (id: string) => Pizza | undefined;
-  addPizza: (pizzaData: Omit<Pizza, 'id' | 'description' | 'rating' | 'reviewCount' | 'deliveryTime' | 'deliveryFee'> & { id?: string }) => boolean;
+  addPizza: (
+    pizzaData: Omit<
+      Pizza,
+      "id" | "description" | "rating" | "reviewCount" | "deliveryTime" | "deliveryFee"
+    > & { id?: string }
+  ) => Promise<boolean>;
+
   deletePizza: (id: string) => void;
   toggleDisablePizza: (id: string) => void;
   enablePizza: (id: string) => void;
@@ -166,7 +172,9 @@ export const usePizzaStore = create<PizzaStore>((set, get) => ({
     return get().pizzas.find((p) => p.id === id);
   },
 
-  addPizza: (pizzaData) => {
+  addPizza: async (pizzaData): Promise<boolean> => {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
     const { pizzas, categories } = get();
 
     const category = categories.find((c) => c.id === pizzaData.categoryId);
