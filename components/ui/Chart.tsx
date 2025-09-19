@@ -1,13 +1,14 @@
-import { monthlyOrders, weeklyOrders, yearlyOrders } from '@/api/mockApi';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { createThemedStyles } from '@/utils/styles';
 import { View } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
 import { ThemedText } from '../ThemedText';
+import { useOrderStore } from '@/stores/order';
 
 export default function Chart({ period }: { period: string }): React.JSX.Element {
     const styles = useThemedStyles();
     const { accentPrimary } = useThemeColors();
+    const { weeklyOrders, monthlyOrders, yearlyOrders } = useOrderStore();
 
     const getData = () => {
         switch (period) {

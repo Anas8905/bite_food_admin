@@ -44,15 +44,17 @@ interface UseCustomAlertReturn {
 interface InputField {
   placeholder?: string;
   label?: string;
+  defaultValue?: string;
 }
 
 interface InputAlertOptions {
   placeholder?: string;
   submitText?: string;
   submitStyle?: "default" | "cancel" | "destructive";
-  onSubmit: (values: string[]) => void;
+  onSubmit: (values: string[]) => void | Promise<void>;
   onCancel?: () => void;
   inputs: InputField[];
+  keepOpen?: boolean;
 }
 
 type showInputAlertProps = {

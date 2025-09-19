@@ -48,7 +48,7 @@ export default function ChartCard({ count, isLoading }: { count: number; isLoadi
             style={styles.input}
           />
 
-          <Pressable onPress={() => router.navigate('/order')}>
+          <Pressable onPress={() => router.navigate('/orders')}>
               <ThemedText colorName='accentPrimary' style={styles.actionBtn}>See Details</ThemedText>
           </Pressable>
         </View>

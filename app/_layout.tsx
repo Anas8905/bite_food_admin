@@ -51,7 +51,7 @@ export default function RootLayout(): React.JSX.Element | null {
         </Stack>
         <AppDrawer />
         <AlertHost />
-        {/* <StatusBar style={theme === 'dark' ? 'light' : 'dark'} /> */}
+        <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
       </SafeAreaProvider>
     </ThemeProvider>
   );

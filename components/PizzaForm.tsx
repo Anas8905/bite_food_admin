@@ -3,6 +3,7 @@ import { useInputAlert } from "@/hooks/useInputAlert";
 import { usePizzaStore } from "@/stores/pizza";
 import { createThemedStyles } from "@/utils/styles";
 import * as ImagePicker from 'expo-image-picker';
+import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, TextInput, TouchableOpacity, View } from "react-native";
 import Dip from "./Dip";
@@ -10,7 +11,6 @@ import Ingredients from "./Ingredients";
 import { ThemedText } from "./ThemedText";
 import UploadPhoto from "./UploadPhoto";
 import Variants from "./Variants";
-import { useRouter } from "expo-router";
 
 export default function PizzaForm({ categoryId, pizzaId, resetKey }: PizzaFormProps): React.JSX.Element {
   const styles = useThemedStyles();
@@ -97,7 +97,7 @@ export default function PizzaForm({ categoryId, pizzaId, resetKey }: PizzaFormPr
           placeholder: 'Peppers',
         },
       ],
-      submitText: "Add",
+      submitText: "Save",
       onSubmit: (values) => {
         let [name] = values;
         name = name.trim();
@@ -137,10 +137,9 @@ export default function PizzaForm({ categoryId, pizzaId, resetKey }: PizzaFormPr
         {
           label: "Price",
           placeholder: "1600",
-        //   keyboardType: "numeric",
         },
       ],
-      submitText: "Add",
+      submitText: "Save",
       onSubmit: (values) => {
         const [size, priceStr] = values;
         const trimmedSize = size.trim();
@@ -247,7 +246,67 @@ export default function PizzaForm({ categoryId, pizzaId, resetKey }: PizzaFormPr
     setVariants((prev) => prev.filter((v) => v.id !== id));
   }
 
-  const editVariant = (id: string) => {}
+  const editVariant = (id: string) => {
+    const variant = variants.find(v => v.id === id);
+    if (!variant) return;
+
+    showInputAlert("Edit Variant", "", {
+      inputs: [
+        {
+          label: "Size",
+          placeholder: '12" - Large (2-3)',
+          defaultValue: variant.size,
+        },
+        {
+          label: "Price",
+          placeholder: "1600",
+          defaultValue: variant.price.toString(),
+        },
+      ],
+      submitText: "Update",
+      onSubmit: (values) => {
+        const [size, priceStr] = values;
+        const trimmedSize = size.trim();
+        const trimmedPrice = priceStr.trim();
+
+        if (!trimmedSize || !trimmedPrice) return;
+
+        const price = Number(trimmedPrice);
+        if (isNaN(price)) {
+          return showAlert("Invalid Price", "Price must be a valid number.", [
+            { text: "OK", style: "default" },
+          ]);
+        }
+
+        if (
+          variants.some(
+            (v) =>
+              v.id !== id &&
+              v.size.toLowerCase() === trimmedSize.toLowerCase() &&
+              v.price === price
+          )
+        ) {
+          return showAlert("Duplicate", "This variant already exists.", [
+            { text: "OK", style: "default" },
+          ]);
+        }
+
+        setVariants((prev) =>
+          prev.map((v) =>
+            v.id === id
+              ? {
+                  ...v,
+                  size: trimmedSize,
+                  price,
+                }
+              : v
+          )
+        );
+
+        hideAlert();
+      },
+    });
+  }
 
   const saveChanges = async () => {
     if (!pizzaName.trim()) {
@@ -308,8 +367,8 @@ export default function PizzaForm({ categoryId, pizzaId, resetKey }: PizzaFormPr
       showAlert(
         "Success",
         pizzaId
-          ? "Item updated successfully!"
-          : "New item added successfully!",
+          ? "Item updated successfully."
+          : "New item added successfully.",
           [
             {
               text: "OK",

@@ -6,6 +6,8 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import ConfigIcons from '@/components/ui/ConfigIcons';
 import EmptyState from '@/components/ui/EmptyState';
+import LoadingOverlay from '@/components/ui/LoadingOverlay';
+import { useAddCategory } from '@/hooks/useAddCategory';
 import { useAlert } from '@/hooks/useAlert';
 import { useInputAlert } from '@/hooks/useInputAlert';
 import { useThemeColors } from '@/hooks/useThemeColors';
@@ -13,7 +15,7 @@ import { useConfigIconsStore } from '@/stores/configIcons';
 import { usePizzaStore } from '@/stores/pizza';
 import { createThemedStyles } from '@/utils/styles';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { SafeAreaView, SectionList, StyleSheet, View } from 'react-native';
 
 export default function MenuScreen(): React.JSX.Element {
@@ -22,6 +24,7 @@ export default function MenuScreen(): React.JSX.Element {
   const { showAlert } = useAlert();
   const { showInputAlert } = useInputAlert();
   const { resetAllExpanded, resetExpanded } = useConfigIconsStore();
+  const { handleAddCategory } = useAddCategory();
   const router = useRouter();
   const {
     sections,
@@ -32,6 +35,7 @@ export default function MenuScreen(): React.JSX.Element {
     toggleDisableCategory,
     enableCategory,
   } = usePizzaStore();
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -40,6 +44,11 @@ export default function MenuScreen(): React.JSX.Element {
       };
     }, [resetAllExpanded])
   );
+
+  const hideLoading = () => {
+    setIsDeleting(false);
+  }
+
 
   const handleDeleteCategory = (id: string, name: string) => {
     showInputAlert(
@@ -53,106 +62,125 @@ export default function MenuScreen(): React.JSX.Element {
       ],
       submitText: 'Delete',
       submitStyle: 'destructive',
-      onSubmit: (values) => {
+      onSubmit: async (values) => {
         let [enteredName] = values;
 
-        if(!enteredName.trim()) return;
-
-        if (enteredName === name) {
-          deleteCategory(id);
-          resetExpanded(`category-${name}`);
-          return showAlert(
-            'Success',
-            `Category "${name}" has been deleted successfully.`,
-            [{ text: 'OK', style: 'default' }]
-          );
-        } else {
-          return showAlert(
-            'Not Found',
-            'The entered category does not exist.',
-            [{ text: 'OK', style: 'default' }]
-          );
-        }
+        setIsDeleting(true);
+        try {
+          if (enteredName === name) {
+            await deleteCategory(id);
+            resetExpanded(`category-${name}`);
+            showAlert(
+              'Success',
+              `Category "${name}" deleted successfully.`,
+              [{ text: 'OK', style: 'default', onPress: hideLoading }]
+            );
+          } else {
+            showAlert(
+              'Not Found',
+              'The entered category does not exist.',
+              [{ text: 'OK', style: 'default', onPress: hideLoading }]
+            );
+          }
+        } catch {}
       },
-      onCancel: () => {}
     });
   };
+
+  const hasCategories = sections().length > 0;
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <ThemedView style={styles.container} colorName="bgPrimary">
-        {/* Category Tabs */}
-        <View style={styles.tabsWrapper}>
-          <CategoryTabs
-            selectedCategories={selectedCategories}
-            toggleCategory={toggleCategory}
-            categories={availableCategories().map((c) => ({
-              id: c.id,
-              name: c.name,
-            }))}
-          />
-        </View>
+        {hasCategories ? (
+          <>
+            {/* Category Tabs */}
+            <View style={styles.tabsWrapper}>
+              <CategoryTabs
+                selectedCategories={selectedCategories}
+                toggleCategory={toggleCategory}
+                categories={availableCategories().map((c) => ({
+                  id: c.id,
+                  name: c.name,
+                }))}
+              />
+            </View>
 
-        <SectionList
-          sections={sections()}
-          keyExtractor={(item) => String(item.id)}
-          renderSectionHeader={({ section: { categoryId, title, data, disabled } }) => {
-            return (
-              <View>
-                {/* Header */}
-                <View style={styles.header}>
-                  <ThemedText colorName="textPrimary" style={styles.section}>
-                    {title}
-                  </ThemedText>
-                  <ConfigIcons
-                    id={`category-${title}`}
-                    key={title}
-                    tint={tint}
-                    bgColor={tint}
-                    foreColor={bgPrimary}
-                    onDisable={() => toggleDisableCategory(categoryId)}
-                    onEdit={() => router.push(`/category/${categoryId}`)}
-                    onDelete={() => handleDeleteCategory(categoryId, title)}
-                  />
-                </View>
-
-                <View style={{ position: "relative" }}>
-                  {/* Cards */}
-                    {data.length > 0 ? (
-                      data.map((pizza) => (
-                        <CustomPizzaCard
-                          key={pizza.id}
-                          pizzas={[pizza]}
-                          disabled={disabled}
-                        />
-                        ))
-                    ) : (
-                      <EmptyState
-                        icon={<EmptyIcon width={60} height={60} color={tint} />}
-                        title='No items'
-                        message='Press the button below to add an item.'
-                        buttonText='Add New Item'
-                        onButtonPress={() => router.push(`/pizza/add/${categoryId}`)}
-                        disabled={disabled}
-                      />
-                    )}
-
-                  {/* Disable overlay */}
-                  {disabled && (
-                    <View style={styles.sectionOverlay}>
-                      <DisableUI
-                        onPress={() => enableCategory(categoryId)}
+            <SectionList
+              sections={sections()}
+              keyExtractor={(item) => String(item.id)}
+              renderSectionHeader={({ section: { categoryId, title, data, disabled } }) => {
+                return (
+                  <View>
+                    {/* Header */}
+                    <View style={styles.header}>
+                      <ThemedText colorName="textPrimary" style={styles.section}>
+                        {title}
+                      </ThemedText>
+                      <ConfigIcons
+                        id={`category-${title}`}
+                        key={title}
+                        tint={tint}
+                        bgColor={tint}
+                        foreColor={bgPrimary}
+                        onDisable={() => toggleDisableCategory(categoryId)}
+                        onEdit={() => router.push(`/category/${categoryId}`)}
+                        onDelete={() => handleDeleteCategory(categoryId, title)}
                       />
                     </View>
-                  )}
-                </View>
-              </View>
-            );
-          }}
-          renderItem={() => null}
-          stickySectionHeadersEnabled={false}
-          showsVerticalScrollIndicator={false}
-        />
+
+                    <View style={{ position: "relative" }}>
+                      {/* Cards */}
+                        {data.length > 0 ? (
+                          data.map((pizza) => (
+                            <CustomPizzaCard
+                              key={pizza.id}
+                              pizzas={[pizza]}
+                              disabled={disabled}
+                            />
+                            ))
+                        ) : (
+                          <EmptyState
+                            icon={<EmptyIcon width={60} height={60} color={tint} />}
+                            title='No items'
+                            message='Press the button below to add an item.'
+                            buttonText='Add New Item'
+                            onButtonPress={() => router.push(`/pizza/add/${categoryId}`)}
+                            disabled={disabled}
+                          />
+                        )}
+
+                      {/* Disable overlay */}
+                      {disabled && (
+                        <View style={styles.sectionOverlay}>
+                          <DisableUI
+                            onPress={() => enableCategory(categoryId)}
+                          />
+                        </View>
+                      )}
+                    </View>
+                  </View>
+                );
+              }}
+              renderItem={() => null}
+              stickySectionHeadersEnabled={false}
+              showsVerticalScrollIndicator={false}
+            />
+          </>
+        ) : (
+          <View style={styles.emptyStateContainer}>
+            <EmptyState
+              icon={<EmptyIcon width={80} height={80} color={tint} />}
+              title='No menu items'
+              message='Start building your menu by adding categories and items.'
+              buttonText='Add New Category'
+              onButtonPress={handleAddCategory}
+              disabled={false}
+            />
+          </View>
+        )}
+
+        {isDeleting && <LoadingOverlay />}
 
       </ThemedView>
     </SafeAreaView>
@@ -173,7 +201,7 @@ const useThemedStyles = createThemedStyles(() => ({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginVertical: 20,
+    marginVertical: 10,
   },
   section: {
     fontSize: 24,
@@ -183,5 +211,10 @@ const useThemedStyles = createThemedStyles(() => ({
     ...StyleSheet.absoluteFillObject,
     justifyContent: "center",
     alignItems: "center",
+  },
+  emptyStateContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 20,
   },
 }));

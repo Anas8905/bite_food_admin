@@ -23,11 +23,14 @@ export const Colors = {
     textMuted: '#777777',
     bgPrimary: '#F7F8F9',
     bgSecondary: '#FFFFFF',
-    inputBackground: '#F0F5FA',
-    bgGray: '#ECF0F4',
+    inputBackground: '#ECF0F4',
+    bgGray: '#E6EBF0',
     borderLight: '#DDDDDD',
     borderDark: '#CCCCCC',
     accentPrimary: '#FA4F0C',
+    bgReview: '#ECF0F4',
+    bgMenuIcon: '#ECF0F4',
+    backdropOverlay: 'rgba(255, 255, 255, 0.7)',
   },
 
   dark: {
@@ -54,6 +57,9 @@ export const Colors = {
     borderLight: '#333333',
     borderDark: '#444444',
     accentPrimary: '#FF6028',
+    bgReview: '#1A1A1A',
+    bgMenuIcon: '#2C2C2C',
+    backdropOverlay: 'rgba(0, 0, 0, 0.8)',
   },
 } as const;
 

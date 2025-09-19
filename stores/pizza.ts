@@ -1,65 +1,10 @@
-import {
-  categories as initialCategories,
-  orders as initialOrders,
-  weeklyOrders,
-  monthlyOrders,
-  yearlyOrders,
-  pizzas as initialPizzas,
-  reviews as initialReviews,
-} from '@/api/mockApi';
+import { categories as initialCategories, pizzas as initialPizzas } from '@/api/mockApi';
 import { capitalize } from '@/utils/common.utils';
 import { create } from 'zustand';
 
-type PizzaStore = {
-  pizzas: Pizza[];
-  orders: Order[];
-  weeklyOrders: DummyOrder[];
-  monthlyOrders: DummyOrder[];
-  yearlyOrders: DummyOrder[];
-  categories: Category[];
-  reviews: Review[];
-  selectedCategories: string[];
-
-  // derived selectors
-  availableCategories: () => Category[];
-  sections: () => { categoryId: string; title: string; data: Pizza[]; disabled?: boolean }[];
-  getPizzasByCategoryId: (categoryId: string) => Pizza[];
-
-  // actions
-  setPizzas: (pizzas: Pizza[]) => void;
-  getCategoryById: (id: string) => Category | undefined;
-  toggleCategory: (id: string) => void;
-  addCategory: (name: string) => boolean;
-  updateCategory: (id: string, name: string) => boolean;
-  deleteCategory: (id: string) => void;
-  toggleDisableCategory: (id: string) => void;
-  enableCategory: (id: string) => void;
-  getPizzaById: (id: string) => Pizza | undefined;
-  getOrderById: (id: string) => Order | undefined;
-  getOrdersByStatus: (status?: string) => Promise<Order[] | []>;
-  getBulkOrdersCount: () => Promise<number>;
-  getReviewsCount: () => Promise<number>;
-
-  addPizza: (
-    pizzaData: Omit<
-      Pizza,
-      "id" | "description" | "rating" | "reviewCount" | "deliveryTime" | "deliveryFee"
-    > & { id?: string }
-  ) => Promise<boolean>;
-
-  deletePizza: (id: string) => void;
-  toggleDisablePizza: (id: string) => void;
-  enablePizza: (id: string) => void;
-};
-
 export const usePizzaStore = create<PizzaStore>((set, get) => ({
   pizzas: initialPizzas,
-  orders: initialOrders,
-  weeklyOrders,
-  monthlyOrders,
-  yearlyOrders,
   categories: initialCategories,
-  reviews: initialReviews,
   selectedCategories: ['All'],
 
   // ---- derived selectors ----
@@ -131,9 +76,11 @@ export const usePizzaStore = create<PizzaStore>((set, get) => ({
     return true;
   },
 
-  updateCategory: (id, name) => {
+  updateCategory: async (id, name) => {
     const normalized = name.toLowerCase();
     const { categories } = get();
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
     const category = categories.find((c) => c.id === id);
     if (!category) return false;
@@ -156,7 +103,9 @@ export const usePizzaStore = create<PizzaStore>((set, get) => ({
     return true;
   },
 
-  deleteCategory: (id) => {
+  deleteCategory: async (id) => {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
     set((state) => ({
       categories: state.categories.filter((c) => c.id !== id),
       pizzas: state.pizzas.map((p) =>
@@ -194,31 +143,6 @@ export const usePizzaStore = create<PizzaStore>((set, get) => ({
   getPizzaById: (id: string) => {
     return get().pizzas.find((p) => p.id === id);
   },
-
-  getOrderById: (id: string) => {
-    return get().orders.find((o) => o.id === id);
-  },
-
-  getOrdersByStatus: async (status?: string) => {
-    await new Promise(resolve => setTimeout(resolve, 500));
-
-    const orders = get().orders;
-
-    if (!status) return orders;
-
-    return orders.filter((o) => o.status === status);
-  },
-
-  getBulkOrdersCount: async () => {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    return [get().weeklyOrders, get().monthlyOrders, get().yearlyOrders].flat().length;
-  },
-
-  getReviewsCount: async () => {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    return get().reviews.length;
-  },
-
 
   addPizza: async (pizzaData): Promise<boolean> => {
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -275,7 +199,15 @@ export const usePizzaStore = create<PizzaStore>((set, get) => ({
     return true;
   },
 
-  deletePizza: (id) => {
+  getPopularPizzas: async () => {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    return get().pizzas.filter((pizza) => pizza.categoryId === 'popular');
+  },
+
+  deletePizza: async (id) => {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
     set((state) => ({
       pizzas: state.pizzas.filter((p) => p.id !== id),
     }));

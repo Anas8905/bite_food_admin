@@ -1,44 +1,83 @@
 import { ThemedView } from '@/components/ThemedView';
 import ChartCard from '@/components/ui/ChartCard';
-import PizzaCard from '@/components/ui/PizzaCard';
+import PizzaCarousel from '@/components/ui/PizzaCarousel';
 import ReviewCard from '@/components/ui/ReviewCard';
 import StatusCard from '@/components/ui/StatusCard';
+import { useOrderStore } from '@/stores/order';
 import { usePizzaStore } from '@/stores/pizza';
 import { useEffect, useState } from 'react';
 import { SafeAreaView, StyleSheet } from 'react-native';
 
 export default function DashboardScreen(): React.JSX.Element {
-  const { getOrdersByStatus, getBulkOrdersCount } = usePizzaStore();
-  const [allOrdersCount, setAllOrdersCount] = useState<number>(0);
-  const [reviewsCount, setReviewsCount] = useState<number>(0);
-  const [ongoing, setOngoing] = useState<Order[]>([]);
-  const [incoming, setIncoming] = useState<Order[]>([]);
+  const { getPopularPizzas } = usePizzaStore();
+  const {
+    getOrdersByStatus,
+    getBulkOrdersCount,
+    getReviewsCount,
+    getHighestReviewValue,
+  } = useOrderStore();
+  const [data, setData] = useState<{
+    popularPizzas: Pizza[];
+    allOrdersCount: number;
+    reviewsCount: number;
+    highestReview: number;
+    ongoing: Order[];
+    incoming: Order[];
+  }>({
+    popularPizzas: [],
+    allOrdersCount: 0,
+    reviewsCount: 0,
+    highestReview: 0,
+    ongoing: [],
+    incoming: [],
+  });
   const [isLoading, setIsLoading] = useState(false);
 
 
   useEffect(() => {
-    const fetchOrders = async () => {
+    const fetchDashboardData = async () => {
       setIsLoading(true);
 
       try {
-        const ordersCount = await getBulkOrdersCount();
-        const reviewsCount = await getBulkOrdersCount();
-        const ongoingOrders = await getOrdersByStatus("ongoing");
-        const incomingOrders = await getOrdersByStatus("incoming");
+        const [
+          popPizzas,
+          ordersCount,
+          reviewsCount,
+          highestReview,
+          ongoingOrders,
+          incomingOrders,
+        ] = await Promise.all([
+          getPopularPizzas(),
+          getBulkOrdersCount(),
+          getReviewsCount(),
+          getHighestReviewValue(),
+          getOrdersByStatus("ongoing"),
+          getOrdersByStatus("incoming"),
+        ]);
 
-        setAllOrdersCount(ordersCount);
-        setReviewsCount(reviewsCount);
-        setOngoing(ongoingOrders);
-        setIncoming(incomingOrders);
+        setData({
+          popularPizzas: popPizzas,
+          allOrdersCount: ordersCount,
+          reviewsCount,
+          highestReview,
+          ongoing: ongoingOrders,
+          incoming: incomingOrders,
+        });
       } catch (err) {
-        console.error("Failed to fetch orders:", err);
+        console.error("Failed to fetch dashboard data:", err);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchOrders();
-  }, [getOrdersByStatus, getBulkOrdersCount]);
+    fetchDashboardData();
+  }, [
+      getOrdersByStatus,
+      getBulkOrdersCount,
+      getReviewsCount,
+      getHighestReviewValue,
+      getPopularPizzas,
+    ]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -48,24 +87,24 @@ export default function DashboardScreen(): React.JSX.Element {
         <ThemedView style={styles.statusContainer}>
           <StatusCard
             statusText="Running Orders"
-            status={ongoing.length}
+            status={data.ongoing.length}
             isLoading={isLoading}
           />
           <StatusCard
             statusText="Order Requests"
-            status={incoming.length}
+            status={data.incoming.length}
             isLoading={isLoading}
           />
         </ThemedView>
 
         {/* Graph Card */}
-        <ChartCard count={allOrdersCount} isLoading={isLoading} />
+        <ChartCard count={data.allOrdersCount} isLoading={isLoading} />
 
         {/* Review Card */}
-        <ReviewCard count={reviewsCount} isLoading={isLoading} />
+        <ReviewCard count={data.reviewsCount} highestReview={data.highestReview} isLoading={isLoading} />
 
         {/* Popular Pizza Card */}
-        <PizzaCard />
+        <PizzaCarousel popularPizzas={data.popularPizzas} isLoading={isLoading} />
 
       </ThemedView>
     </SafeAreaView>

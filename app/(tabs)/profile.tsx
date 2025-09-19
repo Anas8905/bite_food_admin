@@ -13,7 +13,7 @@ import { ActivityIndicator, Image, Pressable, SafeAreaView, TextInput, Touchable
 
 export default function ProfileScreen(): React.JSX.Element {
   const styles = useThemedStyles();
-  const { textPrimary, textMuted } = useThemeColors();
+  const { textMuted } = useThemeColors();
   const router = useRouter();
   const { showAlert } = useAlert();
   const { user, updateProfile } = useAuth();
@@ -74,13 +74,19 @@ export default function ProfileScreen(): React.JSX.Element {
           <View style={styles.avatarSection}>
             <View style={styles.avatarCircle}>
               <ThemedView colorName="bgGray" style={styles.avatarClipper}>
-                {avatar && (
-                  <Image source={{ uri: avatar }} style={styles.avatarImage} />
+                {avatar
+                ? <Image source={{ uri: avatar }} style={styles.avatarImage} />
+                : (
+                  <View style={styles.fallbackAvatar}>
+                    <ThemedText colorName='textPrimary' style={styles.fallbackText}>
+                      {fullName?.[0].toLocaleUpperCase()}
+                    </ThemedText>
+                  </View>
                 )}
               </ThemedView>
 
               <Pressable style={styles.editIcon} onPress={pickImage}>
-                <Octicons name="pencil" size={14} color={textPrimary} />
+                <Octicons name="pencil" size={14} color='white' />
               </Pressable>
             </View>
           </View>
@@ -179,6 +185,14 @@ const useThemedStyles = createThemedStyles(({
       width: '100%',
       height: '100%',
       resizeMode: 'cover',
+    },
+    fallbackAvatar: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    fallbackText: {
+      fontSize: 50,
     },
     editIcon: {
       position: 'absolute',

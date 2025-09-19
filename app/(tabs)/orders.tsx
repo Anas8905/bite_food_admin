@@ -1,9 +1,12 @@
+import EmptyIcon from '@/assets/images/empty.svg';
 import HorizontalPizzaCard from '@/components/HorizontalPizzaCard';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { usePizzaStore } from '@/stores/pizza';
+import EmptyState from '@/components/ui/EmptyState';
+import { useThemeColors } from '@/hooks/useThemeColors';
+import { useOrderStore } from '@/stores/order';
 import { createThemedStyles } from '@/utils/styles';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Pressable, SafeAreaView, View } from 'react-native';
 
 type TabKey = 'ongoing' | 'incoming' | 'completed';
@@ -14,21 +17,23 @@ const TABS: { key: TabKey; label: string }[] = [
   { key: 'completed', label: 'Completed' },
 ];
 
-export default function OrderScreen(): React.JSX.Element {
+export default function OrdersScreen(): React.JSX.Element {
   const styles = useThemedStyles();
+  const { tint } = useThemeColors();
   const [activeTab, setActiveTab] = useState<TabKey>('ongoing');
-  const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { getOrdersByStatus } = usePizzaStore();
+  const { getOrdersByStatus, orders: allOrders } = useOrderStore();
+
+  const orders = useMemo(() => {
+    return allOrders.filter(order => order.status === activeTab);
+  }, [allOrders, activeTab]);
 
   const fetchOrders = useCallback(async () => {
     setIsLoading(true);
     try {
-      const ordersData = await getOrdersByStatus(activeTab);
-      setOrders(ordersData);
+      await getOrdersByStatus(activeTab);
     } catch (error) {
       console.error('Error fetching orders:', error);
-      setOrders([]);
     } finally {
       setIsLoading(false);
     }
@@ -40,7 +45,7 @@ export default function OrderScreen(): React.JSX.Element {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Tab Navbar */}
+      {/* Tabs Group */}
       <View style={styles.tabsGroup} accessibilityRole="tablist">
         {TABS.map(tab => {
           const selected = activeTab === tab.key;
@@ -62,7 +67,7 @@ export default function OrderScreen(): React.JSX.Element {
         })}
       </View>
 
-      <ThemedView style={isLoading ? styles.fullHeightContainer : { paddingHorizontal: 20 }}>
+      <ThemedView style={styles.contentContainer}>
         {isLoading ? (
           <View style={styles.loadingContainer}>
             <ActivityIndicator
@@ -77,7 +82,19 @@ export default function OrderScreen(): React.JSX.Element {
             </ThemedText>
           </View>
         ) : (
-          <HorizontalPizzaCard orders={orders} activeTab={activeTab} />
+          orders.length > 0 ? (
+            <View style={styles.ordersContainer}>
+              <HorizontalPizzaCard orders={orders} activeTab={activeTab} />
+            </View>
+          ) : (
+            <View style={styles.emptyStateContainer}>
+              <EmptyState
+                icon={<EmptyIcon width={80} height={80} color={tint} />}
+                title='No orders'
+                message={`No ${activeTab} orders found.`}
+              />
+            </View>
+          )
         )}
       </ThemedView>
     </SafeAreaView>
@@ -111,9 +128,12 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, accentPrimary, borderLi
   activeTabText: {
     color: accentPrimary,
   },
-  fullHeightContainer: {
+  contentContainer: {
     flex: 1,
     paddingHorizontal: 20,
+  },
+  ordersContainer: {
+    flex: 1,
   },
   loadingContainer: {
     flex: 1,
@@ -125,5 +145,9 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, accentPrimary, borderLi
     marginTop: 16,
     fontSize: 16,
     textAlign: 'center',
+  },
+  emptyStateContainer: {
+    flex: 1,
+    justifyContent: 'center',
   },
 }))

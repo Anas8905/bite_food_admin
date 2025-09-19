@@ -4,11 +4,8 @@ import GridIcon from '@/assets/images/grid.svg';
 import OrderIcon from '@/assets/images/order.svg';
 import ProfileIcon from '@/assets/images/profile.svg';
 import { TabBarIcon } from '@/components/ui/TabBarIcon';
-import { useAlert } from '@/hooks/useAlert';
-import { useInputAlert } from '@/hooks/useInputAlert';
+import { useAddCategory } from '@/hooks/useAddCategory';
 import { useThemeColors } from '@/hooks/useThemeColors';
-import { usePizzaStore } from '@/stores/pizza';
-import { capitalize } from '@/utils/common.utils';
 import { BottomTabBarButtonProps } from '@react-navigation/bottom-tabs';
 import { Tabs, usePathname } from 'expo-router';
 import { TouchableOpacity } from 'react-native';
@@ -19,51 +16,7 @@ export default function TabLayout(): React.JSX.Element {
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
   const showAddButton = pathname === '/menu';
-  const { showInputAlert } = useInputAlert();
-  const { showAlert } = useAlert();
-  const { addCategory } = usePizzaStore();
-
-  const handleAddCategory = () => {
-    showInputAlert("Add Category", "Enter a category name you want to add:", {
-      inputs: [
-        {
-          placeholder: "Category Name",
-        },
-      ],
-      submitText: "Add",
-      onSubmit: (values) => {
-        let [name] = values;
-        name = name.trim();
-
-        if (!name) return;
-
-        const normalized = name.toLowerCase();
-
-        const result = addCategory(normalized);
-        const formattedName = capitalize(normalized);
-
-        if (!result) {
-          return showAlert(
-            "Duplicate Category",
-            `The category "${formattedName}" already exists.`,
-            [
-              { text: "Cancel", style: "cancel" },
-              {
-                text: "Try again",
-                style: "default",
-                keepOpen: true,
-                onPress: handleAddCategory,
-              },
-            ]
-          );
-        }
-
-        showAlert("Category Added", `Category "${formattedName}" has been added.`, [
-          { text: "OK", style: "default" },
-        ]);
-      },
-    });
-  };
+  const { handleAddCategory } = useAddCategory();
 
   return (
     <Tabs
@@ -92,7 +45,7 @@ export default function TabLayout(): React.JSX.Element {
         }}
       />
       <Tabs.Screen
-        name="order"
+        name="orders"
         options={{
           title: 'Orders',
           tabBarIcon: ({ color, focused }) => (

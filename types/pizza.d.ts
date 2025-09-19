@@ -1,3 +1,35 @@
+type PizzaStore = {
+  pizzas: Pizza[];
+  categories: Category[];
+  selectedCategories: string[];
+
+  availableCategories: () => Category[];
+  sections: () => { categoryId: string; title: string; data: Pizza[]; disabled?: boolean }[];
+  getPizzasByCategoryId: (categoryId: string) => Pizza[];
+
+  setPizzas: (pizzas: Pizza[]) => void;
+  getCategoryById: (id: string) => Category | undefined;
+  toggleCategory: (id: string) => void;
+  addCategory: (name: string) => boolean;
+  updateCategory: (id: string, name: string) => Promise<boolean>;
+  deleteCategory: (id: string) => Promise<void>;
+  toggleDisableCategory: (id: string) => void;
+  enableCategory: (id: string) => void;
+  getPopularPizzas: () => Promise<Pizza[]>;
+  getPizzaById: (id: string) => Pizza | undefined;
+
+  addPizza: (
+    pizzaData: Omit<
+      Pizza,
+      "id" | "description" | "rating" | "reviewCount" | "deliveryTime" | "deliveryFee"
+    > & { id?: string }
+  ) => Promise<boolean>;
+
+  deletePizza: (id: string) => Promise<void>;
+  toggleDisablePizza: (id: string) => void;
+  enablePizza: (id: string) => void;
+};
+
 type Category = {
   id: string;
   name: string;
@@ -18,43 +50,6 @@ type Pizza = {
   variations?: Variant[];
   dips?: Dip[];
   disabled?: boolean;
-};
-
-type OrderItem = {
-  id: string;
-  image: PizzaImage;
-  name: string;
-  description: string;
-  category: string;
-  price: number;
-  size: string;
-  quantity: number;
-  subtotal: number;
-};
-
-type Order = {
-  id: string;
-  customer: string;
-  phone: string;
-  status: string;
-  stage?: string;
-  total: number;
-  deliveryAddress: string;
-  estimatedDeliveryTime: number;
-  time: string;
-  items: OrderItem[];
-};
-
-type DummyOrder = { value: number; label: string; };
-
-type Review = {
-  id: string;
-  customer: string;
-  avatar: ImageSourcePropType;
-  date: string;
-  title: string;
-  description: string;
-  rating: number;
 };
 
 type PizzaFormProps = { categoryId?: string; pizzaId?: string; resetKey: number; }
@@ -86,4 +81,4 @@ type DipProps = {
   onAdd: () => void;
 }
 
-type PizzaImage = string | number;
+type PizzaImage = string | number | ImageSourcePropType;

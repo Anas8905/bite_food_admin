@@ -1,28 +1,135 @@
 import { ThemedText } from "@/components/ThemedText";
+import { useAlert } from "@/hooks/useAlert";
 import { useThemeColors } from "@/hooks/useThemeColors";
-import { usePizzaStore } from "@/stores/pizza";
+import { useOrderStore } from "@/stores/order";
 import { createThemedStyles } from "@/utils/styles";
 import { FontAwesome, FontAwesome5, Ionicons } from "@expo/vector-icons";
-import { useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
-import { FlatList, Image, SafeAreaView, Text, TouchableOpacity, View } from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useCallback, useState } from "react";
+import { ActivityIndicator, FlatList, Image, SafeAreaView, Text, TouchableOpacity, View } from "react-native";
 
-export default function OrderDetail(): React.JSX.Element {
+export default function OrderDetails(): React.JSX.Element {
     const styles = useThemedStyles();
     const { id: orderId } = useLocalSearchParams<{ id: string }>();
-    const { getOrderById } = usePizzaStore();
+    const {
+        getOrderById,
+        acceptOrder,
+        cancelOrder,
+        markOrderReadyForDelivery,
+        markOrderAsDelivered,
+    } = useOrderStore();
     const { textSecondary, accentPrimary } = useThemeColors();
+    const { showAlert } = useAlert();
+    const router = useRouter();
 
-    const [order, setOrder] = useState<Order | null>(null)
+    const [isAccepting, setIsAccepting] = useState<boolean>(false);
+    const [isCancelling, setIsCancelling] = useState<boolean>(false);
+    const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
-    useEffect(() => {
-    if (orderId) {
-        const order = getOrderById(orderId);
-        if (order) {
-        setOrder(order);
+    const order = orderId ? getOrderById(orderId) : null;
+
+    const handleAcceptOrder = useCallback(async () => {
+        if (!orderId) return;
+
+        setIsAccepting(true);
+        try {
+            const success = await acceptOrder(orderId);
+            if (success) {
+                showAlert("Success", "Order has been accepted and is now being prepared.");
+            } else {
+                showAlert("Error", "Failed to accept the order. Please try again.");
+            }
+        } catch (error) {
+            console.error('Error accepting order:', error);
+            showAlert("Error", "An error occurred while accepting the order.");
+        } finally {
+            setIsAccepting(false);
         }
-    }
-    }, [orderId, getOrderById]);
+    }, [orderId, acceptOrder, showAlert]);
+
+    const handleCancelOrder = useCallback(async () => {
+        if (!orderId) return;
+
+        setIsCancelling(true);
+        try {
+            const success = await cancelOrder(orderId);
+            if (success) {
+                showAlert("Success", "Order has been cancelled.", [
+                    {
+                        text: "OK",
+                        onPress: () => router.back()
+                    }
+                ]);
+            } else {
+                showAlert("Error", "Failed to cancel the order. Please try again.");
+            }
+        } catch (error) {
+            console.error('Error cancelling order:', error);
+            showAlert("Error", "An error occurred while cancelling the order.");
+        } finally {
+            setIsCancelling(false);
+        }
+    }, [orderId, cancelOrder, showAlert, router]);
+
+    const handleMarkReadyForDelivery = useCallback(async () => {
+        if (!orderId) return;
+
+        setIsProcessing(true);
+        try {
+            const success = await markOrderReadyForDelivery(orderId);
+            if (success) {
+                showAlert("Success", "Order has been marked ready for delivery.");
+            } else {
+                showAlert("Error", "Failed to mark order ready for delivery. Please try again.");
+            }
+        } catch (error) {
+            console.error('Error marking order ready for delivery:', error);
+            showAlert("Error", "An error occurred while marking the order ready for delivery.");
+        } finally {
+            setIsProcessing(false);
+        }
+    }, [orderId, markOrderReadyForDelivery, showAlert]);
+
+    const handleMarkAsDelivered = useCallback(async () => {
+        if (!orderId) return;
+
+        setIsProcessing(true);
+        try {
+            const success = await markOrderAsDelivered(orderId);
+            if (success) {
+                showAlert("Success", "Order has been marked as delivered.", [
+                    {
+                        text: "OK",
+                        onPress: () => router.back()
+                    }
+                ]);
+            } else {
+                showAlert("Error", "Failed to mark order as delivered. Please try again.");
+            }
+        } catch (error) {
+            console.error('Error marking order as delivered:', error);
+            showAlert("Error", "An error occurred while marking the order as delivered.");
+        } finally {
+            setIsProcessing(false);
+        }
+    }, [orderId, markOrderAsDelivered, showAlert, router]);
+
+    const getActionButtonConfig = useCallback(() => {
+        if (order?.stage === "preparing") {
+            return {
+                text: "Mark Ready for Delivery",
+                handler: handleMarkReadyForDelivery,
+            };
+        } else if (order?.stage === "sent out") {
+            return {
+                text: "Mark As Delivered",
+                handler: handleMarkAsDelivered,
+            };
+        }
+        return null;
+    }, [order?.stage, handleMarkReadyForDelivery, handleMarkAsDelivered]);
+
+    const actionButtonConfig = getActionButtonConfig();
 
     const renderHeader = () => (
         <View style={styles.container}>
@@ -59,13 +166,25 @@ export default function OrderDetail(): React.JSX.Element {
                 <View style={styles.headerActions}>
                     <TouchableOpacity
                         style={[styles.baseHeaderBtn, styles.leftHeaderBtn]}
+                        onPress={handleAcceptOrder}
+                        disabled={isAccepting}
                     >
-                        <ThemedText style={styles.leftBtnText}>ACCEPT</ThemedText>
+                        {isAccepting ? (
+                            <ActivityIndicator size={14} color="white" />
+                        ) : (
+                            <ThemedText style={styles.leftBtnText}>ACCEPT</ThemedText>
+                        )}
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={[styles.baseHeaderBtn, styles.rightHeaderBtn]}
+                        onPress={handleCancelOrder}
+                        disabled={isCancelling}
                     >
-                        <ThemedText style={styles.rightBtnText}>CANCEL</ThemedText>
+                        {isCancelling ? (
+                            <ActivityIndicator size={14} color={accentPrimary} />
+                        ) : (
+                            <ThemedText style={styles.rightBtnText}>CANCEL</ThemedText>
+                        )}
                     </TouchableOpacity>
                 </View>
             )}
@@ -134,9 +253,17 @@ export default function OrderDetail(): React.JSX.Element {
                 </View>
             </View>
 
-            {order?.stage === "preparing" && (
-                <TouchableOpacity style={styles.actionBtn}>
-                    <Text style={styles.btnText}>Mark Ready for Delivery</Text>
+            {actionButtonConfig && (
+                <TouchableOpacity
+                    style={styles.actionBtn}
+                    onPress={actionButtonConfig.handler}
+                    disabled={isProcessing}
+                >
+                    {isProcessing ? (
+                        <ActivityIndicator size={19} color="white" />
+                    ) : (
+                        <Text style={styles.btnText}>{actionButtonConfig.text}</Text>
+                    )}
                 </TouchableOpacity>
             )}
         </View>
@@ -210,7 +337,7 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, bgSecondary, accentPrim
         backgroundColor: bgSecondary,
     },
     customerName: {
-        fontWeight: 600,
+        fontWeight: 500,
         fontSize: 18,
     },
     iconicText: {
@@ -225,7 +352,7 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, bgSecondary, accentPrim
     },
     baseHeaderBtn: {
         flex: 1,
-        paddingVertical: 8,
+        paddingVertical: 10,
         paddingHorizontal: 24,
         alignItems: 'center',
         borderRadius: 8,
@@ -311,6 +438,7 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, bgSecondary, accentPrim
     instructDescription: {
         color: '#6B5200',
         fontFamily: 'Segoe UI',
+        fontSize: 12,
     },
     calculations: {
         marginVertical: 20,

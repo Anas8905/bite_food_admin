@@ -29,7 +29,6 @@ export default function CustomDrawer({
   width = '75%',
   side = 'left',
   duration = 300,
-  backdropColor = 'rgba(0,0,0,0.3)',
   closeOnBackdropPress = true,
   preventUpdates = false,
   renderHeader,
@@ -144,7 +143,7 @@ export default function CustomDrawer({
           style={[
             styles.backdrop,
             {
-              backgroundColor: backdropColor,
+              backgroundColor: 'rgba(0,0,0,0.3)',
               opacity: backdropOpacity,
             },
             stylesOverride.backdrop,
@@ -197,16 +196,18 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, borderLight }) => ({
     paddingTop: isAndroid ? 30 : 60,
     paddingHorizontal: 20,
     backgroundColor: bgPrimary,
-    // shadow for iOS
     shadowColor: '#000',
     shadowOpacity: 0.15,
     shadowRadius: 12,
     shadowOffset: { width: 0, height: 4 },
-    // elevation for Android
     elevation: 12,
   } as ViewStyle,
-  header: { marginBottom: 20 },
-  content: { flex: 1 },
+  header: {
+    marginBottom: 20,
+  },
+  content: {
+    flex: 1,
+  },
   footer: {
     borderTopColor: borderLight,
     borderTopWidth: StyleSheet.hairlineWidth,

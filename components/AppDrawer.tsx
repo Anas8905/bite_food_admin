@@ -11,6 +11,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { useDrawer } from '../hooks/useDrawer';
 import { ThemedText } from './ThemedText';
 import CustomDrawer from './ui/CustomDrawer';
+import { ThemedView } from './ThemedView';
 
 const themeOptions: ThemeOption[] = [
   { label: 'Device', value: 'device', icon: 'smartphone' },
@@ -34,11 +35,17 @@ export default function AppDrawer(): React.JSX.Element {
       </View>
 
       <View style={styles.userInfo}>
-        {user?.avatar && (
-          <View style={styles.avatarCircle}>
-                <Image source={{ uri: user?.avatar }} style={styles.avatarImage} />
-          </View>
-        )}
+          <ThemedView colorName="bgGray" style={styles.avatarCircle}>
+              {user?.avatar
+                ? <Image source={{ uri: user?.avatar }} style={styles.avatarImage} />
+                : (
+                  <View style={styles.fallbackAvatar}>
+                    <ThemedText colorName='textPrimary' style={styles.fallbackText}>
+                      {user?.fullName?.[0].toLocaleUpperCase()}
+                    </ThemedText>
+                  </View>
+                )}
+          </ThemedView>
         <View style={styles.infoContainer}>
           <ThemedText
             style={styles.userName}
@@ -210,6 +217,14 @@ const useThemedStyles = createThemedStyles(({
     width: '100%',
     height: '100%',
     resizeMode: 'cover',
+  },
+  fallbackAvatar: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  fallbackText: {
+    fontSize: 28,
   },
   infoContainer: {
     flex: 1,

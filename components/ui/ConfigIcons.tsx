@@ -1,7 +1,7 @@
 import ConfigIcon from '@/assets/images/config.svg';
 import { useConfigIconsStore } from '@/stores/configIcons';
 import { createThemedStyles } from "@/utils/styles";
-import { AntDesign, Feather, Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { AntDesign, FontAwesome6, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useSegments } from 'expo-router';
 import React from "react";
 import { Pressable, StyleProp, View, ViewStyle } from "react-native";
@@ -47,14 +47,14 @@ export default function ConfigIcons({
       {expanded && (
         <View style={[styles.dynamicIcons, dynamicIconsStyle]}>
           <Pressable onPress={onEdit}>
-            <Feather name="edit" size={22} color={tint} />
+            <FontAwesome6 name="edit" size={20.2} color={tint} />
           </Pressable>
           <Pressable onPress={onDisable}>
-            <Ionicons name="ban-outline" size={22} color={tint} />
+            <Ionicons name="ban-sharp" size={21} color={tint} />
           </Pressable>
 
           <Pressable onPress={onDelete}>
-            <MaterialIcons name="delete-outline" size={22} color={tint} />
+            <MaterialIcons name="delete-outline" size={23} color={tint} />
           </Pressable>
         </View>
       )}

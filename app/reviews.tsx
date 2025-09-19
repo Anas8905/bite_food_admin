@@ -1,7 +1,7 @@
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useThemeColors } from "@/hooks/useThemeColors";
-import { usePizzaStore } from "@/stores/pizza";
+import { useOrderStore } from "@/stores/order";
 import { createThemedStyles } from "@/utils/styles";
 import { FontAwesome } from "@expo/vector-icons";
 import React from "react";
@@ -11,7 +11,7 @@ import { FlatList, Image, SafeAreaView, View } from "react-native";
 export default function Reviews(): React.JSX.Element {
     const styles = useThemedStyles();
     const { tint } = useThemeColors();
-    const { reviews } = usePizzaStore();
+    const { reviews } = useOrderStore();
 
     const renderStars = (rating: number, tint: string) => {
         const stars: React.JSX.Element[] = [];
@@ -73,7 +73,7 @@ export default function Reviews(): React.JSX.Element {
     )
 }
 
-const useThemedStyles = createThemedStyles(({ bgPrimary, bgSecondary }) => ({
+const useThemedStyles = createThemedStyles(({ bgPrimary, bgReview }) => ({
     safeArea: {
         flex: 1,
         backgroundColor: bgPrimary,
@@ -88,7 +88,12 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, bgSecondary }) => ({
         padding: 16,
         borderRadius: 8,
         gap: 12,
-        backgroundColor: bgSecondary,
+        backgroundColor: bgReview,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
     },
     avatarRow: {
         flexDirection: 'row',

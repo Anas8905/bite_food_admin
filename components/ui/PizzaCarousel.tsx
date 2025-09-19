@@ -1,54 +1,45 @@
-import { mockPizzaAPI } from "@/api/mockApi";
 import { useThemeColors } from "@/hooks/useThemeColors";
-import { useEffect, useState } from "react";
 import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { ThemedText } from "../ThemedText";
 import { ThemedView } from "../ThemedView";
+import { useRouter } from "expo-router";
 
-export default function PizzaCard(): React.JSX.Element {
-  const [popularPizzas, setPopularPizzas] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const { accentPrimary } = useThemeColors();
-
-  useEffect(() => {
-    const fetchPizzas = async () => {
-      try {
-        const pizzas = await mockPizzaAPI.popularPizzas();
-        setPopularPizzas(pizzas);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchPizzas();
-  }, []);
+export default function PizzaCarousel({ popularPizzas, isLoading }: { popularPizzas: Pizza[]; isLoading: boolean; }): React.JSX.Element {
+  const { tint } = useThemeColors();
+  const router = useRouter();
 
   return (
     <ThemedView colorName="bgSecondary" style={styles.card}>
       <View style={styles.header}>
         <ThemedText style={{ fontSize: 14, }}>Popular Pizzas This Week</ThemedText>
-          <Pressable>
+          <Pressable onPress={() => router.navigate('/menu')}>
               <ThemedText colorName='accentPrimary' style={styles.actionBtn}>See All</ThemedText>
           </Pressable>
       </View>
 
       {isLoading ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size='large' color={accentPrimary} />
-          <ThemedText style={styles.loadingText}>
+        <View style={styles.fallback}>
+          <ActivityIndicator size='large' color={tint} />
+          <ThemedText style={styles.fallbackText}>
             Loading popular pizzas...
           </ThemedText>
         </View>
       ) : (
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ gap: 16 }}
-        >
-          {popularPizzas.map((pizza) => (
-            <Image key={pizza.id} source={pizza.image} style={styles.image} />
-          ))}
-        </ScrollView>
+        popularPizzas.length > 0 ? (
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ gap: 16 }}
+          >
+            {popularPizzas.map((pizza) => (
+              <Image key={pizza.id} source={pizza.image} style={styles.image} />
+            ))}
+          </ScrollView>
+        ) : (
+          <View style={styles.fallback}>
+            <ThemedText style={styles.fallbackText}>No popular pizzas</ThemedText>
+          </View>
+        )
       )}
     </ThemedView>
   )
@@ -56,6 +47,7 @@ export default function PizzaCard(): React.JSX.Element {
 
 const styles = StyleSheet.create({
   card: {
+    flex: 1,
     borderRadius: 20,
     padding: 16,
     gap: 12,
@@ -74,12 +66,12 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     borderRadius: 12,
   },
-  loadingContainer: {
+  fallback: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 20,
   },
-  loadingText: {
+  fallbackText: {
     marginTop: 12,
     fontSize: 14,
     textAlign: 'center',

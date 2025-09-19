@@ -6,10 +6,9 @@ import { useThemeColors } from "@/hooks/useThemeColors";
 import { useRouter } from "expo-router";
 import { useCounterAnimation } from "@/hooks/useCounterAnimation";
 
-export default function ReviewCard({ count, isLoading }: { count: number; isLoading: boolean; }): React.JSX.Element {
+export default function ReviewCard({ count, highestReview, isLoading }: { count: number; highestReview: number; isLoading: boolean; }): React.JSX.Element {
     const { tint } = useThemeColors();
     const router = useRouter();
-    const displayValue = useCounterAnimation(count, isLoading);
 
   return (
     <ThemedView colorName="bgSecondary" style={styles.reviewCard}>
@@ -23,9 +22,13 @@ export default function ReviewCard({ count, isLoading }: { count: number; isLoad
         <View style={styles.content}>
             <View style={styles.lefside}>
                 <FontAwesome name="star" size={22} color={tint} />
-                <ThemedText type='subtitle' colorName="accentPrimary">4.9</ThemedText>
+                <ThemedText type='subtitle' colorName="accentPrimary">
+                  {useCounterAnimation(highestReview, isLoading)}
+                </ThemedText>
             </View>
-            <ThemedText style={styles.rightside}>Total {displayValue} Reviews</ThemedText>
+            <ThemedText style={styles.rightside}>
+              Total {useCounterAnimation(count, isLoading)} Reviews
+            </ThemedText>
         </View>
     </ThemedView>
   )

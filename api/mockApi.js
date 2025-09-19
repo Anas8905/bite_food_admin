@@ -252,6 +252,7 @@ export const orders = [
     customer: "Noah Bennett",
     phone: "+92631212167",
     status: "incoming",
+    stage: "",
     total: 3200,
     deliveryAddress: "439-A, Rt. Street, Model Town, LHR",
     estimatedDeliveryTime: 30,
@@ -286,6 +287,7 @@ export const orders = [
     customer: "Ethan Parker",
     phone: "+92631212167",
     status: "incoming",
+    stage: "",
     total: 2000,
     deliveryAddress: "312-D, Rt. Street, Johar Town, LHR",
     estimatedDeliveryTime: 45,
@@ -309,6 +311,7 @@ export const orders = [
     customer: "Liam Carter",
     phone: "+92631212167",
     status: "completed",
+    stage: "",
     total: 3000,
     deliveryAddress: "991-B, Rt. Street, Wapda Town, LHR",
     estimatedDeliveryTime: 60,
@@ -332,6 +335,7 @@ export const orders = [
     customer: "Isabella Hayes",
     phone: "+92631212167",
     status: "completed",
+    stage: "",
     total: 3000,
     deliveryAddress: "991-B, Rt. Street, Wapda Town, LHR",
     estimatedDeliveryTime: 60,
@@ -416,7 +420,7 @@ export const reviews = [
     date: '27/05/2025',
     title: "Loved the taste",
     description: 'The crust was perfectly baked and the cheese melted just right. Definitely ordering again!',
-    rating: 5,
+    rating: 4.9,
   },
   {
     id: '3',
@@ -434,7 +438,7 @@ export const reviews = [
     date: '29/05/2025',
     title: "Kids loved it",
     description: 'Both my kids enjoyed the cheesy pizza, and the portion size was just right for us.',
-    rating: 4,
+    rating: 4.3,
   },
   {
     id: '5',
@@ -443,7 +447,7 @@ export const reviews = [
     date: '30/05/2025',
     title: "Average experience",
     description: 'The pizza was okay, but I felt it needed more seasoning. Delivery was quick though.',
-    rating: 3,
+    rating: 3.5,
   },
   {
     id: '6',
@@ -452,7 +456,7 @@ export const reviews = [
     date: '31/05/2025',
     title: "Best pizza in town",
     description: 'Crispy crust, fresh ingredients, and generous toppings — this has become my go-to pizza spot!',
-    rating: 5,
+    rating: 4.9,
   },
   {
     id: '7',
@@ -479,7 +483,7 @@ export const reviews = [
     date: '03/06/2025',
     title: "Worth every penny",
     description: 'Great portion size, delicious taste, and affordable price. Couldn’t ask for more.',
-    rating: 5,
+    rating: 4.9,
   },
   {
     id: '10',
@@ -488,7 +492,7 @@ export const reviews = [
     date: '04/06/2025',
     title: "Slightly cold on arrival",
     description: 'Pizza was tasty but not as hot as expected. Still, the flavors were amazing.',
-    rating: 4,
+    rating: 4.2,
   },
 ];
 
@@ -514,16 +518,3 @@ export const mockAuthAPI = {
   },
 };
 
-export const mockPizzaAPI = {
-  popularPizzas: async () => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    return pizzas.filter((pizza) => pizza.categoryId === 'popular');
-  },
-
-  getOrdersByStatus: async (status) => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 500));
-    return orders.filter((order) => order.status === status);
-  }
-}

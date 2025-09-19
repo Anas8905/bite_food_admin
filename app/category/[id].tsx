@@ -3,12 +3,12 @@ import CustomPizzaCard from "@/components/CustomPizzaCard";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import EmptyState from "@/components/ui/EmptyState";
+import LoadingOverlay from '@/components/ui/LoadingOverlay';
 import { useAlert } from "@/hooks/useAlert";
 import { useInputAlert } from "@/hooks/useInputAlert";
 import { useThemeColors } from "@/hooks/useThemeColors";
 import { useConfigIconsStore } from "@/stores/configIcons";
 import { usePizzaStore } from "@/stores/pizza";
-import { isAndroid } from '@/utils/common.utils';
 import { createThemedStyles } from "@/utils/styles";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
@@ -18,7 +18,7 @@ export default function CategoryScreen(): React.JSX.Element {
   const { id: categoryId } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const styles = useThemedStyles();
-  const { tint, bgPrimary, textPrimary } = useThemeColors();
+  const { tint, bgPrimary } = useThemeColors();
   const {
     getCategoryById,
     getPizzasByCategoryId,
@@ -32,6 +32,7 @@ export default function CategoryScreen(): React.JSX.Element {
   const { resetAllExpanded, resetExpanded } = useConfigIconsStore();
   const [categoryName, setCategoryName] = useState<string>("");
   const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -50,19 +51,23 @@ export default function CategoryScreen(): React.JSX.Element {
     }
   }, [categoryId, getCategoryById]);
 
-  const handleSave = () => {
+  const hideLoading = () => {
+    setIsDeleting(false);
+  }
+
+  const handleSave = async () => {
     const trimmed = categoryName.trim();
     if (!categoryId || !trimmed) return;
 
-    setIsSaving(true);
     try {
-      const success = updateCategory(categoryId, trimmed);
+      setIsSaving(true);
+      const success = await updateCategory(categoryId, trimmed);
 
       if (!success) {
         return showAlert("Error", "Category name already exists or unchanged.");
       }
 
-      return showAlert("Category Updated", "Category has been successfully updated.");
+      return showAlert("Category Updated", "Category updated successfully.");
     } catch (error) {
       console.error("Error saving category:", error);
     } finally {
@@ -77,32 +82,33 @@ export default function CategoryScreen(): React.JSX.Element {
       {
         inputs: [
           {
-            placeholder: "Category Name",
+            placeholder: pizzaName,
           },
         ],
         submitText: 'Delete',
         submitStyle: 'destructive',
-        onSubmit: (values) => {
+        onSubmit: async (values) => {
           const [enteredName] = values;
-          if(!enteredName.trim()) return;
+          setIsDeleting(true);
 
-          if (enteredName === pizzaName) {
-            deletePizza(pizzaId);
-            resetExpanded(`pizza-${pizzaId}`);
-            return showAlert(
-              'Success',
-              `Item "${pizzaName}" has been deleted successfully.`,
-              [{ text: 'OK', style: 'default' }]
-            );
-          } else {
-            return showAlert(
-              'Deletion Failed',
-              'The entered name does not match the item name.',
-              [{ text: 'OK', style: 'default' }]
-            );
-          }
+          try {
+            if (enteredName === pizzaName) {
+              await deletePizza(pizzaId);
+              resetExpanded(`pizza-${pizzaId}`);
+              showAlert(
+                'Success',
+                `Item "${pizzaName}" deleted successfully.`,
+                [{ text: 'OK', style: 'default', onPress: hideLoading }]
+              );
+            } else {
+              showAlert(
+                'Deletion Failed',
+                'The entered name does not match the item name.',
+                [{ text: 'OK', style: 'default', onPress: hideLoading}]
+              );
+            }
+          } catch {}
         },
-        onCancel: () => {}
       }
     );
   };
@@ -115,14 +121,27 @@ export default function CategoryScreen(): React.JSX.Element {
             {/* Header */}
             <View style={styles.header}>
                 <ThemedText style={styles.label}>CATEGORY NAME</ThemedText>
-                <TextInput
-                    value={categoryName}
-                    onChangeText={setCategoryName}
-                    autoCapitalize="words"
-                    autoCorrect={false}
-                    style={styles.input}
-                    placeholder="Enter category name"
-                />
+                <View style={styles.saveCatContainer}>
+                  <TextInput
+                      value={categoryName}
+                      onChangeText={setCategoryName}
+                      autoCapitalize="words"
+                      autoCorrect={false}
+                      style={styles.input}
+                      placeholder="Enter category name"
+                  />
+                  <TouchableOpacity
+                      style={styles.saveBtn}
+                      onPress={handleSave}
+                      disabled={isSaving}
+                  >
+                      {isSaving ? (
+                          <ActivityIndicator color={bgPrimary} size={16} />
+                      ) : (
+                          <ThemedText style={styles.saveText}>SAVE</ThemedText>
+                      )}
+                  </TouchableOpacity>
+                </View>
             </View>
 
             {/* Products Section */}
@@ -163,36 +182,14 @@ export default function CategoryScreen(): React.JSX.Element {
               )}
             </View>
 
-            {/* Footer Buttons */}
-            <View style={styles.footer}>
-                <View style={styles.buttonRow}>
-                    <TouchableOpacity
-                        style={[styles.actionBtn, styles.cancelBtn]}
-                        onPress={() => router.back()}
-                        disabled={isSaving}
-                    >
-                        <ThemedText style={styles.cancelText}>CANCEL</ThemedText>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={[styles.actionBtn, styles.saveBtn]}
-                        onPress={handleSave}
-                        disabled={isSaving}
-                    >
-                        {isSaving ? (
-                            <ActivityIndicator color='white' size={16} />
-                        ) : (
-                            <ThemedText style={styles.saveText}>SAVE</ThemedText>
-                        )}
-                    </TouchableOpacity>
-                </View>
-            </View>
+            {isDeleting && <LoadingOverlay />}
 
         </ThemedView>
     </SafeAreaView>
   )
 }
 
-const useThemedStyles = createThemedStyles(({ bgPrimary, borderLight, textPrimary, accentPrimary, bgGray }) => ({
+const useThemedStyles = createThemedStyles(({ bgPrimary, borderLight, textPrimary, accentPrimary }) => ({
   safeArea: {
     flex: 1,
   },
@@ -208,7 +205,13 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, borderLight, textPrimar
     marginBottom: 10,
     color: textPrimary,
   },
+  saveCatContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
   input: {
+    flex: 1,
     backgroundColor: bgPrimary,
     padding: 15,
     borderRadius: 8,
@@ -235,33 +238,16 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, borderLight, textPrimar
     justifyContent: 'center',
     paddingHorizontal: 40,
   },
-  footer: {
-    paddingHorizontal: 20,
-    paddingBottom: isAndroid ? 34 : 20,
-    paddingTop: 10,
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  actionBtn: {
-    flex: 1,
-    alignItems: 'center',
-    paddingVertical: 14,
-    borderRadius: 30,
-  },
   saveBtn: {
+    alignItems: 'center',
+    padding: 15.6,
+    width: 80,
+    height: 50,
+    borderRadius: 8,
     backgroundColor: accentPrimary,
   },
   saveText: {
-    fontWeight: 500,
-    color: '#FFFFFF',
-  },
-  cancelBtn: {
-    backgroundColor: bgGray,
-  },
-  cancelText: {
-    fontWeight: 500,
-    opacity: 0.9
+    fontWeight: 600,
+    color: bgPrimary,
   },
 }));

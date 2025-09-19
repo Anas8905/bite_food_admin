@@ -26,8 +26,8 @@ export default function CategoryTabs({
         <Pressable
           key="all"
           style={[
-            styles.catBaseTab,
-            selectedCategories.includes("All") && styles.catActiveTab,
+            styles.baseCatTab,
+            selectedCategories.includes("All") && styles.activeCatTab,
           ]}
           onPress={() => toggleCategory("All")}
         >
@@ -46,8 +46,8 @@ export default function CategoryTabs({
           <Pressable
             key={category.id}
             style={[
-              styles.catBaseTab,
-              selectedCategories.includes(category.id) && styles.catActiveTab,
+              styles.baseCatTab,
+              selectedCategories.includes(category.id) && styles.activeCatTab,
             ]}
             onPress={() => toggleCategory(category.id)}
           >
@@ -68,20 +68,20 @@ export default function CategoryTabs({
 
 const useThemedStyles = createThemedStyles(({ textPrimary, accentPrimary }) => ({
   catContainer: {
-    marginTop: 20,
+    marginTop: 10,
     gap: 20,
   },
-  catBaseTab: {
+  baseCatTab: {
     paddingVertical: 12,
     paddingHorizontal: 20,
   },
-  catActiveTab: {
+  activeCatTab: {
     borderBottomWidth: 2,
     borderColor: accentPrimary,
   },
   baseTabText: {
     fontSize: 16,
-    fontWeight: 700,
+    fontWeight: 600,
     color: textPrimary,
   },
   activeTabText: {

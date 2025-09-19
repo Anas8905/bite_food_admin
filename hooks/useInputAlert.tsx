@@ -8,7 +8,7 @@ import { useThemeColors } from "./useThemeColors";
 export const useInputAlert = (): showInputAlertProps => {
   const { textMuted } = useThemeColors();
   const styles = useThemedStyles();
-  const { showAlert } = useAlert();
+  const { showAlert, hideAlert } = useAlert();
 
   const showInputAlert = (
     title: string,
@@ -22,7 +22,7 @@ export const useInputAlert = (): showInputAlertProps => {
       inputs,
     }: InputAlertOptions
   ): void => {
-    const values: string[] = new Array(inputs.length).fill("");
+    const values: string[] = inputs.map(input => input.defaultValue || "");
     const setValue = (index: number, value: string) => {
       values[index] = value;
     };
@@ -42,6 +42,7 @@ export const useInputAlert = (): showInputAlertProps => {
               autoCorrect={false}
               autoFocus={index === 0}
               style={styles.input}
+              defaultValue={input.defaultValue || ""}
             />
           </ThemedView>
         ))}
@@ -57,7 +58,15 @@ export const useInputAlert = (): showInputAlertProps => {
           text: submitText,
           style: submitStyle,
           keepOpen: true,
-          onPress: () => { onSubmit(values.map(v => v.trim())) },
+          onPress: async () => {
+            const trimmed = values.map(v => v.trim());
+
+            const allFilled = trimmed.every(v => v.length > 0);
+            if (!allFilled) return;
+
+            hideAlert();
+            await onSubmit(trimmed);
+          },
         },
       ],
       renderInputs()
