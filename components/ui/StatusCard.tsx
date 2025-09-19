@@ -1,16 +1,29 @@
 import { ThemedView } from '../ThemedView'
 import { ThemedText } from '../ThemedText'
 import { StyleSheet } from 'react-native';
+import { useCounterAnimation } from '@/hooks/useCounterAnimation';
 
-export default function StatusCard({ statusText, status }: {
-    statusText: string; status: number;
+export default function StatusCard({
+  statusText,
+  status,
+  isLoading,
+}: {
+  statusText: string;
+  status: number;
+  isLoading: boolean;
 }): React.JSX.Element {
-    return (
-        <ThemedView style={styles.statusCard} colorName="bgSecondary">
-            <ThemedText type='title' style={styles.status}>{status}</ThemedText>
-            <ThemedText colorName='textSecondary' style={styles.staticText}>{statusText}</ThemedText>
-        </ThemedView>
-  )
+  const displayValue = useCounterAnimation(status, isLoading);
+
+  return (
+    <ThemedView style={styles.statusCard} colorName="bgSecondary">
+      <ThemedText type="title" style={styles.status}>
+        {displayValue}
+      </ThemedText>
+      <ThemedText colorName="textSecondary" style={styles.staticText}>
+        {statusText}
+      </ThemedText>
+    </ThemedView>
+  );
 }
 
 const styles = StyleSheet.create({

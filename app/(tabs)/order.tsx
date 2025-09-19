@@ -1,7 +1,7 @@
-import { mockPizzaAPI } from '@/api/mockApi';
 import HorizontalPizzaCard from '@/components/HorizontalPizzaCard';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { usePizzaStore } from '@/stores/pizza';
 import { createThemedStyles } from '@/utils/styles';
 import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, SafeAreaView, View } from 'react-native';
@@ -19,11 +19,12 @@ export default function OrderScreen(): React.JSX.Element {
   const [activeTab, setActiveTab] = useState<TabKey>('ongoing');
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { getOrdersByStatus } = usePizzaStore();
 
   const fetchOrders = useCallback(async () => {
     setIsLoading(true);
     try {
-      const ordersData = await mockPizzaAPI.getOrdersByStatus(activeTab);
+      const ordersData = await getOrdersByStatus(activeTab);
       setOrders(ordersData);
     } catch (error) {
       console.error('Error fetching orders:', error);
@@ -31,7 +32,7 @@ export default function OrderScreen(): React.JSX.Element {
     } finally {
       setIsLoading(false);
     }
-  }, [activeTab]);
+  }, [activeTab, getOrdersByStatus]);
 
   useEffect(() => {
     fetchOrders();

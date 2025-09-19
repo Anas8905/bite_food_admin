@@ -4,12 +4,12 @@ import { ThemedView } from "../ThemedView";
 import { FontAwesome } from "@expo/vector-icons";
 import { useThemeColors } from "@/hooks/useThemeColors";
 import { useRouter } from "expo-router";
-import { usePizzaStore } from "@/stores/pizza";
+import { useCounterAnimation } from "@/hooks/useCounterAnimation";
 
-export default function ReviewCard(): React.JSX.Element {
+export default function ReviewCard({ count, isLoading }: { count: number; isLoading: boolean; }): React.JSX.Element {
     const { tint } = useThemeColors();
     const router = useRouter();
-    const { reviews } = usePizzaStore();
+    const displayValue = useCounterAnimation(count, isLoading);
 
   return (
     <ThemedView colorName="bgSecondary" style={styles.reviewCard}>
@@ -25,7 +25,7 @@ export default function ReviewCard(): React.JSX.Element {
                 <FontAwesome name="star" size={22} color={tint} />
                 <ThemedText type='subtitle' colorName="accentPrimary">4.9</ThemedText>
             </View>
-            <ThemedText style={styles.rightside}>Total {reviews.length} Reviews</ThemedText>
+            <ThemedText style={styles.rightside}>Total {displayValue} Reviews</ThemedText>
         </View>
     </ThemedView>
   )

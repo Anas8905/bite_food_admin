@@ -8,7 +8,7 @@ import { AntDesign } from "@expo/vector-icons";
 import Chart from "./Chart";
 import { useRouter } from "expo-router";
 import { createThemedStyles } from "@/utils/styles";
-import { monthlyOrders, weeklyOrders, yearlyOrders } from '@/api/mockApi';
+import { useCounterAnimation } from "@/hooks/useCounterAnimation";
 
 const data = [
   { label: 'Weekly', value: 'weekly' },
@@ -16,11 +16,12 @@ const data = [
   { label: 'Yearly', value: 'yearly' },
 ];
 
-export default function ChartCard(): React.JSX.Element {
+export default function ChartCard({ count, isLoading }: { count: number; isLoading: boolean; }): React.JSX.Element {
   const styles = useThemedStyles();
   const { tint, bgPrimary } = useThemeColors();
   const router = useRouter();
   const [period, setPeriod] = useState('weekly');
+  const displayValue = useCounterAnimation(count, isLoading);
 
   return (
     <ThemedView colorName="bgSecondary" style={styles.graphCard}>
@@ -28,9 +29,7 @@ export default function ChartCard(): React.JSX.Element {
         <View style={styles.cardHeader}>
           <View style={styles.orders}>
               <ThemedText style={styles.title}>Total Orders</ThemedText>
-              <ThemedText style={styles.orderCount}>
-                {weeklyOrders.length + monthlyOrders.length + yearlyOrders.length}
-              </ThemedText>
+              <ThemedText style={styles.orderCount}>{displayValue}</ThemedText>
           </View>
 
           <Dropdown

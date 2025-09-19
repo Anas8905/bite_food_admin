@@ -8,14 +8,37 @@ import { useEffect, useState } from 'react';
 import { SafeAreaView, StyleSheet } from 'react-native';
 
 export default function DashboardScreen(): React.JSX.Element {
-  const { getOrdersByStatus } = usePizzaStore();
+  const { getOrdersByStatus, getBulkOrdersCount } = usePizzaStore();
+  const [allOrdersCount, setAllOrdersCount] = useState<number>(0);
+  const [reviewsCount, setReviewsCount] = useState<number>(0);
   const [ongoing, setOngoing] = useState<Order[]>([]);
   const [incoming, setIncoming] = useState<Order[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
 
   useEffect(() => {
-     setOngoing(getOrdersByStatus("ongoing"));
-     setIncoming(getOrdersByStatus("incoming"));
-  }, [getOrdersByStatus]);
+    const fetchOrders = async () => {
+      setIsLoading(true);
+
+      try {
+        const ordersCount = await getBulkOrdersCount();
+        const reviewsCount = await getBulkOrdersCount();
+        const ongoingOrders = await getOrdersByStatus("ongoing");
+        const incomingOrders = await getOrdersByStatus("incoming");
+
+        setAllOrdersCount(ordersCount);
+        setReviewsCount(reviewsCount);
+        setOngoing(ongoingOrders);
+        setIncoming(incomingOrders);
+      } catch (err) {
+        console.error("Failed to fetch orders:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, [getOrdersByStatus, getBulkOrdersCount]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -26,18 +49,20 @@ export default function DashboardScreen(): React.JSX.Element {
           <StatusCard
             statusText="Running Orders"
             status={ongoing.length}
+            isLoading={isLoading}
           />
           <StatusCard
             statusText="Order Requests"
             status={incoming.length}
+            isLoading={isLoading}
           />
         </ThemedView>
 
         {/* Graph Card */}
-        <ChartCard />
+        <ChartCard count={allOrdersCount} isLoading={isLoading} />
 
         {/* Review Card */}
-        <ReviewCard />
+        <ReviewCard count={reviewsCount} isLoading={isLoading} />
 
         {/* Popular Pizza Card */}
         <PizzaCard />

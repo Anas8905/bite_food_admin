@@ -45,6 +45,8 @@ type Order = {
   items: OrderItem[];
 };
 
+type DummyOrder = { value: number; label: string; };
+
 type Review = {
   id: string;
   customer: string;

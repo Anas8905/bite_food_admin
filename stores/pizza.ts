@@ -1,10 +1,21 @@
-import { categories as initialCategories, pizzas as initialPizzas, orders as initialOrders, reviews as initialReviews } from '@/api/mockApi';
+import {
+  categories as initialCategories,
+  orders as initialOrders,
+  weeklyOrders,
+  monthlyOrders,
+  yearlyOrders,
+  pizzas as initialPizzas,
+  reviews as initialReviews,
+} from '@/api/mockApi';
 import { capitalize } from '@/utils/common.utils';
 import { create } from 'zustand';
 
 type PizzaStore = {
   pizzas: Pizza[];
   orders: Order[];
+  weeklyOrders: DummyOrder[];
+  monthlyOrders: DummyOrder[];
+  yearlyOrders: DummyOrder[];
   categories: Category[];
   reviews: Review[];
   selectedCategories: string[];
@@ -25,7 +36,9 @@ type PizzaStore = {
   enableCategory: (id: string) => void;
   getPizzaById: (id: string) => Pizza | undefined;
   getOrderById: (id: string) => Order | undefined;
-  getOrdersByStatus: (status: string) => Order[] | [];
+  getOrdersByStatus: (status?: string) => Promise<Order[] | []>;
+  getBulkOrdersCount: () => Promise<number>;
+  getReviewsCount: () => Promise<number>;
 
   addPizza: (
     pizzaData: Omit<
@@ -42,6 +55,9 @@ type PizzaStore = {
 export const usePizzaStore = create<PizzaStore>((set, get) => ({
   pizzas: initialPizzas,
   orders: initialOrders,
+  weeklyOrders,
+  monthlyOrders,
+  yearlyOrders,
   categories: initialCategories,
   reviews: initialReviews,
   selectedCategories: ['All'],
@@ -183,9 +199,26 @@ export const usePizzaStore = create<PizzaStore>((set, get) => ({
     return get().orders.find((o) => o.id === id);
   },
 
-  getOrdersByStatus(status: string) {
-    return get().orders.filter((o) => o.status === status);
+  getOrdersByStatus: async (status?: string) => {
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    const orders = get().orders;
+
+    if (!status) return orders;
+
+    return orders.filter((o) => o.status === status);
   },
+
+  getBulkOrdersCount: async () => {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    return [get().weeklyOrders, get().monthlyOrders, get().yearlyOrders].flat().length;
+  },
+
+  getReviewsCount: async () => {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    return get().reviews.length;
+  },
+
 
   addPizza: async (pizzaData): Promise<boolean> => {
     await new Promise(resolve => setTimeout(resolve, 1000));
