@@ -1,15 +1,25 @@
-import React, { useState } from 'react';
+import { useThemeColors } from '@/hooks/useThemeColors';
+import { createThemedStyles } from '@/utils/styles';
 import { Feather } from '@expo/vector-icons';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useState } from 'react';
+import { TouchableOpacity, View } from 'react-native';
 import { ThemedText } from '../ThemedText';
 
-const NoInternet = ({ onRetry }: { onRetry: () => void }): React.JSX.Element => {
+interface NoInternetProps { onRetry: () => void; }
+
+const NoInternet = ({ onRetry }: NoInternetProps): React.JSX.Element => {
+  const styles = useThemedStyles();
+  const { tint } = useThemeColors();
   const [isRetrying, setIsRetrying] = useState(false);
 
   const handleRetry = async () => {
+    if (isRetrying) return;
+
     setIsRetrying(true);
     try {
       onRetry();
+    } catch (error) {
+      console.error('Retry failed:', error);
     } finally {
       setTimeout(() => setIsRetrying(false), 1000);
     }
@@ -17,10 +27,10 @@ const NoInternet = ({ onRetry }: { onRetry: () => void }): React.JSX.Element => 
 
   return (
     <View style={styles.container}>
-      <Feather name="wifi-off" size={60} color="accentPrimary" />
+      <Feather name="wifi-off" size={60} color={tint} />
       <ThemedText style={styles.title}>No Internet Connection</ThemedText>
       <ThemedText style={styles.message}>
-        Your internet connection is currently not available please check or try again.
+        Your internet connection is currently not available. Please check or try again.
       </ThemedText>
       <TouchableOpacity
         style={[styles.button, isRetrying && styles.disabledBtn]}
@@ -35,13 +45,13 @@ const NoInternet = ({ onRetry }: { onRetry: () => void }): React.JSX.Element => 
   );
 };
 
-const styles = StyleSheet.create({
+const useThemedStyles = createThemedStyles(({ bgPrimary, accentPrimary, textMuted  }) => ({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
-    backgroundColor: 'white',
+    paddingHorizontal: 40,
+    backgroundColor: bgPrimary,
   },
   title: {
     fontSize: 20,
@@ -51,14 +61,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   message: {
-    color: '#666',
+    color: textMuted,
     textAlign: 'center',
     marginBottom: 30,
   },
   button: {
     width: 150,
     alignItems: 'center',
-    backgroundColor: '#FA4A0C',
+    backgroundColor: accentPrimary,
     paddingVertical: 12,
     paddingHorizontal: 30,
     borderRadius: 8,
@@ -70,6 +80,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
   },
-});
+}));
 
 export default NoInternet;

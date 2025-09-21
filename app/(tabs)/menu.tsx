@@ -16,7 +16,7 @@ import { usePizzaStore } from '@/stores/pizza';
 import { createThemedStyles } from '@/utils/styles';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { SafeAreaView, SectionList, StyleSheet, View } from 'react-native';
+import { RefreshControl, SafeAreaView, SectionList, StyleSheet, View } from 'react-native';
 
 export default function MenuScreen(): React.JSX.Element {
   const styles = useThemedStyles();
@@ -36,6 +36,7 @@ export default function MenuScreen(): React.JSX.Element {
     enableCategory,
   } = usePizzaStore();
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -48,6 +49,17 @@ export default function MenuScreen(): React.JSX.Element {
   const hideLoading = () => {
     setIsDeleting(false);
   }
+
+  const handleRefresh = useCallback(async () => {
+    setIsRefreshing(true);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    } catch (error) {
+      console.error('Failed to refresh menu data:', error);
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, []);
 
 
   const handleDeleteCategory = (id: string, name: string) => {
@@ -109,6 +121,14 @@ export default function MenuScreen(): React.JSX.Element {
             <SectionList
               sections={sections()}
               keyExtractor={(item) => String(item.id)}
+              refreshControl={
+                <RefreshControl
+                  refreshing={isRefreshing}
+                  onRefresh={handleRefresh}
+                  tintColor={tint}
+                  colors={[tint]}
+                />
+              }
               renderSectionHeader={({ section: { categoryId, title, data, disabled } }) => {
                 return (
                   <View>

@@ -14,10 +14,13 @@ export default function Navbar({ categoryId }: { categoryId?: string }): React.J
   const styles = useThemedStyles();
   const { textPrimary } = useThemeColors();
   const { openDrawer } = useDrawer();
-  const segments = useSegments();
+  const rawSegments = useSegments();
+  const segments = rawSegments as string[];
   const router = useRouter();
 
   const isMenuScreen = segments[1] === "menu";
+  const isLoginScreen = segments[0] === "login";
+  const isSplashScreen = segments.length === 0;
   const isCategoryScreen = segments[0] === "category";
   const isOrderDetailScreen = segments[0] === "order";
   const isReviewScreen = segments[0] === "reviews";
@@ -27,13 +30,17 @@ export default function Navbar({ categoryId }: { categoryId?: string }): React.J
   const { handleAddCategory } = useAddCategory();
 
   let screenName = "";
-  if (segments.length > 0) {
-    const last = segments[segments.length - 1];
+  const last = [...segments].reverse().find((seg) => !seg.startsWith("("));
+
+  if (last) {
     if (last.startsWith("[")) {
-      screenName = segments[segments.length - 2]?.toUpperCase() ?? "";
+      const prev = segments[segments.length - 2];
+      screenName = prev?.toUpperCase() ?? "";
     } else {
       screenName = last.toUpperCase();
     }
+  } else if (segments.length === 1 && segments[0] === "(tabs)") {
+    screenName = "DASHBOARD";
   }
 
   const title = isAddNewScreen
@@ -47,7 +54,7 @@ export default function Navbar({ categoryId }: { categoryId?: string }): React.J
   : screenName;
 
 
-  if (isAddNewScreen || isEditScreen) return null;
+  if (isSplashScreen || isLoginScreen || isAddNewScreen || isEditScreen) return null;
 
   return (
     <ThemedView style={styles.navbar}>

@@ -1,37 +1,40 @@
 import { ThemedView } from '@/components/ThemedView';
 import { useAuth } from '@/hooks/useAuth';
-import { usePathname, useRouter } from 'expo-router';
-import { useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import LogoIcon from '@/assets/images/Ratatouille.svg';
 import { useThemeColors } from '@/hooks/useThemeColors';
+import { Redirect } from "expo-router";
+import { useEffect, useState } from "react";
 
 export default function Index(): React.JSX.Element {
-  const { splashIcon } = useThemeColors();
   const { user, hydrated } = useAuth();
-  const router = useRouter();
-  const pathname = usePathname();
+  const { splashIcon } = useThemeColors();
+  const [showRedirect, setShowRedirect] = useState(false);
 
   useEffect(() => {
     if (!hydrated) return;
+    const t = setTimeout(() => setShowRedirect(true), 2000);
+    return () => clearTimeout(t);
+  }, [hydrated]);
 
-    const timer = setTimeout(() => {
-      if (user) {
-        if (pathname !== "/dashboard") router.replace("/dashboard");
-      } else {
-        if (pathname !== "/login") router.replace("/login");
-      }
-    }, 2000); // 2s splash delay
+  if (!hydrated) {
+    return (
+      <ThemedView colorName="splashBg" style={styles.container}>
+        <LogoIcon width={230} height={230} color={splashIcon} />
+      </ThemedView>
+    );
+  }
 
-    return () => clearTimeout(timer);
-  }, [user, hydrated, pathname, router]);
+  if (!showRedirect) {
+    return (
+      <ThemedView colorName="splashBg" style={styles.container}>
+        <LogoIcon width={230} height={230} color={splashIcon} />
+      </ThemedView>
+    );
+  }
 
-  return (
-    <ThemedView colorName='splashBg' style={styles.container}>
-      <LogoIcon width={230} height={230} color={splashIcon} />
-    </ThemedView>
-  );
-};
+  return user ? <Redirect href="/dashboard" /> : <Redirect href="/login" />;
+}
 
 const styles = StyleSheet.create({
   container: {

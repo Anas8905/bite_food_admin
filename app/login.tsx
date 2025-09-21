@@ -1,6 +1,7 @@
 import { ThemedText } from '@/components/ThemedText';
 import { useAlert } from '@/hooks/useAlert';
 import { useAuth } from '@/hooks/useAuth';
+import { useThemeColors } from '@/hooks/useThemeColors';
 import { createThemedStyles } from '@/utils/styles';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
@@ -12,9 +13,9 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-
-export default function LoginScreen(): React.JSX.Element {
+export default function LoginScreen(): React.JSX.Element | null {
   const styles = useThemedStyles();
+  const { textMuted } = useThemeColors();
   const router = useRouter()
   const { login } = useAuth();
   const { showAlert } = useAlert();
@@ -38,7 +39,7 @@ export default function LoginScreen(): React.JSX.Element {
 
       setEmail('');
       setPassword('');
-      router.navigate('/dashboard');
+      router.replace('/dashboard');
     } catch (error: any) {
       showAlert('Error', error.message || 'Failed to login.');
     } finally {
@@ -60,6 +61,7 @@ export default function LoginScreen(): React.JSX.Element {
           <TextInput
             style={styles.input}
             placeholder="Type here"
+            placeholderTextColor={textMuted}
             value={fullName}
             onChangeText={setFullName}
             autoCapitalize="words"
@@ -72,6 +74,7 @@ export default function LoginScreen(): React.JSX.Element {
           <TextInput
             style={styles.input}
             placeholder="Type here"
+            placeholderTextColor={textMuted}
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
@@ -85,6 +88,7 @@ export default function LoginScreen(): React.JSX.Element {
           <TextInput
             style={styles.input}
             placeholder="Type here"
+            placeholderTextColor={textMuted}
             value={password}
             onChangeText={setPassword}
             textContentType="password"

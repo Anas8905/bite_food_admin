@@ -1,8 +1,8 @@
 import { useThemeColors } from "@/hooks/useThemeColors";
+import { useRouter } from "expo-router";
 import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { ThemedText } from "../ThemedText";
 import { ThemedView } from "../ThemedView";
-import { useRouter } from "expo-router";
 
 export default function PizzaCarousel({ popularPizzas, isLoading }: { popularPizzas: Pizza[]; isLoading: boolean; }): React.JSX.Element {
   const { tint } = useThemeColors();
@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 16,
     gap: 12,
+    // height: 184,
   },
   header: {
     flexDirection: 'row',
@@ -68,6 +69,7 @@ const styles = StyleSheet.create({
   },
   fallback: {
     flex: 1,
+    height: 120,
     alignItems: 'center',
     justifyContent: 'center',
   },

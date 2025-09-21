@@ -5,18 +5,26 @@ import OrderIcon from '@/assets/images/order.svg';
 import ProfileIcon from '@/assets/images/profile.svg';
 import { TabBarIcon } from '@/components/ui/TabBarIcon';
 import { useAddCategory } from '@/hooks/useAddCategory';
+import { useAuth } from '@/hooks/useAuth';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { BottomTabBarButtonProps } from '@react-navigation/bottom-tabs';
-import { Tabs, usePathname } from 'expo-router';
+import { Redirect, Tabs, usePathname } from 'expo-router';
 import { TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-export default function TabLayout(): React.JSX.Element {
+export default function TabLayout(): React.JSX.Element | null {
+  const { user, hydrated } = useAuth();
   const { tint, icon, iconActive, bgSecondary } = useThemeColors();
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
   const showAddButton = pathname === '/menu';
   const { handleAddCategory } = useAddCategory();
+
+  if (!hydrated) return null;
+
+  if (!user) {
+    return <Redirect href="/login" />;
+  }
 
   return (
     <Tabs

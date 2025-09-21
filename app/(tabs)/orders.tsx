@@ -7,7 +7,7 @@ import { useThemeColors } from '@/hooks/useThemeColors';
 import { useOrderStore } from '@/stores/order';
 import { createThemedStyles } from '@/utils/styles';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, Pressable, SafeAreaView, View } from 'react-native';
+import { ActivityIndicator, Pressable, RefreshControl, SafeAreaView, View } from 'react-native';
 
 type TabKey = 'ongoing' | 'incoming' | 'completed';
 
@@ -22,22 +22,36 @@ export default function OrdersScreen(): React.JSX.Element {
   const { tint } = useThemeColors();
   const [activeTab, setActiveTab] = useState<TabKey>('ongoing');
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const { getOrdersByStatus, orders: allOrders } = useOrderStore();
 
   const orders = useMemo(() => {
     return allOrders.filter(order => order.status === activeTab);
   }, [allOrders, activeTab]);
 
-  const fetchOrders = useCallback(async () => {
-    setIsLoading(true);
+  const fetchOrders = useCallback(async (isRefresh = false) => {
+    if (isRefresh) {
+      setIsRefreshing(true);
+    } else {
+      setIsLoading(true);
+    }
+
     try {
       await getOrdersByStatus(activeTab);
     } catch (error) {
       console.error('Error fetching orders:', error);
     } finally {
-      setIsLoading(false);
+      if (isRefresh) {
+        setIsRefreshing(false);
+      } else {
+        setIsLoading(false);
+      }
     }
   }, [activeTab, getOrdersByStatus]);
+
+  const handleRefresh = useCallback(() => {
+    fetchOrders(true);
+  }, [fetchOrders]);
 
   useEffect(() => {
     fetchOrders();
@@ -84,7 +98,18 @@ export default function OrdersScreen(): React.JSX.Element {
         ) : (
           orders.length > 0 ? (
             <View style={styles.ordersContainer}>
-              <HorizontalPizzaCard orders={orders} activeTab={activeTab} />
+              <HorizontalPizzaCard 
+                orders={orders} 
+                activeTab={activeTab}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={isRefreshing}
+                    onRefresh={handleRefresh}
+                    tintColor={tint}
+                    colors={[tint]}
+                  />
+                }
+              />
             </View>
           ) : (
             <View style={styles.emptyStateContainer}>

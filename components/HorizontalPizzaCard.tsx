@@ -1,15 +1,16 @@
+import { capitalizeWords } from '@/utils/common.utils';
 import { createThemedStyles } from '@/utils/styles';
 import { useRouter } from 'expo-router';
-import { FlatList, Image, Pressable, View } from 'react-native';
+import { FlatList, Image, Pressable, RefreshControlProps, View } from 'react-native';
 import { ThemedText } from './ThemedText';
-import { capitalizeWords } from '@/utils/common.utils';
 
 interface HorizontalPizzaCardProps {
   orders?: Order[];
   activeTab?: string;
+  refreshControl?: React.ReactElement<RefreshControlProps>;
 }
 
-export default function HorizontalPizzaCard({ orders, activeTab }: HorizontalPizzaCardProps): React.JSX.Element {
+export default function HorizontalPizzaCard({ orders, activeTab, refreshControl }: HorizontalPizzaCardProps): React.JSX.Element {
     const styles = useThemedStyles();
     const router = useRouter();
 
@@ -63,6 +64,7 @@ export default function HorizontalPizzaCard({ orders, activeTab }: HorizontalPiz
       showsVerticalScrollIndicator={false}
       ItemSeparatorComponent={() => (<View style={styles.itemSeparator} />)}
       ListFooterComponent={() => (<View style={styles.listFooter} />)}
+      refreshControl={refreshControl}
     />
   );
 };
