@@ -8,8 +8,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { useResolvedTheme } from '@/stores/theme';
 import { isAndroid } from '@/utils/common.utils';
 import { createThemedStyles } from '@/utils/styles';
+import { Sen_400Regular, Sen_500Medium, Sen_600SemiBold, Sen_700Bold, Sen_800ExtraBold, useFonts } from '@expo-google-fonts/sen';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
 import { Stack, usePathname, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native';
@@ -21,7 +21,13 @@ export default function RootLayout(): React.JSX.Element | null {
   const styles = useThemedStyles();
   const { hydrated } = useAuth();
   const router = useRouter();
-  const [loaded] = useFonts({ Sen: require('../assets/fonts/Sen-Regular.ttf') });
+  const [loaded] = useFonts({
+    Sen_400Regular,
+    Sen_500Medium,
+    Sen_600SemiBold,
+    Sen_700Bold,
+    Sen_800ExtraBold,
+  });
   const pathname = usePathname();
   const rawSegments = useSegments();
   const segments = rawSegments as string[];

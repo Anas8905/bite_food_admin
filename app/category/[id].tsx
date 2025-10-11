@@ -219,6 +219,7 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, borderLight, textPrimar
     borderColor: borderLight,
     color: textPrimary,
     fontSize: 16,
+    fontFamily: 'Sen_400Regular',
   },
   productsSection: {
     flex: 1,
@@ -247,7 +248,8 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, borderLight, textPrimar
     backgroundColor: accentPrimary,
   },
   saveText: {
-    fontWeight: 600,
+    fontFamily: 'Sen_500Medium',
+    fontSize: 16,
     color: bgPrimary,
   },
 }));

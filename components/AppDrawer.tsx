@@ -232,7 +232,7 @@ const useThemedStyles = createThemedStyles(({
   },
   userName: {
     fontSize: 18,
-    fontWeight: 600,
+    fontFamily: 'Sen_600SemiBold',
   },
   phone: {
     color: textTertiary,
@@ -245,7 +245,7 @@ const useThemedStyles = createThemedStyles(({
   },
   drawerItemText: {
     color: textPrimary,
-    fontWeight: '500',
+    fontFamily: 'Sen_500Medium',
   },
   dropdownItem: {
     flexDirection: 'row',

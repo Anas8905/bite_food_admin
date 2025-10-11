@@ -55,7 +55,7 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, accentPrimary, textMute
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontFamily: 'Sen_700Bold',
     marginTop: 20,
     marginBottom: 10,
     textAlign: 'center',

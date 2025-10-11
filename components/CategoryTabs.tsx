@@ -81,8 +81,8 @@ const useThemedStyles = createThemedStyles(({ textPrimary, accentPrimary }) => (
   },
   baseTabText: {
     fontSize: 16,
-    fontWeight: 600,
     color: textPrimary,
+    fontFamily: 'Sen_600SemiBold',
   },
   activeTabText: {
     color: accentPrimary,

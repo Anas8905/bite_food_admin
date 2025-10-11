@@ -191,7 +191,7 @@ const useThemedStyles = (alertType: 'simple' | 'input' = 'simple') => createThem
     },
   title: {
     fontSize: 17,
-    fontWeight: '600',
+    fontFamily: 'Sen_600SemiBold',
     textAlign: 'center',
     paddingTop: 20,
     paddingHorizontal: 20,
@@ -241,15 +241,12 @@ const useThemedStyles = (alertType: 'simple' | 'input' = 'simple') => createThem
   },
   defaultButtonText: {
     color: '#007AFF',
-    fontWeight: '400',
   },
   cancelButtonText: {
     color: '#007AFF',
-    fontWeight: '400',
   },
   destructiveButtonText: {
     color: '#FF3B30',
-    fontWeight: '400',
   },
   };
 });

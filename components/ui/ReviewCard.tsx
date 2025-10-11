@@ -60,6 +60,5 @@ const styles = StyleSheet.create({
   },
   rightside: {
     fontSize: 14,
-    fontWeight: 500,
   },
 });

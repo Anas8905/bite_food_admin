@@ -225,6 +225,7 @@ const useThemedStyles = createThemedStyles(({
       borderRadius: 10,
       padding: 12,
       fontSize: 14,
+      fontFamily: 'Sen_400Regular',
     },
     buttonRow: {
       flexDirection: 'row',
@@ -235,21 +236,23 @@ const useThemedStyles = createThemedStyles(({
     actionBtn: {
       flex: 1,
       alignItems: 'center',
-      paddingVertical: 14,
+      paddingVertical: 12,
       borderRadius: 30,
     },
     saveBtn: {
       backgroundColor: accentPrimary,
     },
     saveText: {
-      fontWeight: 600,
+      fontFamily: 'Sen_500Medium',
+      fontSize: 14,
       color: '#FFFFFF',
     },
     cancelBtn: {
       backgroundColor: bgGray,
     },
     cancelText: {
-      fontWeight: 500,
+      fontFamily: 'Sen_500Medium',
+      fontSize: 14,
       opacity: 0.9
     },
   }));

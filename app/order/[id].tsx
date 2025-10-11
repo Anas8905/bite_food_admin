@@ -285,7 +285,7 @@ export default function OrderDetails(): React.JSX.Element {
     )
 }
 
-const useThemedStyles = createThemedStyles(({ bgPrimary, bgSecondary, accentPrimary, textPrimary, textTertiary, borderDark }) => ({
+const useThemedStyles = createThemedStyles(({ bgPrimary, bgSecondary, accentPrimary, textTertiary, borderDark }) => ({
     safeArea: {
         flex: 1,
         backgroundColor: bgPrimary,
@@ -326,7 +326,7 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, bgSecondary, accentPrim
         alignSelf: 'baseline',
     },
     stageText: {
-        fontWeight: 600,
+        fontFamily: 'Sen_500Medium',
         fontSize: 14,
         color: 'white',
     },
@@ -337,8 +337,7 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, bgSecondary, accentPrim
         backgroundColor: bgSecondary,
     },
     customerName: {
-        fontWeight: 500,
-        fontSize: 18,
+        fontSize: 16,
     },
     iconicText: {
         flexDirection: 'row',
@@ -363,8 +362,8 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, bgSecondary, accentPrim
     },
     leftBtnText: {
         fontSize: 12,
-        fontWeight: 700,
-        color: textPrimary,
+        fontFamily: 'Sen_600SemiBold',
+        color: '#fff',
     },
     rightHeaderBtn: {
         borderColor: accentPrimary,
@@ -372,7 +371,7 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, bgSecondary, accentPrim
     },
     rightBtnText: {
         fontSize: 12,
-        fontWeight: 700,
+        fontFamily: 'Sen_600SemiBold',
         color: accentPrimary,
     },
     ordersSection: {
@@ -413,16 +412,15 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, bgSecondary, accentPrim
     },
     name: {
         fontSize: 14,
-        fontWeight: 500,
         maxWidth: '90%',
     },
     time: {
-        fontSize: 12,
+        fontSize: 14,
     },
     price: {
         color: accentPrimary,
         fontSize: 14,
-        fontWeight: 700,
+        fontFamily: 'Sen_500Medium',
     },
     instructContainer: {
         paddingVertical: 8,
@@ -468,7 +466,7 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, bgSecondary, accentPrim
         alignItems: 'center',
     },
     btnText: {
-        fontWeight: 700,
+        fontFamily: 'Sen_700Bold',
         fontSize: 16,
         color: 'white',
     },

@@ -38,21 +38,23 @@ export function ThemedText({
 const styles = StyleSheet.create({
   default: {
     fontSize: 16,
+    fontFamily: 'Sen_400Regular',
   },
   defaultSemiBold: {
     fontSize: 16,
-    fontWeight: '500',
+    fontFamily: 'Sen_500Medium',
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
+    fontFamily: 'Sen_700Bold',
   },
   subtitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontFamily: 'Sen_600SemiBold',
   },
   link: {
     fontSize: 16,
     color: '#0a7ea4',
+    fontFamily: 'Sen_400Regular',
   },
 });

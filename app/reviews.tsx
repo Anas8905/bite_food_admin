@@ -46,7 +46,7 @@ export default function Reviews(): React.JSX.Element {
                             <View style={styles.avatarRow}>
                                 <Image source={item.avatar} style={styles.avatar} />
                                 <ThemedText style={styles.username}>{item.customer}</ThemedText>
-                                <ThemedText colorName="textTertiary" style={styles.date}>
+                                <ThemedText colorName="textMuted" style={styles.date}>
                                     {item.date}
                                 </ThemedText>
                             </View>
@@ -107,7 +107,6 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, bgReview }) => ({
     },
     username: {
         fontSize: 14,
-        fontWeight: '600',
     },
     date: {
         fontSize: 12,
@@ -117,8 +116,8 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, bgReview }) => ({
         marginTop: 4,
     },
     title: {
-        fontSize: 14.5,
-        fontWeight: 700,
+        fontSize: 14,
+        fontFamily: 'Sen_700Bold',
     },
     ratingContainer: {
         flexDirection: 'row',

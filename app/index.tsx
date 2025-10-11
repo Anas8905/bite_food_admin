@@ -42,10 +42,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  logo: {
-    fontFamily: 'serif',
-    fontSize: 42,
-    fontWeight: 'bold',
-    fontStyle: 'italic',
-  },
 });

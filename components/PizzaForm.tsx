@@ -483,6 +483,7 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, borderLight, textPrimar
     borderColor: borderLight,
     color: textPrimary,
     fontSize: 16,
+    fontFamily: 'Sen_400Regular',
   },
   details:{
     gap: 20,
@@ -500,7 +501,8 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, borderLight, textPrimar
 
   },
   saveBtnText: {
-    fontWeight: 700,
     color: 'white',
+    fontFamily: 'Sen_700Bold',
+    fontSize: 16,
   },
 }))

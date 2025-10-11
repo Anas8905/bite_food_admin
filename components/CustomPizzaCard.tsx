@@ -65,8 +65,8 @@ export default function CustomPizzaCard({
                       PKR {item.variations[0]?.price || 'N/A'}
                   </ThemedText>
                   <View style={styles.timeContainer}>
-                      <Ionicons name="time-outline" size={14} color={accentPrimary} />
-                      <ThemedText colorName='accentPrimary' style={styles.time}>{item.deliveryTime} min</ThemedText>
+                      <Ionicons name="time-outline" size={20} color={accentPrimary} />
+                      <ThemedText style={styles.time}>{item.deliveryTime} min</ThemedText>
                   </View>
               </View>
             </View>
@@ -101,13 +101,13 @@ const useThemedStyles = createThemedStyles(({ accentPrimary, borderDark }) => ({
     position: 'relative',
   },
   image: {
-    width: 52,
-    height: 52,
+    width: 56,
+    height: 56,
     borderRadius: 8,
   },
   details: {
     flex: 1,
-    gap: 10,
+    gap: 20,
   },
   primeRow: {
     gap: 4,
@@ -132,7 +132,7 @@ const useThemedStyles = createThemedStyles(({ accentPrimary, borderDark }) => ({
   price: {
     color: accentPrimary,
     fontSize: 16,
-    fontWeight: 500,
+    fontFamily: 'Sen_500Medium',
   },
   timeContainer: {
     flexDirection: 'row',
@@ -145,7 +145,8 @@ const useThemedStyles = createThemedStyles(({ accentPrimary, borderDark }) => ({
   listFooter: {
     height: 1,
     backgroundColor: borderDark,
-    marginVertical: 12,
+    marginBottom: 12,
+    marginTop: 6,
   },
   pizzaOverlay: {
     ...StyleSheet.absoluteFillObject,

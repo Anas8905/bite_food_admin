@@ -92,7 +92,7 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, textPrimary, textSecond
     pointerLabelText: {
         color: bgPrimary,
         fontSize: 14,
-        fontWeight: '600',
+        fontFamily: 'Sen_600SemiBold',
         textAlign: 'center',
     },
 }));

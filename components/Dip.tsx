@@ -70,7 +70,7 @@ const useThemedStyles = createThemedStyles(({ accentPrimary, borderDark }) => ({
     gap: 14,
   },
   dipText: {
-    fontWeight: 500,
+    fontFamily: 'Sen_500Medium',
   },
   checkboxContainer: {
     flexDirection: 'row',

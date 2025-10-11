@@ -86,7 +86,7 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, textPrimary, borderLigh
   },
   inputLabel: {
     fontSize: 14,
-    fontWeight: '500',
+    fontFamily: 'Sen_500Medium',
     color: textPrimary,
   },
   input: {
@@ -97,5 +97,6 @@ const useThemedStyles = createThemedStyles(({ bgPrimary, textPrimary, borderLigh
     borderColor: borderLight,
     color: textPrimary,
     fontSize: 16,
+    fontFamily: 'Sen_400Regular',
   },
 }))

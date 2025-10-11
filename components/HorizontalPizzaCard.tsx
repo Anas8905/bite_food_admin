@@ -81,7 +81,7 @@ const useThemedStyles = createThemedStyles(({ accentPrimary, borderDark }) => ({
   },
   details: {
     flex: 1,
-    gap: 10,
+    gap: 6,
   },
   primeRow: {
       flexDirection: 'row',
@@ -92,7 +92,6 @@ const useThemedStyles = createThemedStyles(({ accentPrimary, borderDark }) => ({
   },
   customer: {
       fontSize: 12,
-      fontWeight: 500,
   },
   orderId: {
       textDecorationLine: 'underline',
@@ -100,7 +99,6 @@ const useThemedStyles = createThemedStyles(({ accentPrimary, borderDark }) => ({
     },
   name: {
     fontSize: 14,
-    fontWeight: 500,
     maxWidth: '80%',
   },
   inner1st: {
@@ -116,7 +114,7 @@ const useThemedStyles = createThemedStyles(({ accentPrimary, borderDark }) => ({
   price: {
     color: accentPrimary,
     fontSize: 14,
-    fontWeight: 700,
+    fontFamily: 'Sen_700Bold',
     alignSelf: 'flex-end',
   },
   stageContainer: {

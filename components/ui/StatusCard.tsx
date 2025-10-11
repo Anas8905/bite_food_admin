@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   },
   staticText: {
     fontSize: 13,
-    fontWeight: '700',
     textTransform: 'uppercase',
+    fontFamily: 'Sen_600SemiBold',
   }
 });

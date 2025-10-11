@@ -225,7 +225,7 @@ const useThemedStyles = createThemedStyles(() => ({
   },
   section: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontFamily: 'Sen_700Bold',
   },
   sectionOverlay: {
     ...StyleSheet.absoluteFillObject,

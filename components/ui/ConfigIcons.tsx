@@ -1,7 +1,7 @@
 import ConfigIcon from '@/assets/images/config.svg';
 import { useConfigIconsStore } from '@/stores/configIcons';
 import { createThemedStyles } from "@/utils/styles";
-import { AntDesign, FontAwesome6, Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { AntDesign, Feather, FontAwesome6, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useSegments } from 'expo-router';
 import React from "react";
 import { Pressable, StyleProp, View, ViewStyle } from "react-native";
@@ -47,14 +47,14 @@ export default function ConfigIcons({
       {expanded && (
         <View style={[styles.dynamicIcons, dynamicIconsStyle]}>
           <Pressable onPress={onEdit}>
-            <FontAwesome6 name="edit" size={20.2} color={tint} />
+            <Feather name="edit" size={19.2} color={tint} />
           </Pressable>
           <Pressable onPress={onDisable}>
-            <Ionicons name="ban-sharp" size={21} color={tint} />
+            <Ionicons name="ban-sharp" size={19} color={tint} />
           </Pressable>
 
           <Pressable onPress={onDelete}>
-            <MaterialIcons name="delete-outline" size={23} color={tint} />
+            <MaterialIcons name="delete-outline" size={21} color={tint} />
           </Pressable>
         </View>
       )}
@@ -64,9 +64,9 @@ export default function ConfigIcons({
         onPress={toggleExpanded}
       >
         {expanded ? (
-          <AntDesign name="close" size={22} color={isMenuScreen ? foreColor : tint} />
+          <AntDesign name="close" size={20} color={isMenuScreen ? foreColor : tint} />
         ) : (
-          <ConfigIcon width={22} height={22} color={isMenuScreen ? foreColor : tint} />
+          <ConfigIcon width={20} height={20} color={isMenuScreen ? foreColor : tint} />
         )}
       </Pressable>
     </View>

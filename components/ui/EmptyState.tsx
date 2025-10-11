@@ -49,7 +49,7 @@ const useThemedStyles = createThemedStyles(({ accentPrimary, textSecondary }) =>
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontFamily: 'Sen_600SemiBold',
     marginBottom: 10,
     textAlign: 'center',
   },
@@ -68,6 +68,6 @@ const useThemedStyles = createThemedStyles(({ accentPrimary, textSecondary }) =>
   buttonText: {
     color: 'white',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: 'Sen_600SemiBold',
   },
 }));

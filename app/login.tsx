@@ -49,10 +49,6 @@ export default function LoginScreen(): React.JSX.Element | null {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* <View style={styles.header}>
-        <BackButton onPress={() => router.back()} />
-      </View> */}
-
       <View style={styles.content}>
         <ThemedText type='subtitle' style={styles.title}>Hi, there..</ThemedText>
 
@@ -135,13 +131,13 @@ const useThemedStyles = createThemedStyles(({
   },
   title: {
     fontSize: 26,
-    marginBottom: 20,
+    marginBottom: 30,
   },
   inputGroup: {
     marginBottom: 20,
   },
   label: {
-    fontWeight: '600',
+    fontFamily: 'Sen_600SemiBold',
     marginBottom: 10,
   },
   input: {
@@ -150,6 +146,7 @@ const useThemedStyles = createThemedStyles(({
     borderRadius: 8,
     padding: 15,
     fontSize: 16,
+    fontFamily: 'Sen_400Regular',
   },
   button: {
     backgroundColor: accentPrimary,

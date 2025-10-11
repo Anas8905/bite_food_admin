@@ -77,12 +77,12 @@ const useThemedStyles = createThemedStyles(({ bgSecondary, textPrimary, textTert
     gap: 4,
   },
   title: {
-    fontWeight: 500,
+    fontFamily: 'Sen_500Medium',
     fontSize: 14,
   },
   orderCount: {
-    fontSize: 20,
-    fontWeight: 700,
+    fontSize: 22,
+    fontFamily: 'Sen_700Bold',
   },
   dropdownContainer: {
     borderColor: borderDark
@@ -94,6 +94,7 @@ const useThemedStyles = createThemedStyles(({ bgSecondary, textPrimary, textTert
   selectedText: {
     color: textPrimary,
     fontSize: 12,
+    fontFamily: 'Sen_400Regular',
   },
   itemContainer: {
     backgroundColor: bgSecondary,
